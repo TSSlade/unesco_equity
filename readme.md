@@ -7,7 +7,7 @@
 + "Policies to improve learning among lower performing schools and pupils (the left hand side of the distribution) are required to improve learning equitably and to reduce unfair inequality - _=a route up through the middle_." (p. 1) <-- what do we mean by the italicized?
 + Discussion of the `5-95 spread`: the difference in performance between the 5th and 95th percentile performers.
 + Discussion of $\sigma$ (standard deviation) as relevant unit of comparison.
-    * "substantively important" $\approx \frac{1}{4} \ \sigma$ a.k.a. "effect size" of 0.25
+    * "substantively important" ![equation](<a href="https://www.codecogs.com/eqnedit.php?latex=\approx&space;\frac{1}{4}&space;\&space;\sigma" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\approx&space;\frac{1}{4}&space;\&space;\sigma" title="\approx \frac{1}{4} \ \sigma" /></a>) a.k.a. "effect size" of 0.25
     * "one grade's difference in learning" $\approx \frac{1}{3}-\frac{1}{2} \ \sigma$
     * "rich" and "poor" glossed as $\uparrow 75_{th}$ percentile and $\downarrow 25{th}$ percentile on SES index respectively
 + `cognitive skill poverty`: proportion of children below a given (low) threshold
