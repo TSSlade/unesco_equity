@@ -7,9 +7,9 @@
 + "Policies to improve learning among lower performing schools and pupils (the left hand side of the distribution) are required to improve learning equitably and to reduce unfair inequality - _=a route up through the middle_." (p. 1) <-- what do we mean by the italicized?
 + Discussion of the `5-95 spread`: the difference in performance between the 5th and 95th percentile performers.
 + Discussion of $\sigma$ (standard deviation) as relevant unit of comparison.
-    * "substantively important" <a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\approx&space;\frac{1}{4}&space;\&space;\sigma" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\approx&space;\frac{1}{4}&space;\&space;\sigma" title="\approx \frac{1}{4} \ \sigma" /></a> a.k.a. "effect size" of 0.25
-    * "one grade's difference in learning" $\approx \frac{1}{3}-\frac{1}{2} \ \sigma$
-    * "rich" and "poor" glossed as $\uparrow 75_{th}$ percentile and $\downarrow 25{th}$ percentile on SES index respectively
+    * "substantively important" <!-- $\approx \frac{1}{4} \ \sigma$ --> <a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\approx&space;\frac{1}{4}&space;\&space;\sigma" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\approx&space;\frac{1}{4}&space;\&space;\sigma" title="\approx \frac{1}{4} \ \sigma" /></a> a.k.a. "effect size" of 0.25
+    * "one grade's difference in learning" <!-- $\approx \frac{1}{3}-\frac{1}{2} \ \sigma$ --> <a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\approx&space;\frac{1}{3}-\frac{1}{2}&space;\&space;\sigma" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\approx&space;\frac{1}{3}-\frac{1}{2}&space;\&space;\sigma" title="\approx \frac{1}{3}-\frac{1}{2} \ \sigma" /></a>
+    * "rich" and "poor" glossed as <!-- $\uparrow 75^{th}$ --> <a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\uparrow&space;75^{th}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\uparrow&space;75^{th}" title="\uparrow 75^{th}" /></a> percentile and <!-- $\downarrow 25{th}$ --> <a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\downarrow&space;25^{th}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\downarrow&space;25^{th}" title="\downarrow 25^{th}" /></a> percentile on SES index respectively
 + `cognitive skill poverty`: proportion of children below a given (low) threshold
 + `cardinal measures`: ??
 
@@ -22,11 +22,11 @@
     * `Theil T` a.k.a. `generalized entropy index with parameter 1.0`
     * `Generalized entropy index with parameter -1.0` <-- Verify sign; text wrapping in paper is ambiguous
     * `Gini coefficient`
-    * $frac{90^{th} \text{percentile}}{10^{th} \text{percentile}}$
+    * <!-- $\frac{90^{th} \text{percentile}}{10^{th} \text{percentile}}$ --> <a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\frac{90^{th}&space;\text{percentile}}{10^{th}&space;\text{percentile}}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\frac{90^{th}&space;\text{percentile}}{10^{th}&space;\text{percentile}}" title="\frac{90^{th} \text{percentile}}{10^{th} \text{percentile}}" /></a>
 + Dangerous to attempt to compare inequality measures for the same country across instruments (e.g., case of Botswana in **Figure 11**.)
 + Trend for a _drop_ in mean performance to be associated with _increased_ (worsening) inequality. (via Theil T)
 + `virtuous efficiency-equity link`: (p. 36) better average performance correlates with greater _equality_. (Freeman et al, 2011) (via Theil T)
-+ Via Theil T and multiple regression, _magnitude_ of $\delta$ mean performance is correlated with the change in equality, not the initial level of performance.
++ Via Theil T and multiple regression, _magnitude_ of <!-- $\Delta$ --> <a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\Delta" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\Delta" title="\Delta" /></a> mean performance is correlated with the change in equality, not the initial level of performance.
 + `Kuznets effect`: ??
 + tl;dr: IRT-based scores prove superior to classical scores for calculating measures of inequality. Appears to be due to greater discrimination in the neighborhood of classical floor effects.
 + Contexts where significant proportions of children attend schools in which not even _one_ child reached the 'intermediate' threshold for reading in TIMSS (475) tend be ones where the fraction of children not even reaching a minimum of 400 on TIMSS. i.e., poorly-managed 
