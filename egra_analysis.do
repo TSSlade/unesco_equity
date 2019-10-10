@@ -40,6 +40,7 @@ Variables of interest
         treat_phase     Round of data collection (1 = 'Baseline', 2 = midline)
  */
 
+// Notes from conversations with Simon, JP:
 // Use of subpop([conditions]) preserves correct standard errors if the condition is not splitting on one of the sampling strata
 // Use logit when working with svyset (ratio comparison option) or svytab
 // Cross-sectional: 90th pctile vs. 10th pctile
