@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- This is a Stata 15.1 generated SVG file (http://www.stata.com) -->
+
+<svg version="1.1" width="5.50in" height="4.00in" viewBox="0 0 3960 2880" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<desc>Stata Graph - k_orf_gr1_phase1</desc>
+	<rect x="0" y="0" width="3960" height="2880" style="fill:#EAF2F3;stroke:none"/>
+	<rect x="0.00" y="0.00" width="3959.88" height="2880.00" style="fill:#EAF2F3"/>
+	<rect x="2.88" y="2.88" width="3954.12" height="2874.24" style="fill:none;stroke:#EAF2F3;stroke-width:5.76"/>
+	<rect x="390.80" y="100.86" width="3468.22" height="2388.33" style="fill:#FFFFFF"/>
+	<rect x="393.68" y="103.74" width="3462.46" height="2382.57" style="fill:none;stroke:#FFFFFF;stroke-width:5.76"/>
+	<line x1="390.80" y1="2489.19" x2="3859.02" y2="2489.19" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<line x1="390.80" y1="1714.24" x2="3859.02" y2="1714.24" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<line x1="390.80" y1="939.17" x2="3859.02" y2="939.17" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<line x1="390.80" y1="164.22" x2="3859.02" y2="164.22" style="stroke:#EAF2F3;stroke-width:8.64"/>
+	<rect x="555.39" y="554.66" width="202.58" height="1934.52" style="fill:#ADD8E6"/>
+	<rect x="559.71" y="558.98" width="193.94" height="1925.88" style="fill:none;stroke:#ADD8E6;stroke-width:8.64"/>
+	<rect x="757.97" y="2291.55" width="202.46" height="197.63" style="fill:#ADD8E6"/>
+	<rect x="762.29" y="2295.87" width="193.82" height="189.00" style="fill:none;stroke:#ADD8E6;stroke-width:8.64"/>
+	<rect x="960.42" y="2265.81" width="202.58" height="223.38" style="fill:#ADD8E6"/>
+	<rect x="964.74" y="2270.13" width="193.94" height="214.74" style="fill:none;stroke:#ADD8E6;stroke-width:8.64"/>
+	<rect x="1163.00" y="2288.95" width="202.45" height="200.23" style="fill:#ADD8E6"/>
+	<rect x="1167.32" y="2293.27" width="193.82" height="191.59" style="fill:none;stroke:#ADD8E6;stroke-width:8.64"/>
+	<rect x="1365.46" y="2336.47" width="202.58" height="152.71" style="fill:#ADD8E6"/>
+	<rect x="1369.78" y="2340.79" width="193.94" height="144.07" style="fill:none;stroke:#ADD8E6;stroke-width:8.64"/>
+	<rect x="1568.04" y="2333.87" width="202.45" height="155.31" style="fill:#ADD8E6"/>
+	<rect x="1572.36" y="2338.19" width="193.82" height="146.67" style="fill:none;stroke:#ADD8E6;stroke-width:8.64"/>
+	<rect x="1770.49" y="2399.34" width="202.58" height="89.85" style="fill:#ADD8E6"/>
+	<rect x="1774.81" y="2403.66" width="193.94" height="81.21" style="fill:none;stroke:#ADD8E6;stroke-width:8.64"/>
+	<rect x="1973.07" y="2440.43" width="202.46" height="48.76" style="fill:#ADD8E6"/>
+	<rect x="1977.39" y="2444.75" width="193.82" height="40.12" style="fill:none;stroke:#ADD8E6;stroke-width:8.64"/>
+	<rect x="2175.53" y="2443.03" width="202.58" height="46.16" style="fill:#ADD8E6"/>
+	<rect x="2179.84" y="2447.34" width="193.94" height="37.52" style="fill:none;stroke:#ADD8E6;stroke-width:8.64"/>
+	<rect x="2378.10" y="2458.37" width="202.45" height="30.81" style="fill:#ADD8E6"/>
+	<rect x="2382.42" y="2462.69" width="193.82" height="22.17" style="fill:none;stroke:#ADD8E6;stroke-width:8.64"/>
+	<rect x="2580.56" y="2478.91" width="202.58" height="10.27" style="fill:#ADD8E6"/>
+	<rect x="2584.88" y="2483.23" width="193.94" height="1.63" style="fill:none;stroke:#ADD8E6;stroke-width:8.64"/>
+	<rect x="2783.14" y="2481.51" width="202.46" height="7.67" style="fill:#ADD8E6"/>
+	<rect x="2787.46" y="2485.83" width="193.82" height="-0.97" style="fill:none;stroke:#ADD8E6;stroke-width:8.64"/>
+	<rect x="2985.59" y="2487.95" width="202.58" height="1.24" style="fill:#ADD8E6"/>
+	<rect x="2989.91" y="2492.27" width="193.94" height="-7.40" style="fill:none;stroke:#ADD8E6;stroke-width:8.64"/>
+	<rect x="3188.17" y="2487.95" width="202.45" height="1.24" style="fill:#ADD8E6"/>
+	<rect x="3192.49" y="2492.27" width="193.82" height="-7.40" style="fill:none;stroke:#ADD8E6;stroke-width:8.64"/>
+	<text x="5999.15" y="1439.26" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">k_orf Gr 1 Rd 1</text>
+	<line x1="390.80" y1="2489.19" x2="390.80" y2="100.86" style="stroke:#000000;stroke-width:5.76"/>
+	<line x1="390.80" y1="2489.19" x2="350.83" y2="2489.19" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="2489.19" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,2489.19)" text-anchor="middle">0</text>
+	<line x1="390.80" y1="1714.24" x2="350.83" y2="1714.24" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="1714.24" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,1714.24)" text-anchor="middle">.05</text>
+	<line x1="390.80" y1="939.17" x2="350.83" y2="939.17" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="939.17" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,939.17)" text-anchor="middle">.1</text>
+	<line x1="390.80" y1="164.22" x2="350.83" y2="164.22" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="300.72" y="164.22" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 300.72,164.22)" text-anchor="middle">.15</text>
+	<text x="190.71" y="1294.96" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" transform="rotate(-90 190.71,1294.96)" text-anchor="middle">Density</text>
+	<line x1="390.80" y1="2489.19" x2="3859.02" y2="2489.19" style="stroke:#000000;stroke-width:5.76"/>
+	<line x1="555.39" y1="2489.19" x2="555.39" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="555.39" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">0</text>
+	<line x1="1365.46" y1="2489.19" x2="1365.46" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="1365.46" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">20</text>
+	<line x1="2175.53" y1="2489.19" x2="2175.53" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="2175.53" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">40</text>
+	<line x1="2985.59" y1="2489.19" x2="2985.59" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="2985.59" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">60</text>
+	<line x1="3795.66" y1="2489.19" x2="3795.66" y2="2529.16" style="stroke:#000000;stroke-width:5.76"/>
+	<text x="3795.66" y="2619.14" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">80</text>
+	<text x="2124.91" y="2729.16" style="font-family:'Helvetica';font-size:99.99px;fill:#000000" text-anchor="middle">Oral Reading Fluency (Kiswahili)</text>
+</svg>

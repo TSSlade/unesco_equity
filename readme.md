@@ -29,4 +29,12 @@
 + Via Theil T and multiple regression, _magnitude_ of <!-- $\Delta$ --> <a href="https://www.codecogs.com/eqnedit.php?latex=\inline&space;\Delta" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\Delta" title="\Delta" /></a> mean performance is correlated with the change in equality, not the initial level of performance.
 + `Kuznets effect`: ??
 + tl;dr: IRT-based scores prove superior to classical scores for calculating measures of inequality. Appears to be due to greater discrimination in the neighborhood of classical floor effects.
-+ Contexts where significant proportions of children attend schools in which not even _one_ child reached the 'intermediate' threshold for reading in TIMSS (475) tend be ones where the fraction of children not even reaching a minimum of 400 on TIMSS. i.e., poorly-managed 
++ Contexts where significant proportions of children attend schools in which not even _one_ child reached the 'intermediate' threshold for reading in TIMSS (475) tend be ones where the fraction of children not even reaching a minimum of 400 on TIMSS. i.e., poorly-managed...
+
+
+## From Abstract
+
++ Calculate Gini coefficient
++ Calculate ratio of 90th percentile to 10th percentile
++ Calculate %s of scores below a certain cut-point (cutpoint TBD?)
++ Calculate proportion of zero-scores
