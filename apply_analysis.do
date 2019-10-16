@@ -1,6 +1,4 @@
-program drop _all
-
-program define apply_pshare
+program define apply_analysis
     * syntax [varlist] [if] , over(varname) langlabel(string) resultsfile(string) [verbose(default=0) detail *]
     syntax [varlist] [if] , DATAset(string) SUBvar(varname) VARlabel(string) RESultsfile(string) [ SPLabel(string) verbose(integer 0)]
     if `verbose' ==1 {                  // Helpful for debugging
