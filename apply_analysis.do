@@ -1,6 +1,7 @@
 program define apply_analysis
     * syntax [varlist] [if] , over(varname) langlabel(string) resultsfile(string) [verbose(default=0) detail *]
     syntax [varlist] [if] , DATAset(string) SUBvar(varname) VARlabel(string) RESultsfile(string) [ SPLabel(string) verbose(integer 0)]
+
     if `verbose' ==1 {                  // Helpful for debugging
         di `"`0'"'
     }
@@ -26,7 +27,7 @@ program define apply_analysis
     loc i = 1                       // We want to be able to track our iteration so we can pull in a user-friendly name for the language variable
     foreach v of loc varlist {
         local curr_var `: word `i' of `varlabel''   // User-friendly name for language variable
-        pshare `v', over(`subvar') `options'        // To calculate our survey-weighted Gini coefficient
+        pshare `v', over(`subvar') gini             // To calculate our survey-weighted Gini coefficient
         mat gini = e(G)                             // Saving Gini coefficient matrix so we can iterate over it
         foreach j of num 1/`subPopCt' {             // Iterating through our subpopulations
             if `verbose'==1 {
@@ -73,7 +74,7 @@ program define apply_analysis
 postclose `postRes'
 preserve
 use `results', clear
-di "Find results in `:pwd'"
+noisily di "Find results in `:pwd' at `target'"
 save `target'.dta, replace
 restore
 end
