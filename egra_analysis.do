@@ -95,7 +95,30 @@ save "primr_unesco.dta", replace
 
 groups sub_pops treat_phase cohort treatment grade, missing
 
-quietly apply_analysis eng_orf kis_orf, data("primr") sub(sub_pops) var(`langs') res(`target_file') splabel(`subpop_names')
+// This is ANACHRONISTICALLY applying Tusome-era benchmarks to PRIMR.
+// These did not exist during PRIMR.
+
+loc eng1_low = 20
+loc eng1_high = 35
+loc kis1_low = 10
+loc kis1_high = 30
+
+gen eng_bmark_low = 0
+gen eng_bmark_high = 0
+gen kis_bmark_low = 0
+gen kis_bmark_high = 0
+
+// Applying Low
+recode eng_bmark_low (0 = 1) if ((grade==1 & eng_orf >= `eng1_low') & (grade==1 & eng_orf <= `eng1_high'))
+recode kis_bmark_low (0 = 1) if ((grade==1 & kis_orf >= `kis1_low') & (grade==1 & kis_orf <= `kis1_high'))
+
+// Applying High
+recode eng_bmark_high (0 = 1) if (grade==1 & eng_orf >= `eng1_high')
+recode kis_bmark_high (0 = 1) if (grade==1 & kis_orf >= `kis1_high')
+
+
+* quietly apply_analysis eng_orf kis_orf, data("primr") sub(sub_pops) var(`langs') res(`target_file') splabel(`subpop_names')
+apply_analysis eng_orf kis_orf, data("primr") sub(sub_pops) res(`target_file') spl(`subpop_names') var(`langs') ben(eng_bmark_low eng_bmark_high kis_bmark_low kis_bmark_high) fem(female) urb(urban) ver(1)
 
 use "tusome_inequalities.dta", clear
 append using "primr_inequalities.dta"

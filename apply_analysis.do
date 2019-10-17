@@ -1,6 +1,6 @@
 program define apply_analysis
     * syntax [varlist] [if] , over(varname) langlabel(string) resultsfile(string) [verbose(default=0) detail *]
-    syntax [varlist] [if] , DATAset(string) SUBpop_id(varname) RESultsfile(string) [ SPlabel(string) VARlabel(string) BENchmarks(varlist) URBanity(varname) FEMale(varname) SEStatus(varlist) VERbose(integer 0)]
+    syntax [varlist] [if] , DATAset(string) SUBpop_id(varname) RESultsfile(string) [ SPlabel(string) VARlabel(string) BENchmarks(varlist) URBanity(varname) FEMale(varname) SEStatus(varlist) VERbose(integer 0) DEBug(integer 0)]
 
     // Assumptions
     // 'female' variable is coded 1 = female, 0 = male
@@ -98,7 +98,7 @@ program define apply_analysis
         di as result "`sesVars'"
     }
 
-    local varsOfInterest `" `coreVars' `measureLabelVars' `subpopLabelVars' `femaleVars' `urbanVars' `benchmarkVars' `sesVars' "'
+    local varsOfInterest `" `coreVars' `measureLabelVars' `subpopLabelVars' `femaleVars' `benchmarkVars' `urbanVars' `sesVars' "'
 
     // This is where we actually define the postfile to hold our results
     postfile `postRes' `varsOfInterest' using `results'
@@ -117,6 +117,8 @@ program define apply_analysis
 
     // Looping over the performance measures we were given
     foreach v of loc varlist {
+        di as error "======||" "||======"
+        di as error "======" as result "Analyzing [`v']" as error "======"
         if `label_measures' local curr_var `: word `i' of `varlabel''   // User-friendly name for language variable
         else local curr_var "<none_given>"
 
@@ -124,11 +126,13 @@ program define apply_analysis
         pshare `v', over(`subpop_id') gini
         mat gini = e(G)                             // Saving Gini coefficient matrix so we can iterate over it
         foreach j of num 1/`subpop_count' {             // Iterating through our subpopulations
+            di as error "======||" "||======"
+            di as error "======" as result "[`v'], subpop [`j']" as error "======"
             if `verbose' di "Current Gini value: " gini[`j',1]
 
             // The -centile- and -svygei- commands don't give per-subpopulation results w/o dummy variables for being in/out of the subpopulations
             // Looping over the subpopulations and dropping all 'out' observations gets us the same effect
-            di as result "Preserving here!!"
+            * di as result "Preserving here!!"
             preserve
             keep if `subpop_id'==`j'
             // Since the sublabel parameter was optional, we need to capture the case where nothing is provided
@@ -169,6 +173,8 @@ program define apply_analysis
 
             // If analysis by sex was requested
             if `by_fem' {
+                di as error "======|| Analysis over sex invoked!||======"
+                di as error "======" as result " [`v'], subpop [`j'], var [`female'] " as error "======"
                 // For females: obtain estimates of means (w std errors)
                 mean(`v') if `female'==1
                 mat females_matrix = r(table)
@@ -202,14 +208,20 @@ program define apply_analysis
 
             // If analysis by benchmark was requested
             if `by_bmark' {
+                di as error "======|| Analysis of benchmarks invoked!||======"
+                di as error "======" as result " [`v'], subpop [`j'], var(s) [`benchmarks'] " as error "======"
                 // There may be multiple levels of benchmarks, so we need to loop over the varlist
                 local benchmarkResults = ""
                 foreach b of num 1/`benchmark_ct' {
                     // We want the pct of kids at each benchmark
                     loc bmark_currvar `: word `b' of `benchmarks''
+                    di as error "======|| ||======"
+                    di as error "======" as result "[`v'], subpop [`j'], b [`b'] benchmark [`bmark_currvar'] " as error "======"
+                    di as result "Summarizing `bmark_currvar'!!"
                     summ `bmark_currvar'
                     loc `bmark_currvar'_pct = r(mean) // Since it's a boolean, mean of the boolean gives us percentage
                     local benchmarkResults = "`benchmarkResults' (``bmark_currvar'_pct')"
+                    if `debug' pause
                 }
                 capture assert `: word count benchmarkVars' == `: word count benchmarkResults'
                 if !_rc==0 {
@@ -218,10 +230,13 @@ program define apply_analysis
                     di "These were the results: `benchmarkResults'"
                     exit 9
                 }
+            if `verbose' di as error "BenchmarkResults to write: `benchmarkResults'"
             }
             else loc benchmarkResults = ""
 
             if `by_urban' {
+                di as error "======|| Analysis of urbanity invoked!||======"
+                di as error "======" as result " [`v'], subpop [`j'], var [`urbanity'] " as error "======"
                 mean(`v') if `urbanity'==1
                 mat urban_matrix = r(table)
                 loc urban_mean = urban_matrix[1,1]
@@ -251,6 +266,8 @@ program define apply_analysis
             else loc urbanityResults = ""
 
             if `by_ses' {
+                di as error "======|| Analysis by SES invoked!||======"
+                di as error "======" as result " [`v'], subpop [`j'], var [`sestatus'] " as error "======"
                 local sesResults = ""
                 foreach `s' of num 1/`ses_cut_ct' {
                     loc ses_currvar `: word `s' of `sestatus''
