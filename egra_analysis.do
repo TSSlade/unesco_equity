@@ -43,7 +43,35 @@ save "tusome_unesco.dta", replace
 // Sanity check
 groups sub_pops grade treat_phase
 
-quietly apply_analysis eng_orf kis_orf, data("tusome") sub(sub_pops) var(`langs') res(`target_file') splabel(`subpop_names')
+// Benchmark
+/* Per KNEC in Kenya, for ORF:
+          English          Kiswahili
+        Low     High   Low    High
+Grade 1  20      35    10      30
+Grade 3  40      80    30      55
+*/
+
+loc eng1_low = 20
+loc eng1_high = 35
+loc kis1_low = 10
+loc kis1_high = 30
+
+gen eng_bmark_low = 0
+gen eng_bmark_high = 0
+gen kis_bmark_low = 0
+gen kis_bmark_high = 0
+
+// Applying Low
+recode eng_bmark_low (0 = 1) if ((grade==1 & eng_orf >= `eng1_low') & (grade==1 & eng_orf <= `eng1_high'))
+recode kis_bmark_low (0 = 1) if ((grade==1 & kis_orf >= `kis1_low') & (grade==1 & kis_orf <= `kis1_high'))
+
+// Applying High
+recode eng_bmark_high (0 = 1) if (grade==1 & eng_orf >= `eng1_high')
+recode kis_bmark_high (0 = 1) if (grade==1 & kis_orf >= `kis1_high')
+
+
+* quietly apply_analysis eng_orf kis_orf, data("tusome") sub(sub_pops) var(`langs') res(`target_file') splabel(`subpop_names')
+apply_analysis eng_orf kis_orf, data("tusome") sub(sub_pops) res(`target_file') spl(`subpop_names') var(`langs') ben(eng_bmark_low eng_bmark_high kis_bmark_low kis_bmark_high) fem(female) ver(1)
 
 /***********************************************
 **************** PRIMR Section *****************
