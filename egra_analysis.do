@@ -24,6 +24,8 @@ capture postutil clear      // Wiping out any open postfiles we may have
 **************** Tusome Section *****************
 ************************************************/
 
+// Granular analyses
+
 use "$tusome_src", clear
 svyset
 
@@ -36,9 +38,7 @@ local subpop_names "base_gr1 base_gr2 mid_gr1 mid_gr2"
 clonevar eng_orf = e_orf_a
 clonevar kis_orf = k_orf
 loc langs "English Kiswahili"
-loc target_file "tusome_inequalities"
-
-save "tusome_unesco.dta", replace
+* loc target_file "tusome_inequalities"
 
 // Sanity check
 groups sub_pops grade treat_phase
@@ -69,9 +69,26 @@ recode kis_bmark_low (0 = 1) if ((grade==1 & kis_orf >= `kis1_low') & (grade==1 
 recode eng_bmark_high (0 = 1) if (grade==1 & eng_orf >= `eng1_high')
 recode kis_bmark_high (0 = 1) if (grade==1 & kis_orf >= `kis1_high')
 
+// To do between- and within-school calculations
 
-* quietly apply_analysis eng_orf kis_orf, data("tusome") sub(sub_pops) var(`langs') res(`target_file') splabel(`subpop_names')
-apply_analysis eng_orf kis_orf, data("tusome") sub(sub_pops) res(`target_file') spl(`subpop_names') var(`langs') ben(eng_bmark_low eng_bmark_high kis_bmark_low kis_bmark_high) fem(female) ver(1)
+bysort school_code: egen schl_eng_orf = mean(eng_orf)
+bysort school_code: egen schl_kis_orf = mean(kis_orf)
+
+save "tusome_unesco.dta", replace
+use "tusome_unesco.dta", replace
+svyset
+
+// Super-granular analyses by subpopulation with additional parameters
+// Student-level data
+apply_analysis eng_orf kis_orf, data("tusome") sub(sub_pops) res("tusome_inequalities_student") spl(`subpop_names') var(`langs') ben(eng_bmark_low eng_bmark_high kis_bmark_low kis_bmark_high) fem(female) ver(1)
+// School-level data
+apply_analysis schl_eng_orf schl_kis_orf, data("tusome_schools") sub(sub_pops) res("tusome_inequalities_schools") spl(`subpop_names') var(`langs') ben(eng_bmark_low eng_bmark_high kis_bmark_low kis_bmark_high) fem(female) ver(1)
+
+// Student-level data by gender
+apply_analysis eng_orf kis_orf, data ("tusome_gender_only") sub(female) res("tusome_gender_only")
+
+// School-level data by gender
+apply_analysis schl_eng_orf schl_kis_orf, data ("tusome_gender_only") sub(female) res("tusome_gender_only")
 
 /***********************************************
 **************** PRIMR Section *****************
