@@ -70,9 +70,8 @@ recode eng_bmark_high (0 = 1) if (grade==1 & eng_orf >= `eng1_high')
 recode kis_bmark_high (0 = 1) if (grade==1 & kis_orf >= `kis1_high')
 
 // To do between- and within-school calculations
-
-bysort school_code: egen schl_eng_orf = mean(eng_orf)
-bysort school_code: egen schl_kis_orf = mean(kis_orf)
+egen schl_eng_orf = mean(eng_orf), by(sub_pops school_code)
+egen schl_kis_orf = mean(kis_orf), by(sub_pops school_code)
 
 save "tusome_unesco.dta", replace
 use "tusome_unesco.dta", replace
@@ -133,9 +132,16 @@ recode kis_bmark_low (0 = 1) if ((grade==1 & kis_orf >= `kis1_low') & (grade==1 
 recode eng_bmark_high (0 = 1) if (grade==1 & eng_orf >= `eng1_high')
 recode kis_bmark_high (0 = 1) if (grade==1 & kis_orf >= `kis1_high')
 
+// To do between- and within-school calculations
+egen schl_eng_orf = mean(eng_orf), by(sub_pops school_code)
+egen schl_kis_orf = mean(kis_orf), by(sub_pops school_code)
 
-* quietly apply_analysis eng_orf kis_orf, data("primr") sub(sub_pops) var(`langs') res(`target_file') splabel(`subpop_names')
-apply_analysis eng_orf kis_orf, data("primr") sub(sub_pops) res(`target_file') spl(`subpop_names') var(`langs') ben(eng_bmark_low eng_bmark_high kis_bmark_low kis_bmark_high) fem(female) urb(urban) ver(1)
+
+// Student-level data
+quietly: apply_analysis eng_orf kis_orf, data("primr") sub(sub_pops) res(`target_file') spl(`subpop_names') var(`langs') ben(eng_bmark_low eng_bmark_high kis_bmark_low kis_bmark_high) fem(female) urb(urban) ver(0)
+// School-level data
+quietly: apply_analysis schl_eng_orf schl_kis_orf, data("primr_schools") sub(sub_pops) res("primr_inequalities_schools") spl(`subpop_names') var(`langs') ben(eng_bmark_low eng_bmark_high kis_bmark_low kis_bmark_high) fem(female) urb(urban) ver(0)
+
 
 use "tusome_inequalities.dta", clear
 append using "primr_inequalities.dta"

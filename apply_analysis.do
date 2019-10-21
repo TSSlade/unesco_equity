@@ -43,7 +43,7 @@ program define apply_analysis
 
     // The variables we want for each of our observations (where each obs is a subpopulation)
     // Core variables: expect 15 of them
-    local coreVars "str20(dataset performance_measure) sub_pop_id str20(sub_pop_label measure_label) float(gini_wt subpop_mean subpop_coeffvar subpop_pct_zero p90 p10 ratio_p90p10 p75 p25 ratio_p75p25 ge_0 ge_1 ge_2)"
+    local coreVars "str20(dataset performance_measure) sub_pop_id str20(sub_pop_label measure_label) float(gini_wt subpop_mean std_err sd subpop_coeffvar subpop_pct_zero p90 p10 ratio_p90p10 p75 p25 ratio_p75p25 ge_0 ge_1 ge_2)"
 
     * // Optional labeling of core variables: expect 2 of them, just blank if note supplied
     * if `label_measures' local measureLabelVars "measure_label"
@@ -145,9 +145,18 @@ program define apply_analysis
             `apply_svy' mean `v'
             mat results_matrix = r(table)
             loc mean_perf = results_matrix[1,1]
-            estat cv
-            mat results_matrix = r(cv)
-            loc coeff_var = results_matrix[1,1]
+            loc std_err = results_matrix[2,1]
+            estat sd
+            mat results_matrix = r(sd)
+            loc sd = results_matrix[1,1]
+            if `svy' {
+                estat cv
+                mat results_matrix = r(cv)
+                loc coeff_var = results_matrix[1,1]
+            }
+            else {
+                loc coeff_var = (`sd'/`mean_perf') * 100
+            }
 
             // To calculate our percentile ratios
             centile `v', centile(10 25 75 90)
@@ -174,7 +183,7 @@ program define apply_analysis
             loc pct_zero = results_matrix[1,1]
 
             // Store these core results to be concatenated into the final post after adding in any optional ones
-            loc coreResults "("`dataset'") ("`v'") (`j') ("`sp_label'") ("`curr_var'") (gini[`j',1]) (`mean_perf') (`coeff_var') (`pct_zero') (`p90') (`p10') (`ratio_p90p10') (`p75') (`p25') (`ratio_p75p25') (`ge_0') (`ge_1') (`ge_2') "
+            loc coreResults "("`dataset'") ("`v'") (`j') ("`sp_label'") ("`curr_var'") (gini[`j',1]) (`mean_perf') (`std_err') (`sd') (`coeff_var') (`pct_zero') (`p90') (`p10') (`ratio_p90p10') (`p75') (`p25') (`ratio_p75p25') (`ge_0') (`ge_1') (`ge_2') "
             capture assert `: word count coreVars' == `: word count coreResults'
                 if !_rc==0 {
                     di "The program returned a different number of result placeholders and results."
@@ -199,10 +208,14 @@ program define apply_analysis
                 estat sd
                 mat results_matrix = r(sd)
                 loc females_stddev = results_matrix[1,1]
-                estat cv
-                mat results_matrix = r(cv)
-                loc females_cv = results_matrix[1,1]
-
+                if `svy' {
+                    estat cv
+                    mat results_matrix = r(cv)
+                    loc females_cv = results_matrix[1,1]
+                }
+                else {
+                    loc females_cv = (`females_stddev'/`females_mean') * 100
+                }
                 // Obtain percentage of zero scores for females in the subpopulation
                 `apply_svy' mean iszero if `female'==1
                 mat results_matrix = r(table)
@@ -220,9 +233,14 @@ program define apply_analysis
                 estat sd
                 mat results_matrix = r(sd)
                 loc males_stddev = results_matrix[1,1]
-                estat cv
-                mat results_matrix = r(cv)
-                loc males_cv = results_matrix[1,1]
+                if `svy' {
+                    estat cv
+                    mat results_matrix = r(cv)
+                    loc males_cv = results_matrix[1,1]
+                }
+                else {
+                    loc males_cv = (`males_stddev'/`males_mean') * 100
+                }
 
                 // Obtain percentage of zero scores for females in the subpopulation
                 `apply_svy' mean iszero if `female'==0
@@ -284,10 +302,14 @@ program define apply_analysis
                 estat sd
                 mat results_matrix = r(sd)
                 loc urban_stddev = results_matrix[1,1]
-                estat cv
-                mat results_matrix = r(cv)
-                loc urban_cv = results_matrix[1,1]
-
+                if `svy' {
+                    estat cv
+                    mat results_matrix = r(cv)
+                    loc urban_cv = results_matrix[1,1]
+                }
+                else {
+                    loc urban_cv = (`urban_stddev'/`urban_mean') * 100
+                }
                 // Obtain percentage of zero scores for urbanites in the subpopulation
                 `apply_svy' mean iszero if `urbanity'==1
                 mat results_matrix = r(table)
@@ -304,9 +326,14 @@ program define apply_analysis
                 estat sd
                 mat results_matrix = r(sd)
                 loc rural_stddev = results_matrix[1,1]
-                estat cv
-                mat results_matrix = r(cv)
-                loc rural_cv = results_matrix[1,1]
+                if `svy' {
+                    estat cv
+                    mat results_matrix = r(cv)
+                    loc rural_cv = results_matrix[1,1]
+                }
+                else {
+                    loc rural_cv = (`rural_stddev'/`rural_mean') * 100
+                }
 
                 // Obtain percentage of zero scores for ruralites in the subpopulation
                 `apply_svy' mean iszero if `urbanity'==0
@@ -342,6 +369,15 @@ program define apply_analysis
                     estat sd
                     mat results_matrix = r(sd)
                     loc ses_currstddev = results_matrix[1,1]
+                    if `svy' {
+                        estat cv
+                        mat results_matrix = r(cv)
+                        loc ses_currcv = results_matrix[1,1]
+                    }
+                    else {
+                        loc ses_currcv = (`ses_currstddev'/`ses_currmean') * 100
+                    }
+
                     estat cv
                     mat results_matrix = r(cv)
                     loc ses_currcv = results_matrix[1,1]
