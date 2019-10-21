@@ -113,10 +113,12 @@ Progress to date on calculating and exporting the necessary data:
 <a name="coefficientOfVariation">1</a>: N.B., per [Wikipedia](https://en.wikipedia.org/wiki/Coefficient_of_variation): only for use on data with a ratio scale. On an interval scale it is meaningless. Therefore usable for cwpm, but not usable for (e.g.) Uwezo-type data (which is categorical).
 > As a measure of economic inequality  
 The coefficient of variation fulfills the requirements for a measure of economic inequality.[18][19][20] If x (with entries xi) is a list of the values of an economic indicator (e.g. wealth), with xi being the wealth of agent i, then the following requirements are met:
-+ Anonymity – cv is independent of the ordering of the list x. This follows from the fact that the variance and mean are independent of the ordering of x.
-+ Scale invariance: cv(x)=cv(αx) where α is a real number.
-+ Population independence – If {x,x} is the list x appended to itself, then cv({x,x})=cv(x). This follows from the fact that the variance and mean both obey this principle.
-+ Pigou-Dalton transfer principle: when wealth is transferred from a wealthier agent i to a poorer agent j (i.e. xi > xj) without altering their rank, then cv decreases and vice versa.
-cv assumes its minimum value of zero for complete equality (all xi are equal). Its most notable drawback is that it is not bounded from above, so it cannot be normalized to be within a fixed range (e.g. like the Gini coefficient which is constrained to be between 0 and 1). It is, however, more mathematically tractable than the Gini Coefficient.
+> + Anonymity – cv is independent of the ordering of the list x. This follows from the fact that the variance and mean are independent of the ordering of x.
+> + Scale invariance: cv(x)=cv(αx) where α is a real number.
+> + Population independence – If {x,x} is the list x appended to itself, then cv({x,x})=cv(x). This follows from the fact that the variance and mean both obey this principle.
+> + Pigou-Dalton transfer principle: when wealth is transferred from a wealthier agent i to a poorer agent j (i.e. xi > xj) without altering their rank, then cv decreases and vice versa.
+> cv assumes its minimum value of zero for complete equality (all xi are equal). Its most notable drawback is that it is not bounded from above, so it cannot be normalized to be within a fixed range (e.g. like the Gini coefficient which is constrained to be between 0 and 1). It is, however, more mathematically tractable than the Gini Coefficient.
+
 <a name"="centilesAndWeighting">2</a>: Per [Stata](https://www.stata.com/support/faqs/statistics/percentiles-for-survey-data/), weighting only affects variance estimation, not point estimation of percentiles.
+
 <a name="inequalityDecomposition">3</a>: Many of the inequality decomposition packages (including [ineqdec0](), which is ideal b/c it tolerates zero-scores) do not support the application of survey weights. The [`lerman'](https://www.stata.com/meeting/portugal15/abstracts/materials/portugal15_damasio.pdf") package does, however I have been unable to trace the actual software. It appears that `svygei` will, however, accept `svyset`-derived weights and will also allow calculation of per-sub_population GE indices if we loop through and restrict the operative dataset to only those observations, so that is what we use for the moment.

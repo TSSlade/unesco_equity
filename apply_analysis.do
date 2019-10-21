@@ -1,6 +1,6 @@
 program define apply_analysis
     * syntax [varlist] [if] , over(varname) langlabel(string) resultsfile(string) [verbose(default=0) detail *]
-    syntax [varlist] [if] , DATAset(string) SUBpop_id(varname) RESultsfile(string) [ SPlabel(string) VARlabel(string) BENchmarks(varlist) URBanity(varname) FEMale(varname) SEStatus(varlist) VERbose(integer 0) DEBug(integer 0)]
+    syntax [varlist] [if] , DATAset(string) SUBpop_id(varname) RESultsfile(string) [ SVY(integer 1) SPlabel(string) VARlabel(string) BENchmarks(varlist) URBanity(varname) FEMale(varname) SEStatus(varlist) VERbose(integer 0) DEBug(integer 0)]
 
     // Assumptions
     // 'female' variable is coded 1 = female, 0 = male
@@ -12,7 +12,7 @@ program define apply_analysis
     if `verbose' ==1 {
         di `"`0'"'
     }
-    capture assert `:word count `varlist''==`:word count `varlabel''   // Verify we have the same number of labels as input vars
+    capture assert (`:word count `varlist''==`:word count `varlabel'') | `:word count `varlabel''==0   // Verify we have the same number of labels as input vars
     if _rc==9 {
         di "{p}You have not provided a variable label{p_end}{p}for each variable you wish to analyze.{p_end}"
         exit 9
@@ -24,6 +24,8 @@ program define apply_analysis
     // the file to hold the results (RESultsfile)
 
     // optionally:
+    loc apply_svy = cond(`svy' == 1, "svy:", " ") // Optionally applying survey weights
+    loc svy_suff = cond("`apply_svy'" != " ", substr("`apply_svy'",1,3), " ")
     loc by_fem = cond("`female'" != "", 1, 0)  // breakdown by sex (FEMale)
     loc by_bmark = cond("`benchmarks'" != "", 1, 0)  // breakdown by above/below benchmarks (BENchmarks) (possibly more than one)
     loc by_urban = cond("`urbanity'" != "", 1, 0)  // breakdown by urban / rural (URBanity)
@@ -41,7 +43,7 @@ program define apply_analysis
 
     // The variables we want for each of our observations (where each obs is a subpopulation)
     // Core variables: expect 15 of them
-    local coreVars "str20(dataset performance_measure) sub_pop_id str20(sub_pop_label measure_label) float(gini_wt p90 p10 ratio_p90p10 p75 p25 ratio_p75p25 ge_0 ge_1 ge_2 pct_zero)"
+    local coreVars "str20(dataset performance_measure) sub_pop_id str20(sub_pop_label measure_label) float(gini_wt subpop_mean subpop_coeffvar subpop_pct_zero p90 p10 ratio_p90p10 p75 p25 ratio_p75p25 ge_0 ge_1 ge_2)"
 
     * // Optional labeling of core variables: expect 2 of them, just blank if note supplied
     * if `label_measures' local measureLabelVars "measure_label"
@@ -51,11 +53,11 @@ program define apply_analysis
 
     // Optional additional breakdowns
     // femaleVars: expect 0 or 8 of them
-    if `by_fem' local femaleVars "females_mean females_stderr females_stddev females_pct_zero males_mean males_stderr males_stddev males_pct_zero"
+    if `by_fem' local femaleVars "females_mean females_stderr females_pval females_95cilow females_95cihigh females_cv females_stddev females_pct_zero males_mean males_stderr males_pval males_95cilow males_95cihigh males_cv males_stddev males_pct_zero"
     else loc femaleVars ""
 
     // urbanVars: expect 0 or 8 of them
-    if `by_urban' local urbanVars "urban_mean urban_stderr urban_stddev urban_pct_zero rural_mean rural_stderr rural_stddev rural_pct_zero"
+    if `by_urban' local urbanVars "urban_mean urban_stderr urban_pval urban_95cilow urban_95cihigh urban_cv urban_stddev urban_pct_zero rural_mean rural_stderr rural_pval rural_95cilow rural_95cihigh rural_cv rural_stddev rural_pct_zero"
     else loc urbanVars ""
 
     // benchmarkVars: expect 0 to N of them
@@ -74,7 +76,7 @@ program define apply_analysis
         local ses_grp_ct `: word count `sestatus''
         foreach s of num 1/`ses_grp_ct' {
             local ses_currvar `: word `s' of `sestatus''
-            local sesVars = "`sesVars' `ses_currvar'_mean `ses_currvar'_stderr `ses_currvar'_stddev `ses_currvar'_zero"
+            local sesVars = "`sesVars' `ses_currvar'_mean `ses_currvar'_stderr `ses_currvar'_cv `ses_currvar'_stddev `ses_currvar'_zero"
         }
     }
     else loc sesVars ""
@@ -123,7 +125,7 @@ program define apply_analysis
         else local curr_var "<none_given>"
 
         // Getting our survey-weighted Gini coefficient by subpopulation
-        pshare `v', over(`subpop_id') gini
+        pshare `v', over(`subpop_id') gini `svy_suff'
         mat gini = e(G)                             // Saving Gini coefficient matrix so we can iterate over it
         foreach j of num 1/`subpop_count' {             // Iterating through our subpopulations
             di as error "======||" "||======"
@@ -138,6 +140,14 @@ program define apply_analysis
             // Since the sublabel parameter was optional, we need to capture the case where nothing is provided
             if `label_subpops' loc sp_label `: word `j' of `splabel''
             else loc sp_label "<none_given>"
+
+            // To get mean and coefficient of variation
+            `apply_svy' mean `v'
+            mat results_matrix = r(table)
+            loc mean_perf = results_matrix[1,1]
+            estat cv
+            mat results_matrix = r(cv)
+            loc coeff_var = results_matrix[1,1]
 
             // To calculate our percentile ratios
             centile `v', centile(10 25 75 90)
@@ -158,11 +168,13 @@ program define apply_analysis
             tempvar iszero pct_zero
             gen iszero = 1 if `v'==0
             recode iszero (. = 0)
-            summ iszero
-            loc pct_zero = r(mean)
+            * summ iszero
+            `apply_svy' mean iszero
+            mat results_matrix = r(table)
+            loc pct_zero = results_matrix[1,1]
 
             // Store these core results to be concatenated into the final post after adding in any optional ones
-            loc coreResults "("`dataset'") ("`v'") (`j') ("`sp_label'") ("`curr_var'") (gini[`j',1]) (`p90') (`p10') (`ratio_p90p10') (`p75') (`p25') (`ratio_p75p25') (`ge_0') (`ge_1') (`ge_2') (`pct_zero')"
+            loc coreResults "("`dataset'") ("`v'") (`j') ("`sp_label'") ("`curr_var'") (gini[`j',1]) (`mean_perf') (`coeff_var') (`pct_zero') (`p90') (`p10') (`ratio_p90p10') (`p75') (`p25') (`ratio_p75p25') (`ge_0') (`ge_1') (`ge_2') "
             capture assert `: word count coreVars' == `: word count coreResults'
                 if !_rc==0 {
                     di "The program returned a different number of result placeholders and results."
@@ -175,27 +187,49 @@ program define apply_analysis
             if `by_fem' {
                 di as error "======|| Analysis over sex invoked!||======"
                 di as error "======" as result " [`v'], subpop [`j'], var [`female'] " as error "======"
+
                 // For females: obtain estimates of means (w std errors)
-                mean(`v') if `female'==1
-                mat females_matrix = r(table)
-                loc females_mean = females_matrix[1,1]
-                loc females_stderr = females_matrix[2,1]
-                summ `v' if `female'==1
-                loc females_stddev = r(sd)
+                `apply_svy' mean `v' if `female'==1
+                mat results_matrix = r(table)
+                loc females_mean = results_matrix[1,1]
+                loc females_stderr = results_matrix[2,1]
+                loc females_pval = results_matrix[4,1]
+                loc females_95cilow = results_matrix[5,1]
+                loc females_95cihigh = results_matrix[6,1]
+                estat sd
+                mat results_matrix = r(sd)
+                loc females_stddev = results_matrix[1,1]
+                estat cv
+                mat results_matrix = r(cv)
+                loc females_cv = results_matrix[1,1]
+
                 // Obtain percentage of zero scores for females in the subpopulation
-                summ iszero if `female'==1
-                loc females_pct_zero = r(mean)
+                `apply_svy' mean iszero if `female'==1
+                mat results_matrix = r(table)
+                loc females_pct_zero = results_matrix[1,1]
+
+
                 // For males: obtain estimates of means (w std errors)
-                mean(`v') if `female'==0
-                mat males_matrix = r(table)
-                loc males_mean = males_matrix[1,1]
-                loc males_stderr = males_matrix[2,1]
-                summ `v' if `female'==0
-                loc males_stddev = r(sd)
-                // Obtain percentage of zero scores for males in the subpopulation
-                summ iszero if `female'==0
-                loc males_pct_zero = r(mean)
-                loc femaleResults "(`females_mean') (`females_stderr') (`females_stddev') (`females_pct_zero') (`males_mean') (`males_stderr') (`females_stddev') (`males_pct_zero')"
+                `apply_svy' mean `v' if `female'==0
+                mat results_matrix = r(table)
+                loc males_mean = results_matrix[1,1]
+                loc males_stderr = results_matrix[2,1]
+                loc males_pval = results_matrix[4,1]
+                loc males_95cilow = results_matrix[5,1]
+                loc males_95cihigh = results_matrix[6,1]
+                estat sd
+                mat results_matrix = r(sd)
+                loc males_stddev = results_matrix[1,1]
+                estat cv
+                mat results_matrix = r(cv)
+                loc males_cv = results_matrix[1,1]
+
+                // Obtain percentage of zero scores for females in the subpopulation
+                `apply_svy' mean iszero if `female'==0
+                mat results_matrix = r(table)
+                loc males_pct_zero = results_matrix[1,1]
+
+                loc femaleResults "(`females_mean') (`females_stderr') (`females_pval') (`females_95cilow') (`females_95cihigh') (`females_cv') (`females_stddev') (`females_pct_zero') (`males_mean') (`males_stderr') (`males_pval') (`males_95cilow') (`males_95cihigh') (`males_cv') (`males_stddev') (`males_pct_zero')"
                 capture assert `: word count femaleVars' == `: word count femaleResults'
                 if !_rc==0 {
                     di "The program returned a different number of result placeholders and results."
@@ -210,6 +244,7 @@ program define apply_analysis
             if `by_bmark' {
                 di as error "======|| Analysis of benchmarks invoked!||======"
                 di as error "======" as result " [`v'], subpop [`j'], var(s) [`benchmarks'] " as error "======"
+
                 // There may be multiple levels of benchmarks, so we need to loop over the varlist
                 local benchmarkResults = ""
                 foreach b of num 1/`benchmark_ct' {
@@ -218,8 +253,9 @@ program define apply_analysis
                     di as error "======|| ||======"
                     di as error "======" as result "[`v'], subpop [`j'], b [`b'] benchmark [`bmark_currvar'] " as error "======"
                     di as result "Summarizing `bmark_currvar'!!"
-                    summ `bmark_currvar'
-                    loc `bmark_currvar'_pct = r(mean) // Since it's a boolean, mean of the boolean gives us percentage
+                    `apply_svy' mean `bmark_currvar' // Since it's a boolean, mean of the boolean gives us percentage
+                    mat results_matrix = r(table)
+                    loc `bmark_currvar'_pct = results_matrix[1,1]
                     local benchmarkResults = "`benchmarkResults' (``bmark_currvar'_pct')"
                     if `debug' pause
                 }
@@ -237,24 +273,47 @@ program define apply_analysis
             if `by_urban' {
                 di as error "======|| Analysis of urbanity invoked!||======"
                 di as error "======" as result " [`v'], subpop [`j'], var [`urbanity'] " as error "======"
-                mean(`v') if `urbanity'==1
-                mat urban_matrix = r(table)
-                loc urban_mean = urban_matrix[1,1]
-                loc urban_stderr = urban_matrix[2,1]
-                summ `v' if `urbanity'==1
-                loc urban_stddev = r(sd)
-                summ iszero if `urbanity'==1
-                loc urban_pct_zero = r(mean)
+
+                `apply_svy' mean `v' if `urbanity'==1
+                mat results_matrix = r(table)
+                loc urban_mean = results_matrix[1,1]
+                loc urban_stderr = results_matrix[2,1]
+                loc urban_pval = results_matrix[4,1]
+                loc urban_95cilow = results_matrix[5,1]
+                loc urban_95cihigh = results_matrix[6,1]
+                estat sd
+                mat results_matrix = r(sd)
+                loc urban_stddev = results_matrix[1,1]
+                estat cv
+                mat results_matrix = r(cv)
+                loc urban_cv = results_matrix[1,1]
+
+                // Obtain percentage of zero scores for urbanites in the subpopulation
+                `apply_svy' mean iszero if `urbanity'==1
+                mat results_matrix = r(table)
+                loc urban_pct_zero = results_matrix[1,1]
+
                 // For rural
-                mean(`v') if `urbanity'==0
-                mat rural_matrix = r(table)
-                loc rural_mean = urban_matrix[1,1]
-                loc rural_stderr = urban_matrix[2,1]
-                summ `v' if `urbanity'==0
-                loc rural_stddev = r(sd)
-                summ iszero if `urbanity'==0
-                loc rural_pct_zero = r(mean)
-                loc urbanityResults "(`urban_mean') (`urban_stderr') (`urban_stddev') (`urban_pct_zero') (`rural_mean') (`rural_stderr') (`rural_stddev') (`rural_pct_zero')"
+                `apply_svy' mean `v' if `urbanity'==0
+                mat results_matrix = r(table)
+                loc rural_mean = results_matrix[1,1]
+                loc rural_stderr = results_matrix[2,1]
+                loc rural_pval = results_matrix[4,1]
+                loc rural_95cilow = results_matrix[5,1]
+                loc rural_95cihigh = results_matrix[6,1]
+                estat sd
+                mat results_matrix = r(sd)
+                loc rural_stddev = results_matrix[1,1]
+                estat cv
+                mat results_matrix = r(cv)
+                loc rural_cv = results_matrix[1,1]
+
+                // Obtain percentage of zero scores for ruralites in the subpopulation
+                `apply_svy' mean iszero if `urbanity'==0
+                mat results_matrix = r(table)
+                loc rural_pct_zero = results_matrix[1,1]
+
+                loc urbanityResults "(`urban_mean') (`urban_stderr') (`urban_pval') (`urban_95cilow') (`urban_95cihigh') (`urban_cv') (`urban_stddev') (`urban_pct_zero') (`rural_mean') (`rural_stderr') (`rural_pval') (`rural_95cilow') (`rural_95cihigh') (`rural_cv') (`rural_stddev') (`rural_pct_zero')"
                 capture assert `: word count urbanityVars' == `: word count urbanityResults'
                 if !_rc==0 {
                     di "The program returned a different number of result placeholders and results."
@@ -271,15 +330,26 @@ program define apply_analysis
                 local sesResults = ""
                 foreach `s' of num 1/`ses_cut_ct' {
                     loc ses_currvar `: word `s' of `sestatus''
-                    mean(`v') if `ses_currvar'==1
-                    mat ses_mat = r(table)
-                    loc ses_currmean = ses_mat[1,1]
-                    loc ses_currstderr = ses_mat[2,1]
-                    summ `v' if `ses_currvar'==1
-                    loc ses_currstddev = r(sd)
-                    summ iszero if `ses_currvar'==1
-                    loc ses_currpct_zero = r(mean)
-                    loc sesResults = "`sesResults' (`ses_currmean') (`ses_currstderr') (`ses_currstddev') (`ses_currpct_zero')"
+
+
+                    `apply_svy' mean `v' if `ses_currvar'==1
+                    mat results_matrix = r(table)
+                    loc ses_currmean = results_matrix[1,1]
+                    loc ses_currstderr = results_matrix[2,1]
+                    loc ses_currpval = results_matrix[4,1]
+                    loc ses_curr95cilow = results_matrix[5,1]
+                    loc ses_curr95cihigh = results_matrix[6,1]
+                    estat sd
+                    mat results_matrix = r(sd)
+                    loc ses_currstddev = results_matrix[1,1]
+                    estat cv
+                    mat results_matrix = r(cv)
+                    loc ses_currcv = results_matrix[1,1]
+
+                    `apply_svy' mean iszero if `ses_currvar'==1
+                    mat results_matrix = r(table)
+                    loc ses_currpct_zero = results_matrix[1,1]
+                    loc sesResults = "`sesResults' (`ses_currmean') (`ses_currstderr') (`ses_currpval') (`ses_curr95cilow') (`ses_curr95cihigh') (`ses_currcv') (`ses_currstddev') (`ses_currpct_zero')"
                 }
                 capture assert `: word count sesVars' == `: word count sesResults'
                 if !_rc==0 {

@@ -80,15 +80,15 @@ svyset
 
 // Super-granular analyses by subpopulation with additional parameters
 // Student-level data
-apply_analysis eng_orf kis_orf, data("tusome") sub(sub_pops) res("tusome_inequalities_student") spl(`subpop_names') var(`langs') ben(eng_bmark_low eng_bmark_high kis_bmark_low kis_bmark_high) fem(female) ver(1)
+quietly: apply_analysis eng_orf kis_orf, data("tusome") sub(sub_pops) res("tusome_inequalities_student") spl(`subpop_names') var(`langs') ben(eng_bmark_low eng_bmark_high kis_bmark_low kis_bmark_high) fem(female) ver(0)
 // School-level data
-apply_analysis schl_eng_orf schl_kis_orf, data("tusome_schools") sub(sub_pops) res("tusome_inequalities_schools") spl(`subpop_names') var(`langs') ben(eng_bmark_low eng_bmark_high kis_bmark_low kis_bmark_high) fem(female) ver(1)
+quietly: apply_analysis schl_eng_orf schl_kis_orf, data("tusome_schools") sub(sub_pops) res("tusome_inequalities_schools") spl(`subpop_names') var(`langs') ben(eng_bmark_low eng_bmark_high kis_bmark_low kis_bmark_high) fem(female) ver(0)
 
 // Student-level data by gender
-apply_analysis eng_orf kis_orf, data ("tusome_gender_only") sub(female) res("tusome_gender_only")
+quietly: apply_analysis eng_orf kis_orf, data("tusome_gender_only") sub(female) res("tusome_gender_only")
 
 // School-level data by gender
-apply_analysis schl_eng_orf schl_kis_orf, data ("tusome_gender_only") sub(female) res("tusome_gender_only")
+quietly: apply_analysis schl_eng_orf schl_kis_orf, data("tusome_gender_only") sub(female) res("tusome_gender_only")
 
 /***********************************************
 **************** PRIMR Section *****************
