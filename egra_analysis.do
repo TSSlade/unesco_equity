@@ -62,12 +62,22 @@ gen kis_bmark_low = 0
 gen kis_bmark_high = 0
 
 // Applying Low
-recode eng_bmark_low (0 = 1) if ((grade==1 & eng_orf >= `eng1_low') & (grade==1 & eng_orf <= `eng1_high'))
-recode kis_bmark_low (0 = 1) if ((grade==1 & kis_orf >= `kis1_low') & (grade==1 & kis_orf <= `kis1_high'))
+recode eng_bmark_low (0 = 1) if ((grade==1 & eng_orf >= `eng1_low') & (grade==1 & eng_orf < `eng1_high'))
+recode kis_bmark_low (0 = 1) if ((grade==1 & kis_orf >= `kis1_low') & (grade==1 & kis_orf < `kis1_high'))
 
 // Applying High
 recode eng_bmark_high (0 = 1) if (grade==1 & eng_orf >= `eng1_high')
 recode kis_bmark_high (0 = 1) if (grade==1 & kis_orf >= `kis1_high')
+
+label define lbl_ebmark_low 0 "<`eng1_low'" 1 ">=`eng1_low' <`eng1_high'"
+label define lbl_ebmark_high 0 "" 1 ">`eng1_high'"
+label define lbl_kbmark_low 0 "<`kis1_low'" 1 ">=`kis1_low' < `kis1_high'"
+label define lbl_kbmark_high 0 "" 1 ">`kis1_high'"
+
+label val eng_bmark_low lbl_ebmark_low
+label val eng_bmark_high lbl_ebmark_high
+label val kis_bmark_low lbl_kbmark_low
+label val kis_bmark_high lbl_kbmark_high
 
 // To do between- and within-school calculations
 egen schl_eng_orf = mean(eng_orf), by(sub_pops school_code)
@@ -79,15 +89,11 @@ svyset
 
 // Super-granular analyses by subpopulation with additional parameters
 // Student-level data
-quietly: apply_analysis eng_orf kis_orf, data("tusome") sub(sub_pops) res("tusome_inequalities_student") spl(`subpop_names') var(`langs') ben(eng_bmark_low eng_bmark_high kis_bmark_low kis_bmark_high) fem(female) ver(0)
-// School-level data
-quietly: apply_analysis schl_eng_orf schl_kis_orf, data("tusome_schools") sub(sub_pops) res("tusome_inequalities_schools") spl(`subpop_names') var(`langs') ben(eng_bmark_low eng_bmark_high kis_bmark_low kis_bmark_high) fem(female) ver(0)
 
-// Student-level data by gender
-quietly: apply_analysis eng_orf kis_orf, data("tusome_gender_only") sub(female) res("tusome_gender_only")
-
-// School-level data by gender
-quietly: apply_analysis schl_eng_orf schl_kis_orf, data("tusome_gender_only") sub(female) res("tusome_gender_only")
+quietly: apply_analysis eng_orf kis_orf, data("tusome") core(treat_phase grade) res("tusome_core") svy(1) varlabel("English Kiswahili") ver(1)
+quietly: apply_analysis eng_orf kis_orf, data("tusome") core(treat_phase grade female) res("tusome_bysex") svy(1) varlabel("English Kiswahili") ver(1)
+quietly: apply_analysis eng_orf kis_orf, data("tusome") core(treat_phase grade eng_bmark*) res("tusome_engbmarks") svy(1) varlabel("English Kiswahili") ver(1)
+quietly: apply_analysis eng_orf kis_orf, data("tusome") core(treat_phase grade kis_bmark*) res("tusome_kisbmarks") svy(1) varlabel("English Kiswahili") ver(1)
 
 /***********************************************
 **************** PRIMR Section *****************
