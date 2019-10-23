@@ -36,7 +36,7 @@ program define apply_analysis
         di as error "These are the resultant core subpopulations:"
         foreach sp of loc core_pops_ct {
             * di as result "`: word `sp' of `core_pops_id': `: word `sp' of `core_pops_lbls'"
-            di as result "`: word `sp' of `core_pops_id'"
+            di as result "`: word `sp' of `core_pops_id''"
         }
         if `extended_sps' {
             di as error "These were the variables provided to define extended subpopulations of interest:"
@@ -70,9 +70,9 @@ program define apply_analysis
         loc total_pops_ct += `ext_pops_ct'
     }
 
-    loc pv = 1                       // We want to be able to track our iteration so we can pull in a user-friendly name for the language variable
+    loc pv = 1                      // We want to be able to track our iteration so we can pull in a user-friendly name for the language variable
     gen iszero = .
-    gen ingroup = .
+    gen ingroup = .                 // Several of the functions' over() options only work with a binary in/out variable
 
     // Looping over the performance measures we were given
     foreach v of loc varlist {
@@ -86,7 +86,7 @@ program define apply_analysis
 
         // Initial loop for the core pops
         // Mean, Standard Error, 95CIs for means
-        `apply_svy' mean `v', over(core_pops)
+        `apply_svy' mean `v', over(core_pops) // mean, over() works well with multiple subgroups
         mat mean_results = r(table)
         foreach mr of loc core_pops_id {
             loc mean_sp`mr' = mean_results[1, `mr']
@@ -142,7 +142,7 @@ program define apply_analysis
 
             // To get our generalized entropy estimates
             replace ingroup = 1 if core_pops==`id'
-                svygei `v', subpop(ingroup)
+                svygei `v', subpop(ingroup)         // svygei's subpop takes only in/out
                 loc ge0_sp`id' = e(ge0)
                 loc ge1_sp`id' = e(ge1)
                 loc ge2_sp`id' = e(ge2)
@@ -160,13 +160,13 @@ program define apply_analysis
                 loc ge0_95cih_sp`id' = `ge0_sp`id'' + `95ci_width_ge0_sp`id''
                 loc ge1_95cih_sp`id' = `ge1_sp`id'' + `95ci_width_ge1_sp`id''
                 loc ge2_95cih_sp`id' = `ge2_sp`id'' + `95ci_width_ge2_sp`id''
-            replace ingroup = 0
+            * replace ingroup = 0
 
             // To get our zero-score reporting
             replace iszero = 1 if `v'==0
             recode iszero (. = 0)
 
-            `apply_svy' mean iszero
+            `apply_svy' mean iszero if ingroup
             mat results_matrix = r(table)
             loc pct_zero_sp`id' = results_matrix[1,1]
 
