@@ -163,7 +163,7 @@ program define apply_analysis
             }
             capture `verbosity' {
                 if `debug' noisily di as error "Summarizing to get percentiles"
-                summ `v' if core_pops==`id', detail
+                summ `v' if core_pops==`id', detail         // Will throw an error code of zero (none) if subpop all missing
                 mat summ_counts = e(N_sub)
                 // We capture percentiles here - in the absence of weights - because none of the
                 // options below will accept weights PROPERLY (as pweight rather than aweight) while
@@ -194,14 +194,22 @@ program define apply_analysis
                     loc gini_sp`id' = gini_result[1,1]
                 }
             }
-            if _rc==2000 {
-                di as error "{p}While working on [`v']{p_end}{p}Encountered subgroup with obs count of 0{p_end}"
-                di ""
-                di "Summary counts:"
+            if inlist(_rc, 2000) {
+                loc code = _rc
+                di as result "Summary counts for [`v'] and [`id']:"
                 mat list summ_counts
-                di "Generalized Entropy Index counts:"
+                di as result "Generalized Entropy Index counts:"
                 mat list gei_counts
+                if `code' == 2000 di as error "{p}While working on percentile and Gini calculations for [`v'] and [`id'] encountered only zero values for the performance measure{p_end} (i.e., _rc = `code')"
+                loc gini_sp`id' = .
             }
+            if inlist(_rc, 461) {
+                loc code = _rc
+                if `code' == 461 di as error "{p}While working on percentile and Gini calculations for [`v'] and [`id'] encountered only missing values for the performance measure{p_end}"
+                loc gini_sp`id' = .
+            }
+
+
             else if _rc != 0 {
                 loc code = _rc
                 di as error "Another error arose while calculating{p}percentiles and Gini coefficients for [`v'] and [`id']{p_end}"

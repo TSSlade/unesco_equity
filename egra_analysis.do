@@ -91,7 +91,7 @@ label define lbl_kbmark 0 "[kis_orf < `kis1_low'] " 1 "[kis_orf >=`kis1_low' <`k
 label val kis_bmark lbl_kbmark
 
 save "tusome_unesco.dta", replace
-use "tusome_unesco.dta", replace
+use "tusome_unesco.dta", clear
 svyset
 
 // Super-granular analyses by subpopulation with additional parameters
