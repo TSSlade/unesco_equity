@@ -191,6 +191,7 @@ program define apply_analysis
 
                     pshare `v' if core_pops==`id', gini
                     mat gini_result = e(G)
+                    * mat gini_counts = e(N_sub) // Does not exist for unweighted pshare
                     loc gini_sp`id' = gini_result[1,1]
                 }
             }
@@ -198,8 +199,6 @@ program define apply_analysis
                 loc code = _rc
                 di as result "Summary counts for [`v'] and [`id']:"
                 mat list summ_counts
-                di as result "Generalized Entropy Index counts:"
-                mat list gei_counts
                 if `code' == 2000 di as error "{p}While working on percentile and Gini calculations for [`v'] and [`id'] encountered only zero values for the performance measure{p_end} (i.e., _rc = `code')"
                 loc gini_sp`id' = .
             }
@@ -262,12 +261,10 @@ program define apply_analysis
                         loc ge2_95ci_span_sp`id' = gem_result[5,4]
                         loc ge2_95cil_sp`id' = (`ge2_sp`id'' + `ge2_95ci_span_sp`id'')
                         loc ge2_95cih_sp`id' = (`ge2_sp`id'' - `ge2_95ci_span_sp`id'')
-
                     }
             }
             if _rc==2000 {
                 di as error "{p}While working on [`v'] and [`id']{p_end} encountered subgroup where the scores cannot support the calculation requested{p}GEI counts were{p_end}"
-                mat list gei_counts
             }
             else if _rc != 0 {
                 loc code = _rc
