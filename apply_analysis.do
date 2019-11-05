@@ -65,7 +65,7 @@ program define apply_analysis
     // Core variables: expect 31 of them
     local coreVars "str20(dataset performance_measure measure_label) weighted str60(subpop_label) subpop_id float(mean mean_95cil mean_95cih se sd cv pct_zero p90 p10 ratio_p90p10 p75 p25 ratio_p75p25 gini)"
     if `zerosinentropy' {
-        local entropyVars "ge2 between_ge2 within_ge2"
+        local entropyVars "ge2_overall ge2_ingroup ge2_outgroup between_ge2 within_ge2"
         di as error "Because we are retaining the zeros for our entropy calculations, our output vars will be [`entropyVars']"
     }
     else {
@@ -73,7 +73,22 @@ program define apply_analysis
         di as error "Because we are NOT retaining the zeros for our entropy calculations, our output vars will be [`entropyVars']"
     }
 
-    local varsOfInterest `" `coreVars' `entropyVars' "'
+    local subpopct: word count `core'
+    local subpopVars = " "
+    foreach c of var `core' {
+        capture confirm str var `c'
+        if !_rc {
+            di as error "Var `c' is `: type `c''"
+            local subpopVars "`subpopVars' str20(`c')"
+            * pause "Verify..."
+        }
+        else {
+            di as error "Var `c' is numeric"
+            local subpopVars "`subpopVars' `c'"
+        }
+    }
+
+    local varsOfInterest `" `coreVars' `subpopVars' `entropyVars' "'
 
     // This is where we actually define the postfile to hold our results
     postfile `postRes' `varsOfInterest' using `results'
@@ -228,9 +243,11 @@ program define apply_analysis
                     // inaccurately (as aweights, not pweights) and therefore standard errors
                     // and confidence intervals should not be trusted. Nor should Gini coefficients,
                     // which the package could also provide.
-                        di as error "Deriving GEs using ineqdec0"
+                        di as error "Deriving GEs using ineqdec0 b/c we need to retain zero scores"
                         ineqdec0 `v' [aweight=`wtvar'], bygroup(ingroup)
-                        loc ge2_sp`id' = r(ge2_1)
+                        loc ge2_overall = r(ge2)
+                        loc ge2_sp`id'_ingroup = r(ge2_1)
+                        loc ge2_sp`id'_outgroup = r(ge2_0)
                         loc between_ge2_sp`id' = r(between_ge2)
                         loc within_ge2_sp`id' = r(within_ge2)
                     }
@@ -238,7 +255,7 @@ program define apply_analysis
                     // If we are NOT retaining the zeros, this enables us to get generalized entropy
                     // class with parameters -1, 0, 1, and 2 while ALSO applying weights properly.
                     // So here we can report standard errors, confidence intervals, etc.
-                        di as error "Deriving GEs using svygei"
+                        di as error "Deriving GEs using svygei b/c we can discard zero scores and we want 95CIs"
                         svygei `v', sub(ingroup)
                         mat gem_result = r(table)
                         loc gem1_sp`id' = e(gem1)
@@ -294,6 +311,20 @@ program define apply_analysis
                 di as error "Another error arose while calculating"
                 di as error "{p}means{p_end}{p}std_errors{p_end}{p}std_devs{p_end}{p}coeff_vars{p_end}"
             }
+
+            loc subpopResults_`id' = ""
+            foreach s of num 1/`subpopct' {
+                loc varToPopulate "`: word `s' of `core''"
+                levelsof `varToPopulate' if core_pops==`id', loc(toWrite)
+                loc subpopResult_`s'_sp`id' = `toWrite'
+                capture confirm str var `varToPopulate'
+                if !_rc  {
+                    loc subpopResults_`id' = `"`subpopResults_`id'' ("`subpopResult_`s'_sp`id''") "'
+                }
+                else {
+                    loc subpopResults_`id' = `"`subpopResults_`id'' (`subpopResult_`s'_sp`id'') "'
+                }
+            }
         }
 
         // Sending data to our postfile
@@ -305,13 +336,13 @@ program define apply_analysis
             // Store these core results to be concatenated into the final post after adding in any optional ones
             loc coreResults " ("`dataset'") ("`performance_measure'") ("`measure_label'") (`svy') ("`subpop_label'") (`id') (`mean_sp`id'') (`mean_95cil_sp`id'') (`mean_95cih_sp`id'') (`se_sp`id'') (`sd_sp`id'') (`cv_sp`id'') (`pct_zero_sp`id'') (`p90_sp`id'') (`p10_sp`id'') (`ratio_p90p10_sp`id'') (`p75_sp`id'') (`p25_sp`id'') (`ratio_p75p25_sp`id'') (`gini_sp`id'') "
             if `zerosinentropy' {
-                loc entropyResults "(`ge2_sp`id'') (`between_ge2_sp`id'') (`within_ge2_sp`id'')"
+                loc entropyResults "(`ge2_overall') (`ge2_sp`id'_ingroup') (`ge2_sp`id'_outgroup') (`between_ge2_sp`id'') (`within_ge2_sp`id'')"
             }
             else {
-                loc entropyResults " (`gem1_sp_`id'') (`ge0_sp_`id'') (`ge1_sp_`id'') (`ge2_sp_`id'') (`gem1_se_sp_`id'') (`ge0_se_sp_`id'') (`ge1_se_sp_`id'') (`ge2_se_sp_`id'') (`gem1_95cil_sp_`id'') (`gem1_95cih_sp_`id'') (`ge0_95cil_sp_`id'') (`ge0_95cih_sp_`id'') (`ge1_95cil_sp_`id'') (`ge1_95cih_sp_`id'') (`ge2_95cil_sp_`id'') (`ge2_95cih_sp_`id'') "
+                loc entropyResults " (`gem1_sp_`id'') (`ge0_sp_`id'') (`ge1_sp_`id'') (`ge2_overall') (`ge2_sp_`id'_ingroup') (`ge2_sp_`id'_outgroup') (`gem1_se_sp_`id'') (`ge0_se_sp_`id'') (`ge1_se_sp_`id'') (`ge2_se_sp_`id'') (`gem1_95cil_sp_`id'') (`gem1_95cih_sp_`id'') (`ge0_95cil_sp_`id'') (`ge0_95cih_sp_`id'') (`ge1_95cil_sp_`id'') (`ge1_95cih_sp_`id'') (`ge2_95cil_sp_`id'') (`ge2_95cih_sp_`id'') "
             }
 
-            loc resultsOfInterest = `" `coreResults' `entropyResults' "'
+            loc resultsOfInterest = `" `coreResults' `subpopResults_`id'' `entropyResults'"'
             loc output_tbshoot = subinstr(`"`varsOfInterest'"', "str20", "", .)
             loc output_tbshoot = subinstr(`"`output_tbshoot'"', "str60", "", .)
             loc output_tbshoot = subinstr(`"`output_tbshoot'"', "(", "", .)
@@ -346,11 +377,32 @@ program define apply_analysis
         loc pv `++pv'
     }
 
+set trace on
+foreach c of var `core' {
+    capture confirm str var `c'
+    if _rc != 0 {
+        label save `: value label `c'' using labels_`c', replace
+    }
+}
+
 postclose `postRes'
 preserve
 use `results', clear
+
+* foreach c of var `core' {
+*     label val `c' lbl_`c'_copy
+* }
+foreach c of var `core' {
+    capture confirm str var `c'
+    if _rc != 0 {
+        do labels_`c'.do
+        label val `c' lbl_`c'
+    }
+}
+set trace off
 `verbosity' di "Find results in `:pwd' at `target'"
 save `target'.dta, replace
+* pause "Check appropriately labeled..."
 restore
 drop core_pops iszero ingroup
 capture drop ext_pops
