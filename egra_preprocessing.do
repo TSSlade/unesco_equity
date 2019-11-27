@@ -90,6 +90,9 @@ label val eng_bmark lbl_ebmark
 label define lbl_kbmark 0 "[kis_orf < `kis1_low'] " 1 "[kis_orf >=`kis1_low' <`kis1_high']" 2 "[kis_orf >`kis1_high']"
 label val kis_bmark lbl_kbmark
 
+// Consider destringing any variables you would use for the grouping
+destring treat_phase grade female eng_bmark kis_bmark school_code, replace
+
 save "tusome_unesco.dta", replace
 use "tusome_unesco.dta", clear
 svyset
@@ -125,8 +128,6 @@ clonevar eng_orf = eq_orf
 clonevar kis_orf = k_eq_orf
 loc langs "English Kiswahili"
 
-save "primr_unesco.dta", replace
-
 // This is ANACHRONISTICALLY applying Tusome-era benchmarks to PRIMR.
 // These did not exist during PRIMR.
 
@@ -151,6 +152,13 @@ label val eng_bmark lbl_ebmark
 label define lbl_kbmark 0 "[kis_orf < `kis1_low'] " 1 "[kis_orf >=`kis1_low' <`kis1_high']" 2 "[kis_orf >`kis1_high']"
 label val kis_bmark lbl_kbmark
 
+// Consider destringing any variables you would use for the grouping
+destring treat_phase cohort treatment grade female eng_bmark kis_bmark school_code, replace
+
+save "primr_unesco.dta", replace
+use "primr_unesco.dta", clear
+svyset
+
 // Student-level data
 quietly: apply_analysis eng_orf kis_orf, data("primr") core(treat_phase cohort treatment grade) res("primr_core") svy(1) wt(wt_final) varlabel("English Kiswahili") ver(0) deb(0)
 quietly: apply_analysis eng_orf kis_orf, data("primr") core(treat_phase cohort treatment grade female) res("primr_bysex") svy(1) wt(wt_final) varlabel("English Kiswahili") ver(0) deb(0)
@@ -167,7 +175,7 @@ foreach dt of loc dataset_types {
     export excel "bins/inequality_results_$c_datetime.xlsx", sh(`dt') firstrow(var) sheetmod
 }
 
-use "tusome_inequalities.dta", clear
-append using "primr_inequalities.dta"
+* use "tusome_inequalities.dta", clear
+* append using "primr_inequalities.dta"
 
-export excel "bins/inequality_results.xlsx", sh("$c_datetime") firstrow(var) sheetmod
+* export excel "bins/inequality_results.xlsx", sh("$c_datetime") firstrow(var) sheetmod
