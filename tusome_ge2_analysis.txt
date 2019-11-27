@@ -1,0 +1,34 @@
+The _Generalized Entropy Index_ (GE) is a measure of inequality in a population. Rather than considering income, however, in our analysis we look at learning outcomes as represented by oral reading fluency scores in English and Kiswahili.
+
+GE is parametrized by $\alpha$. When using these EGRA data, zero-scores (children who were unable to read a single word) are prevalent. It is therefore necessary to use a version of the GE function that does not discard zero-valued inputs (as is the case with GE(0), GE(1), GE(-1)). We therefore applied GE(2), which is equivalent to half the squared coefficient of variation.<sup id="a_ge2">[1](#f_ge2)</sup>
+
+GE(2) can be additively decomposed into _within-group_ and _between-group_ inequality. The table below shows the GE(2) for the simplest supopulations within the Tusome EGRA data, specified by `grade` (1 or 2), `round` (baseline or midline), and `language` (English or Kiswahili).
+
+~~~~
+<<dd_do>>
+. groups comparison round ge2 between_ge2 within_ge2
+<</dd_do>>
+~~~~
+
+We can make several observations.
+
+1. Within-group inequality is always substantially greater than between-group inequality. (This is expected.)
+1. In grade 1, between-group inequality is **reduced** from baseline to midline.
+1. By contrast, in grade 2, between-group inequality is **increased** from baseline to midline.
+1. Within grades, between-group inequality is usually greater for English than it is for Kiswahili. The exception is at midline for grade 2, where there is slightly more between-group inequality for Kiswahili than for English.
+
+~~~~
+<<dd_do>>
+local c1 = "dknavy"
+local c2 = "maroon"
+local c3 = "ltblue"
+local c4 = "red"
+
+twoway (scatter between_ge2 within_ge2 if comparison==0, msymbol(Oh) mcolor(`c0')) ///
+       (scatter between_ge2 within_ge2 if comparison==1, msymbol(Oh) mcolor(`c1')) ///
+       (scatter between_ge2 within_ge2 if comparison==2, msymbol(Oh) mcolor(`c2')) ///
+       (scatter between_ge2 within_ge2 if comparison==3, msymbol(Oh) mcolor(`c3')) ///
+       (scatter between_ge2 within_ge2 if comparison==4, msymbol(Oh) mcolor(`c4')) ///
+<</dd_do>>
+
+<a id="ge2">1:</a> <small> https://en.wikipedia.org/wiki/Generalized_entropy_index </small>[↩](#a_ge2)

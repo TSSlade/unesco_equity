@@ -1,0 +1,21 @@
+<p>The <em>Generalized Entropy Index</em> (GE) is a measure of inequality in a population. Rather than considering income, however, in our analysis we look at learning outcomes as represented by oral reading fluency scores in English and Kiswahili.</p>
+<p>GE is parametrized by $\alpha$. When using these EGRA data, zero-scores (children who were unable to read a single word) are prevalent. It is therefore necessary to use a version of the GE function that does not discard zero-valued inputs (as is the case with GE(0), GE(1), GE(-1)). We therefore applied GE(2), which is equivalent to half the squared coefficient of variation.<sup id="a_ge2"><a href="#f_ge2">1</a></sup></p>
+<p>GE(2) can be additively decomposed into <em>within-group</em> and <em>between-group</em> inequality. The table below shows the GE(2) for various groups within the Tusome EGRA data.</p>
+<pre><code>. . groups comparison round ge2 between_ge2 within_ge2
+
+  +----------------------------------------------------------------------------------------------+
+  |                     comparison      round        ge2   betwee~2   within~2   Freq.   Percent |
+  |----------------------------------------------------------------------------------------------|
+  |   Gr1_English_Baseline-Midline   Baseline   1.355761   .0585331   .5852704       1     12.50 |
+  |   Gr1_English_Baseline-Midline    Midline   .5825602   .0012441   .6425594       1     12.50 |
+  | Gr1_Kiswahili_Baseline-Midline   Baseline   2.014604   .0714332   .6385575       1     12.50 |
+  | Gr1_Kiswahili_Baseline-Midline    Midline   .7527171   .0016116   .7083792       1     12.50 |
+  |   Gr2_English_Baseline-Midline   Baseline   .6794638   .0001834   .6436201       1     12.50 |
+  |----------------------------------------------------------------------------------------------|
+  |   Gr2_English_Baseline-Midline    Midline   .2423943   .0916266    .552177       1     12.50 |
+  | Gr1_Kiswahili_Baseline-Midline   Baseline   .6774765   .0000186   .7099721       1     12.50 |
+  | Gr1_Kiswahili_Baseline-Midline    Midline   .2476233   .1010561   .6089346       1     12.50 |
+  +----------------------------------------------------------------------------------------------+
+
+</code></pre>
+<p>More stuff down here?</p>
