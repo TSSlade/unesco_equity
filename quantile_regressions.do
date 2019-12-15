@@ -1,3 +1,4 @@
+set autotabgraphs on
 pause on
 // Stack our tusome and primr datasets
 use "C:\Dropbox\BerkeleyMIDS\projects\unesco_chapter\primr_core.dta", clear
@@ -114,3 +115,81 @@ order *, alphabetic
 order dataset match_key subpop_label_ref subpop_label_com grade cohort measure_label
 
 export excel "C:\Dropbox\BerkeleyMIDS\projects\unesco_chapter\quantile_regressions.xlsx", sh(quantiles) sheetmod first(var)
+
+
+
+program define make_qreg_scatters
+    syntax , Yvar(var) Xvar(var) EQuality(var) [High(var) Low(var) XRange(string) YRange(string)]
+
+    twoway scatter `Yvar' `Xvar'  || ///
+        scatter `EQuality' `Xvar' || ///
+               qfit `High' `Xvar' || ///
+               qfit `Low' `Xvar',    ///
+               xscale(range(`XRange')) ///
+               yscale(range(`YRange')) ///
+               xlabel(`XRange', nogrid) ///
+               ylabel(`YRange', nogrid) ///
+               aspect(1)
+end
+
+
+
+clonevar mean_line_of_equality = mean_ref
+clonevar cv_line_of_equality = cv_ref
+clonevar pct_zero_line_of_equality = pct_zero_ref
+
+
+loc gini_plot       = `" gini_com gini_ref gini_line_of_equality gini_line_at_85 gini_line_at_15 "0.3(0.1)1" "0.3(0.1)1" "'
+loc gini_plot_labels = `" "Gini Coefficient at t_0" "Gini Coefficient at t_1" "'
+loc gini_plot_title = `" "Change in Gini coefficient" "over time, with lines of regression" "'
+loc gini_plot_legend = `" label(4 "Gini") label(1 "Line of Equality") label(2 "p85 regression") label(3 "p15 regression") "'
+
+loc mean_plot       = `" mean_com mean_ref mean_line_of_equality mean_line_at_85 mean_line_at_15 "0(10)70" "0(10)70" "'
+loc mean_plot_labels = `" "Mean ORF (cwpm) at t_0" "Mean ORF (cwpm) at t_1" "'
+loc mean_plot_title = `" "Change in Mean ORF (cwpm)" "over time, with lines of regression" "'
+loc mean_plot_legend = `" label(4 "Mean ORF") label(1 "Line of Equality") label(2 "p85 regression") label(3 "p15 regression") "'
+
+loc cv_plot         = `" cv_com cv_ref cv_line_of_equality cv_line_at_85 cv_line_at_15 "0(4)20" "0(4)20" "'
+loc cv_plot_labels = `" "Coefficient of Variation at t_0" "Coefficient of Variation at t_1" "'
+loc cv_plot_title = `" "Change in Coefficient of Variation (%)" "over time, with lines of regression" "'
+loc cv_plot_legend = `" label(4 "Coefficient of Variation") label(1 "Line of Equality") label(2 "p85 regression") label(3 "p15 regression") "'
+
+loc pct_zero_plot   = `" pct_zero_com pct_zero_ref pct_zero_line_of_equality pct_zero_line_at_85 pct_zero_line_at_15 "0(.1).70" "0(.1).70" "'
+loc pct_zero_plot_labels = `" "Percentage of Zero Scores at t_0" "Percentage of Zero Scores at t_1" "'
+loc pct_zero_plot_title = `" "Change in Percentage of Zero Scores (%)" "over time, with lines of regression" "'
+loc pct_zero_plot_legend = `" label(4 "Pct Zero Scores") label(1 "Line of Equality") label(2 "p85 regression") label(3 "p15 regression") "'
+
+loc plotlist "gini_plot mean_plot cv_plot pct_zero_plot"
+
+foreach p of loc plotlist {
+    loc yvar: word 1 of ``p''
+    loc xvar: word 2 of ``p''
+    loc eqlin: word 3 of ``p''
+    loc trend_upper: word 4 of ``p''
+    loc trend_lower: word 5 of ``p''
+    loc yrange: word 6 of ``p''
+    loc xrange: word 7 of ``p''
+    loc xaxis_title: word 1 of ``p'_labels'
+    loc yaxis_title: word 2 of ``p'_labels'
+    * loc legend: ```p'_legend''
+    * loc plot_title:  word 3 of ``p'_labels'
+
+twoway ///
+    line `eqlin' `xvar'      , msymbol(o) lcolor(gs12) lpattern(solid) lwidth(vthin)  ||    ///
+    qfit `trend_upper' `xvar', lpattern(shortdash) lcolor(gs0) || ///
+    qfit `trend_lower' `xvar', lpattern(shortdash) lcolor(gs0) || ///
+    scatter `yvar' `xvar' , msymbol(o) mcolor(cranberry) msize(small)    ///
+    yscale(range(`yrange') titlegap(4))      ///
+    xscale(range(`xrange') titlegap(2))      ///
+    ylabel(`yrange', nogrid) ytitle(`yaxis_title', margin(medium))    ///
+    xlabel(`xrange', nogrid) xtitle(`xaxis_title', margin(medium))    ///
+     ///
+    legend(``p'_legend' span) ///
+    aspect(1) name(`p', replace) title(``p'_title') ///
+    graphregion(margin(l+5 r+5)) ///
+    plotregion(margin(l+5 r+5)) ///
+    xsize(5) ysize(5)
+    graph save "qreg_`p'_stata.gph"
+    graph export "qreg_`p'_stata.svg" ,name(`p')
+    graph export "qreg_`p'_stata.png" ,name(`p')
+}
