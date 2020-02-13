@@ -1281,358 +1281,452 @@ label define core_pops 1280 `"Endline Coh3 Control Gr2 90207"', modify
 label define core_pops 1281 `"Endline Coh3 Control Gr2 90210"', modify
 label define core_pops 1282 `"Endline Coh3 Control Gr2 90213"', modify
 label define core_pops 1283 `"Endline Coh3 Control Gr2 90215"', modify
-label define lbl_kbmark 0 `"[kis_orf < 10] "', modify
-label define lbl_kbmark 1 `"[kis_orf >=10 <30]"', modify
-label define lbl_kbmark 2 `"[kis_orf >30]"', modify
-label define lbl_ebmark 0 `"[eng_orf < 20]"', modify
-label define lbl_ebmark 1 `"[eng_orf >=20 <35]"', modify
-label define lbl_ebmark 2 `"[eng_orf >35]"', modify
-label define lbl_cohort 1 `"Coh1"', modify
-label define lbl_cohort 2 `"Coh2"', modify
-label define lbl_cohort 3 `"Coh3"', modify
-label define lbl_grade 1 `"Gr1"', modify
-label define lbl_grade 2 `"Gr2"', modify
-label define lbl_grade 3 `"Gr3"', modify
-label define lbl_female 0 `"Male"', modify
-label define lbl_female 1 `"Female"', modify
-label define lbl_treat_phase 1 `"Baseline"', modify
-label define lbl_treat_phase 2 `"Midline"', modify
-label define lbl_treat_phase 6 `"Endline"', modify
-label define catnum 0 `"0"', modify
-label define catnum 1 `"1-4"', modify
-label define catnum 2 `"5-9"', modify
-label define catnum 3 `"10-19"', modify
-label define catnum 4 `"20-39"', modify
-label define catnum 5 `"40+"', modify
-label define sitting_formation 0 `"Rows"', modify
-label define sitting_formation 1 `"Small Groups"', modify
-label define sitting_formation 2 `"Circles"', modify
-label define sitting_formation 3 `"Other"', modify
-label define ht_71_7 0 `"No"', modify
-label define ht_71_7 1 `"Yes"', modify
-label define ht_71_6 0 `"No"', modify
-label define ht_71_6 1 `"Yes"', modify
-label define ht_71_5 0 `"No"', modify
-label define ht_71_5 1 `"Yes"', modify
-label define ht_71_4 0 `"No"', modify
-label define ht_71_4 1 `"Yes"', modify
-label define ht_71_3 0 `"No"', modify
-label define ht_71_3 1 `"Yes"', modify
-label define ht_71_2 0 `"No"', modify
-label define ht_71_2 1 `"Yes"', modify
-label define ht_71_1 0 `"No"', modify
-label define ht_71_1 1 `"Yes"', modify
-label define ht_49a_99 0 `"No"', modify
-label define ht_49a_99 1 `"Yes"', modify
-label define ht_49a_7 0 `"No"', modify
-label define ht_49a_7 1 `"Yes"', modify
-label define ht_49a_6 0 `"No"', modify
-label define ht_49a_6 1 `"Yes"', modify
-label define ht_49a_5 0 `"No"', modify
-label define ht_49a_5 1 `"Yes"', modify
-label define ht_49a_4 0 `"No"', modify
-label define ht_49a_4 1 `"Yes"', modify
-label define ht_49a_3 0 `"No"', modify
-label define ht_49a_3 1 `"Yes"', modify
-label define ht_49a_2 0 `"No"', modify
-label define ht_49a_2 1 `"Yes"', modify
-label define ht_49a_1 0 `"No"', modify
-label define ht_49a_1 1 `"Yes"', modify
-label define ht_45a_7 0 `"No"', modify
-label define ht_45a_7 1 `"Yes"', modify
-label define ht_28 0 `"No"', modify
-label define ht_28 1 `"Yes"', modify
-label define ht_50 1 `"1 to 1"', modify
-label define ht_50 2 `"2 to 1"', modify
-label define ht_50 3 `"3 to 1"', modify
-label define ht_50 4 `"4 to 1"', modify
-label define ht_50 5 `"5 to 1 or more"', modify
-label define ht_50 8 `"No books"', modify
-label define ht_50 99 `"Doesn't know/refuses to respond"', modify
-label define ht_0 0 `"No"', modify
-label define ht_0 1 `"Yes"', modify
-label define ht_60 0 `"None"', modify
-label define ht_60 1 `"One"', modify
-label define ht_60 2 `"Two"', modify
-label define ht_60 3 `"Three"', modify
-label define ht_60 4 `"More than three"', modify
-label define ht_61 1 `"Very poor quality"', modify
-label define ht_61 2 `"Poor quality"', modify
-label define ht_61 3 `"High quality"', modify
-label define ht_61 4 `"Very high quality"', modify
-label define ht_62 1 `"Not relevant"', modify
-label define ht_62 2 `"Relevant"', modify
-label define ht_62 3 `"Very relevant"', modify
-label define ht_63 1 `"Not effective"', modify
-label define ht_63 2 `"Effective"', modify
-label define ht_63 3 `"Very effective"', modify
-label define ht_64 1 `"Not effective"', modify
-label define ht_64 2 `"Effective"', modify
-label define ht_64 3 `"Very effective"', modify
-label define ht_67 1 `"Not useful"', modify
-label define ht_67 2 `"A little bit useful"', modify
-label define ht_67 3 `"Somewhat useful"', modify
-label define ht_67 4 `"Useful"', modify
-label define ht_67 5 `"Very useful"', modify
-label define ht_8 1 `"Head Teacher"', modify
-label define ht_8 2 `"Teacher"', modify
-label define ht_8 3 `"Other"', modify
-label define ht_11 1 `"Graduate"', modify
-label define ht_11 2 `"Approved Teacher Status"', modify
-label define ht_11 3 `"Diploma"', modify
-label define ht_11 4 `"PI"', modify
-label define ht_11 5 `"PII"', modify
-label define ht_11 6 `"Other"', modify
-label define ht_17 1 `"MoE invited me"', modify
-label define ht_17 2 `"City/Municipal Council"', modify
-label define ht_17 3 `"I initiated it"', modify
-label define ht_17 4 `"Program/Project/Donor"', modify
-label define ht_17 5 `"Other"', modify
-label define ht_22 1 `"Not Satisfied at all"', modify
-label define ht_22 2 `"Satisfied"', modify
-label define ht_22 3 `"Very Satisfied"', modify
-label define dknow 99 `"Don't Know"', modify
-label define ht_38 0 `"No one"', modify
-label define ht_38 1 `"Head teacher"', modify
-label define ht_38 2 `"Deputy head teacher"', modify
-label define ht_38 3 `"Other"', modify
-label define ht_39 0 `"Never"', modify
-label define ht_39 1 `"Once per year"', modify
-label define ht_39 2 `"Once every 2-3 months"', modify
-label define ht_39 3 `"Once every month"', modify
-label define ht_39 4 `"Once every two weeks"', modify
-label define ht_39 5 `"Every week"', modify
-label define ht_39 6 `"Once per day"', modify
-label define ht_39 99 `"Don't know/No Response"', modify
-label define ht_40 0 `"No one observes"', modify
-label define ht_40 1 `"Head teacher"', modify
-label define ht_40 2 `"Deputy head teacher"', modify
-label define ht_40 3 `"Other"', modify
-label define ht_41 0 `"Never"', modify
-label define ht_41 1 `"Once"', modify
-label define ht_41 2 `"Twice"', modify
-label define ht_41 3 `"Thrice"', modify
-label define ht_41 4 `"Four or more times"', modify
-label define ht_41 5 `"Other"', modify
-label define ht_44 1 `"1 to 1"', modify
-label define ht_44 2 `"2 to 1"', modify
-label define ht_44 3 `"3 to 1"', modify
-label define ht_44 4 `"4 to 1"', modify
-label define ht_44 5 `"5+ to 1"', modify
-label define ht_44 8 `"No books"', modify
-label define ht_44 99 `"Don't know/no response"', modify
-label define ht_58 1 `"Very good"', modify
-label define ht_58 2 `"Good"', modify
-label define ht_58 3 `"Average"', modify
-label define ht_58 4 `"Poor"', modify
-label define ht_58 5 `"Very poor"', modify
-label define ht_58 6 `"Did not attend"', modify
-label define ht_68 1 `"Yes, quite a lot"', modify
-label define ht_68 2 `"Yes, somewhat"', modify
-label define ht_68 3 `"No change"', modify
-label define ht_68 4 `"No, made things worse"', modify
-label define ht_68 5 `"No, made things much worse"', modify
-label define grade 1 `"First"', modify
-label define grade 2 `"Second"', modify
-label define grade 3 `"Third"', modify
-label define grade 4 `"Fourth"', modify
-label define grade 5 `"Fifth"', modify
-label define grade 6 `"Sixth"', modify
-label define grade 7 `"Seventh"', modify
-label define grade 8 `"Eighth"', modify
-label define month 1 `"January"', modify
-label define month 2 `"February"', modify
-label define month 3 `"March"', modify
-label define month 4 `"April"', modify
-label define month 5 `"May"', modify
-label define month 6 `"June"', modify
-label define month 7 `"July"', modify
-label define month 8 `"August"', modify
-label define month 9 `"September"', modify
-label define month 10 `"October"', modify
-label define month 11 `"November"', modify
-label define month 12 `"December"', modify
-label define female 0 `"Male"', modify
-label define female 1 `"Female"', modify
-label define shift 0 `"Full day"', modify
-label define shift 1 `"Morning"', modify
-label define shift 2 `"Afternoon"', modify
-label define shift 3 `"Alternating"', modify
-label define zeroscores 0 `"Proportion > 0 Correct"', modify
-label define zeroscores 1 `"Proportion = 0 Correct"', modify
-label define lvl2ordinal 0 `"Incorrect"', modify
-label define lvl2ordinal 1 `"Correct"', modify
-label define yesno 0 `"No"', modify
-label define yesno 1 `"Yes"', modify
-label define exit_interview18_9 0 `"No"', modify
-label define exit_interview18_9 1 `"Yes"', modify
-label define exit_interview18_3 0 `"No"', modify
-label define exit_interview18_3 1 `"Yes"', modify
-label define exit_interview18_2 0 `"No"', modify
-label define exit_interview18_2 1 `"Yes"', modify
-label define exit_interview18_1 0 `"No"', modify
-label define exit_interview18_1 1 `"Yes"', modify
-label define exit_interview1c_9 0 `"No"', modify
-label define exit_interview1c_9 1 `"Yes"', modify
-label define exit_interview1c_4 0 `"No"', modify
-label define exit_interview1c_4 1 `"Yes"', modify
-label define exit_interview1c_3 0 `"No"', modify
-label define exit_interview1c_3 1 `"Yes"', modify
-label define exit_interview1c_2 0 `"No"', modify
-label define exit_interview1c_2 1 `"Yes"', modify
-label define exit_interview1c_1 0 `"No"', modify
-label define exit_interview1c_1 1 `"Yes"', modify
-label define exit_interview1b_9 0 `"No"', modify
-label define exit_interview1b_9 1 `"Yes"', modify
-label define exit_interview1b_4 0 `"No"', modify
-label define exit_interview1b_4 1 `"Yes"', modify
-label define exit_interview1b_3 0 `"No"', modify
-label define exit_interview1b_3 1 `"Yes"', modify
-label define exit_interview1b_2 0 `"No"', modify
-label define exit_interview1b_2 1 `"Yes"', modify
-label define exit_interview1b_1 0 `"No"', modify
-label define exit_interview1b_1 1 `"Yes"', modify
-label define longitudinal_id_number 1 `"1"', modify
-label define longitudinal_id_number 2 `"2"', modify
-label define longitudinal_id_number 3 `"3"', modify
-label define longitudinal_id_number 4 `"4"', modify
-label define longitudinal_id_number 5 `"5"', modify
-label define longitudinal_id_number 6 `"6"', modify
-label define longitudinal_id_number 7 `"7"', modify
-label define longitudinal_id_number 8 `"8"', modify
-label define longitudinal_id_number 9 `"9"', modify
-label define longitudinal_id_number 10 `"10"', modify
-label define longitudinal_id_number 11 `"11"', modify
-label define longitudinal_id_number 12 `"12"', modify
-label define longitudinal_id_number 13 `"13"', modify
-label define longitudinal_id_number 14 `"14"', modify
-label define longitudinal_id_number 15 `"15"', modify
-label define longitudinal_id_number 16 `"16"', modify
-label define longitudinal_id_number 17 `"17"', modify
-label define longitudinal_id_number 18 `"18"', modify
-label define longitudinal_id_number 19 `"19"', modify
-label define longitudinal_id_number 20 `"20"', modify
-label define exit_interview1a 0 `"No"', modify
-label define exit_interview1a 1 `"Yes"', modify
-label define exit_interview2 0 `"No"', modify
-label define exit_interview2 1 `"Yes"', modify
-label define exit_interview2 8 `"Don't Know"', modify
-label define exit_interview2 9 `"No response"', modify
-label define exit_interview3 0 `"No"', modify
-label define exit_interview3 1 `"Yes"', modify
-label define exit_interview3 8 `"Don't Know"', modify
-label define exit_interview3 9 `"No response"', modify
-label define exit_interview4 0 `"No"', modify
-label define exit_interview4 1 `"Yes"', modify
-label define exit_interview4 8 `"Don't Know"', modify
-label define exit_interview4 9 `"No response"', modify
-label define exit_interview5 0 `"No"', modify
-label define exit_interview5 1 `"Yes"', modify
-label define exit_interview5 8 `"Don't Know"', modify
-label define exit_interview5 9 `"No response"', modify
-label define exit_interview6 0 `"No"', modify
-label define exit_interview6 1 `"Yes"', modify
-label define exit_interview6 8 `"Don't Know"', modify
-label define exit_interview6 9 `"No response"', modify
-label define exit_interview7 0 `"No"', modify
-label define exit_interview7 1 `"Yes"', modify
-label define exit_interview7 8 `"Don't Know"', modify
-label define exit_interview7 9 `"No response"', modify
-label define exit_interview8 0 `"No"', modify
-label define exit_interview8 1 `"Yes"', modify
-label define exit_interview8 8 `"Don't Know"', modify
-label define exit_interview8 9 `"No response"', modify
-label define exit_interview9 0 `"No"', modify
-label define exit_interview9 1 `"Yes"', modify
-label define exit_interview9 8 `"Don't Know"', modify
-label define exit_interview9 9 `"No response"', modify
-label define exit_interview10 0 `"No"', modify
-label define exit_interview10 1 `"Yes"', modify
-label define exit_interview10 8 `"Don't Know"', modify
-label define exit_interview10 9 `"No Response"', modify
-label define exit_interview11 0 `"No"', modify
-label define exit_interview11 1 `"Yes"', modify
-label define exit_interview11 9 `"Do not know / No response"', modify
-label define exit_interview12 0 `"Pre-school/Pre-unit/KG/Baby Class"', modify
-label define exit_interview12 1 `"Class 1"', modify
-label define exit_interview12 2 `"Class 2"', modify
-label define exit_interview12 3 `"Not in school"', modify
-label define exit_interview12 9 `"Do not know / No response"', modify
-label define exit_interview13 0 `"No"', modify
-label define exit_interview13 1 `"Yes"', modify
-label define exit_interview13 9 `"Do not know / No response"', modify
-label define exit_interview14 0 `"No"', modify
-label define exit_interview14 1 `"Yes"', modify
-label define exit_interview14 9 `"Do not know / No response"', modify
-label define exit_interview15 0 `"No"', modify
-label define exit_interview15 1 `"Yes"', modify
-label define exit_interview15 9 `"Do not know / No response"', modify
-label define exit_interview16 0 `"No"', modify
-label define exit_interview16 1 `"Yes"', modify
-label define exit_interview16 9 `"Do not know / No response"', modify
-label define exit_interview17 0 `"No (skip to question 19)"', modify
-label define exit_interview17 1 `"Yes"', modify
-label define exit_interview17 9 `"Do not know / No response"', modify
-label define exit_interview19 0 `"No"', modify
-label define exit_interview19 1 `"Yes"', modify
-label define exit_interview19 9 `"Do not know / No response"', modify
-label define exit_interview20 0 `"No"', modify
-label define exit_interview20 1 `"Yes"', modify
-label define exit_interview20 9 `"Do not know / No response"', modify
-label define urban 0 `"Rural"', modify
-label define urban 1 `"Urban"', modify
-label define treatment 0 `"Control"', modify
-label define treatment 1 `"Partial Treatment"', modify
-label define treatment 2 `"Full Treatment"', modify
-label define treat_phase 1 `"Baseline"', modify
-label define treat_phase 2 `"Midterm A"', modify
-label define treat_phase 3 `"Midterm B"', modify
-label define treat_phase 4 `"Midterm C"', modify
-label define treat_phase 5 `"Midterm D"', modify
-label define treat_phase 6 `"Endline"', modify
-label define language 0 `"Other"', modify
-label define language 1 `"English"', modify
-label define language 2 `"French"', modify
-label define language 3 `"Spanish"', modify
-label define language 4 `"Miskito"', modify
-label define language 5 `"Panamaska"', modify
-label define language 6 `"Kreol"', modify
-label define language 7 `"Bamanankan"', modify
-label define language 8 `"Bomu"', modify
-label define language 9 `"Fulfulde"', modify
-label define language 10 `"Songhoi"', modify
-label define language 11 `"Arabic"', modify
-label define language 12 `"Chichewa"', modify
-label define language 13 `"Hausa"', modify
-label define language 14 `"Kinyarwanda"', modify
-label define language 15 `"Swahili"', modify
-label define language 16 `"Kikongo"', modify
-label define language 17 `"Lingala"', modify
-label define language 18 `"Mixed"', modify
-label define language 19 `"Kikuyu"', modify
-label define language 20 `"Dholuo"', modify
-label define language 21 `"Kiswahili"', modify
-label define language 23 `"Cinyanja"', modify
-label define language 24 `"Icibemba"', modify
-label define language 25 `"Kiikaonde"', modify
-label define language 26 `"Lunda"', modify
-label define language 27 `"Luvale"', modify
-label define language 28 `"Silozi"', modify
-label define language 29 `"Bemba"', modify
-label define language 30 `"Luganda"', modify
-label define language 31 `"Lango"', modify
-label define language 32 `"Tigrinya"', modify
-label define language 33 `"Amharic"', modify
-label define language 34 `"Afan Oromo"', modify
-label define language 35 `"Somaligna"', modify
-label define language 36 `"Sidaamu Afoo"', modify
-label define language 37 `"Hararigna"', modify
-label define language 38 `"Indonesian"', modify
-label define language 39 `"Ateso"', modify
-label define language 40 `"Runyankore/Rukiga"', modify
-label define language 41 `"Tamil"', modify
-label define language 42 `"Kikamba"', modify
-label define language 43 `"Lubukusu"', modify
+label define tt_43 1 `"Too little"', modify
+label define tt_43 2 `"Just enough"', modify
+label define tt_43 3 `"More than enough"', modify
+label define tt_42 1 `"Too little"', modify
+label define tt_42 2 `"Just enough"', modify
+label define tt_42 3 `"More than enough"', modify
+label define tt_41 1 `"Too little"', modify
+label define tt_41 2 `"Just enough"', modify
+label define tt_41 3 `"More than enough"', modify
+label define tt_40 1 `"Too little"', modify
+label define tt_40 2 `"Just enough"', modify
+label define tt_40 3 `"More than enough"', modify
+label define tt_39 1 `"Too little"', modify
+label define tt_39 2 `"Just enough"', modify
+label define tt_39 3 `"More than enough"', modify
+label define tt_38 1 `"Too little"', modify
+label define tt_38 2 `"Just enough"', modify
+label define tt_38 3 `"More than enough"', modify
+label define tt_37 1 `"Too little"', modify
+label define tt_37 2 `"Just enough"', modify
+label define tt_37 3 `"More than enough"', modify
+label define tt_36 1 `"Too little"', modify
+label define tt_36 2 `"Just enough"', modify
+label define tt_36 3 `"More than enough"', modify
+label define tt_35 1 `"Too little"', modify
+label define tt_35 2 `"Just enough"', modify
+label define tt_35 3 `"More than enough"', modify
+label define tt_34 1 `"Not useful"', modify
+label define tt_34 2 `"Somewhat useful"', modify
+label define tt_34 3 `"Useful"', modify
+label define tt_34 4 `"Very useful"', modify
+label define tt_33 1 `"Not useful"', modify
+label define tt_33 2 `"Somewhat useful"', modify
+label define tt_33 3 `"Useful"', modify
+label define tt_33 4 `"Very useful"', modify
+label define tt_32 1 `"Not useful"', modify
+label define tt_32 2 `"Somewhat useful"', modify
+label define tt_32 3 `"Useful"', modify
+label define tt_32 4 `"Very useful"', modify
+label define tt_31 1 `"Not useful"', modify
+label define tt_31 2 `"Somewhat useful"', modify
+label define tt_31 3 `"Useful"', modify
+label define tt_31 4 `"Very useful"', modify
+label define tt_30 1 `"Not useful"', modify
+label define tt_30 2 `"Somewhat useful"', modify
+label define tt_30 3 `"Useful"', modify
+label define tt_30 4 `"Very useful"', modify
+label define tt_30 5 `"Not applicable(Training Only)"', modify
+label define tt_29 1 `"Not useful"', modify
+label define tt_29 2 `"Somewhat useful"', modify
+label define tt_29 3 `"Useful"', modify
+label define tt_29 4 `"Very useful"', modify
+label define tt_29 5 `"Not applicable(Training Only)"', modify
+label define tt_28 1 `"Not useful"', modify
+label define tt_28 2 `"Somewhat useful"', modify
+label define tt_28 3 `"Useful"', modify
+label define tt_28 4 `"Very useful"', modify
+label define tt_27 1 `"Not useful"', modify
+label define tt_27 2 `"Somewhat useful"', modify
+label define tt_27 3 `"Useful"', modify
+label define tt_27 4 `"Very useful"', modify
+label define tt_26 1 `"Not useful"', modify
+label define tt_26 2 `"Somewhat useful"', modify
+label define tt_26 3 `"Useful"', modify
+label define tt_26 4 `"Very useful"', modify
+label define tt_25 1 `"Not useful"', modify
+label define tt_25 2 `"Somewhat useful"', modify
+label define tt_25 3 `"Useful"', modify
+label define tt_25 4 `"Very useful"', modify
+label define tt_24 1 `"Not useful"', modify
+label define tt_24 2 `"Somewhat useful"', modify
+label define tt_24 3 `"Useful"', modify
+label define tt_24 4 `"Very useful"', modify
+label define tt_21 0 `"No"', modify
+label define tt_21 1 `"Yes"', modify
+label define tt_17 0 `"No"', modify
+label define tt_17 1 `"Yes"', modify
+label define tt_16 0 `"No"', modify
+label define tt_16 1 `"Yes"', modify
+label define tt_14 1 `"MoE invited me"', modify
+label define tt_14 2 `"PRIMR"', modify
+label define tt_14 3 `"I initiated it"', modify
+label define tt_14 4 `"Program/Project/Donor"', modify
+label define tt_14 5 `"Other(Specify)"', modify
+label define tt_13 1 `"PRIMR"', modify
+label define tt_13 2 `"In-service"', modify
+label define tt_13 3 `"Other(Specify)"', modify
+label define tt_12 0 `"No"', modify
+label define tt_12 1 `"Yes"', modify
+label define tt_5 1 `"Bachelor of education"', modify
+label define tt_5 2 `"Diploma"', modify
+label define tt_5 3 `"S1"', modify
+label define tt_5 4 `"PII"', modify
+label define tt_5 5 `"Other"', modify
+label define tt_4 1 `"Form Four (High School)"', modify
+label define tt_4 2 `"Diploma"', modify
+label define tt_4 3 `"First Degree"', modify
+label define tt_4 4 `"Masters"', modify
+label define tt_3 1 `"Teacher"', modify
+label define tt_3 2 `"Deputy Head Teacher"', modify
+label define tt_3 3 `"Head Teacher"', modify
+label define tt_3 4 `"Other(specify)"', modify
+label define tt_18 0 `"Male"', modify
+label define tt_18 1 `"Female"', modify
+label define tt_9_0 0 `"No"', modify
+label define tt_9_0 1 `"Yes"', modify
+label define tt_9_1 0 `"No"', modify
+label define tt_9_1 1 `"Yes"', modify
+label define tt_9_2 0 `"No"', modify
+label define tt_9_2 1 `"Yes"', modify
+label define tt_9_3 0 `"No"', modify
+label define tt_9_3 1 `"Yes"', modify
+label define tt_9_4 0 `"No"', modify
+label define tt_9_4 1 `"Yes"', modify
+label define tt_9_5 0 `"No"', modify
+label define tt_9_5 1 `"Yes"', modify
+label define tt_9_6 0 `"No"', modify
+label define tt_9_6 1 `"Yes"', modify
+label define tt_9_7 0 `"No"', modify
+label define tt_9_7 1 `"Yes"', modify
+label define tt_9_8 0 `"No"', modify
+label define tt_9_8 1 `"Yes"', modify
+label define tt_18_1 0 `"No"', modify
+label define tt_18_1 1 `"Yes"', modify
+label define tt_18_2 0 `"No"', modify
+label define tt_18_2 1 `"Yes"', modify
+label define tt_18_3 0 `"No"', modify
+label define tt_18_3 1 `"Yes"', modify
+label define tt_18_4 0 `"No"', modify
+label define tt_18_4 1 `"Yes"', modify
+label define tt_18_5 0 `"No"', modify
+label define tt_18_5 1 `"Yes"', modify
+label define tt_19_1 0 `"No"', modify
+label define tt_19_1 1 `"Yes"', modify
+label define tt_19_2 0 `"No"', modify
+label define tt_19_2 1 `"Yes"', modify
+label define tt_19_3 0 `"No"', modify
+label define tt_19_3 1 `"Yes"', modify
+label define tt_19_4 0 `"No"', modify
+label define tt_19_4 1 `"Yes"', modify
+label define tt_19_5 0 `"No"', modify
+label define tt_19_5 1 `"Yes"', modify
+label define tt_19_6 0 `"No"', modify
+label define tt_19_6 1 `"Yes"', modify
+label define tt_19_7 0 `"No"', modify
+label define tt_19_7 1 `"Yes"', modify
+label define tt_35_1 0 `"No"', modify
+label define tt_35_1 1 `"Yes"', modify
+label define tt_35_2 0 `"No"', modify
+label define tt_35_2 1 `"Yes"', modify
+label define tt_35_3 0 `"No"', modify
+label define tt_35_3 1 `"Yes"', modify
+label define tt_35_4 0 `"No"', modify
+label define tt_35_4 1 `"Yes"', modify
+label define tt_44_1 0 `"No"', modify
+label define tt_44_1 1 `"Yes"', modify
+label define tt_44_2 0 `"No"', modify
+label define tt_44_2 1 `"Yes"', modify
+label define tt_44_3 0 `"No"', modify
+label define tt_44_3 1 `"Yes"', modify
+label define tt_44_4 0 `"No"', modify
+label define tt_44_4 1 `"Yes"', modify
+label define tt_44_5 0 `"No"', modify
+label define tt_44_5 1 `"Yes"', modify
+label define tt_44_6 0 `"No"', modify
+label define tt_44_6 1 `"Yes"', modify
+label define tt_44_7 0 `"No"', modify
+label define tt_44_7 1 `"Yes"', modify
+label define tt_45_1 0 `"No"', modify
+label define tt_45_1 1 `"Yes"', modify
+label define tt_45_2 0 `"No"', modify
+label define tt_45_2 1 `"Yes"', modify
+label define tt_45_3 0 `"No"', modify
+label define tt_45_3 1 `"Yes"', modify
+label define tt_45_4 0 `"No"', modify
+label define tt_45_4 1 `"Yes"', modify
+label define tt_45_5 0 `"No"', modify
+label define tt_45_5 1 `"Yes"', modify
+label define tt_45_6 0 `"No"', modify
+label define tt_45_6 1 `"Yes"', modify
+label define tt_45_7 0 `"No"', modify
+label define tt_45_7 1 `"Yes"', modify
+label define tt_46_1 0 `"No"', modify
+label define tt_46_1 1 `"Yes"', modify
+label define tt_46_2 0 `"No"', modify
+label define tt_46_2 1 `"Yes"', modify
+label define tt_46_3 0 `"No"', modify
+label define tt_46_3 1 `"Yes"', modify
+label define tt_46_4 0 `"No"', modify
+label define tt_46_4 1 `"Yes"', modify
+label define tt_46_5 0 `"No"', modify
+label define tt_46_5 1 `"Yes"', modify
+label define tt_47_1 0 `"No"', modify
+label define tt_47_1 1 `"Yes"', modify
+label define tt_47_2 0 `"No"', modify
+label define tt_47_2 1 `"Yes"', modify
+label define tt_47_3 0 `"No"', modify
+label define tt_47_3 1 `"Yes"', modify
+label define tt_47_4 0 `"No"', modify
+label define tt_47_4 1 `"Yes"', modify
+label define tt_47_5 0 `"No"', modify
+label define tt_47_5 1 `"Yes"', modify
+label define tks_36 1 `"less than 1"', modify
+label define tks_36 2 `"1 to 3"', modify
+label define tks_36 3 `"4 to 7"', modify
+label define tks_36 4 `"7 or more"', modify
+label define tks_35 1 `"Class 1"', modify
+label define tks_35 2 `"Class 2"', modify
+label define tks_35 3 `"both Class 1 and Class 2"', modify
+label define tks_35 4 `"Head Teacher"', modify
+label define tks_34 1 `"0"', modify
+label define tks_34 2 `"1"', modify
+label define tks_34 3 `"2"', modify
+label define tks_34 4 `"3 or more"', modify
+label define tks_33 1 `"0"', modify
+label define tks_33 2 `"1"', modify
+label define tks_33 3 `"2"', modify
+label define tks_33 4 `"3 or more"', modify
+label define tks_32 1 `"untrained teacher"', modify
+label define tks_32 2 `"P1"', modify
+label define tks_32 3 `"diploma/S1"', modify
+label define tks_32 4 `"Batchelors' of Ed"', modify
+label define tks_31 1 `"reteach it to entire class"', modify
+label define tks_31 2 `"break the class in two"', modify
+label define tks_31 3 `"note the pupils who did not learn letter"', modify
+label define tks_31 4 `"skip it"', modify
+label define tks_30 1 `"delay reading in new language"', modify
+label define tks_30 2 `"are not helpful"', modify
+label define tks_30 3 `"are helpful"', modify
+label define tks_30 4 `"are neutral"', modify
+label define tks_29 1 `"partner reading"', modify
+label define tks_29 2 `"choral reading"', modify
+label define tks_29 3 `"echo reading"', modify
+label define tks_29 4 `"whisper reading"', modify
+label define tks_28 1 `"make predictions in MT"', modify
+label define tks_28 2 `"waste learning time"', modify
+label define tks_28 3 `"make predictions in MT and other"', modify
+label define tks_28 4 `"waste instructional time"', modify
+label define tks_27 1 `"understand text directionality"', modify
+label define tks_27 2 `"identify parts of a book"', modify
+label define tks_27 3 `"understnd  concept of text structure"', modify
+label define tks_27 4 `"dev comprehension strategies"', modify
+label define tks_26 1 `"vocabulary"', modify
+label define tks_26 2 `"handwriting"', modify
+label define tks_26 3 `"classroom management"', modify
+label define tks_26 4 `"decoding"', modify
+label define tks_25 1 `"dissapointment"', modify
+label define tks_25 2 `"surprise"', modify
+label define tks_25 3 `"hope"', modify
+label define tks_25 4 `"frustration"', modify
+label define tks_24 1 `"That's correct, the words has 2 parts"', modify
+label define tks_24 2 `"Almost , the word has three parts"', modify
+label define tks_24 3 `"That’s correct, the word has 2 parts"', modify
+label define tks_24 4 `"Almost, the word has 4 parts"', modify
+label define tks_23 1 `"word meaning"', modify
+label define tks_23 2 `"spelling"', modify
+label define tks_23 3 `"vocabulary development"', modify
+label define tks_23 4 `"sentence reading"', modify
+label define tks_22 1 `"awareness of multi-syllable words"', modify
+label define tks_22 2 `"ability to isolate ind sounds in words"', modify
+label define tks_22 3 `"skills to anaylse structure of text"', modify
+label define tks_22 4 `"ability to blend sounds in words"', modify
+label define tks_21 1 `"one"', modify
+label define tks_21 2 `"two"', modify
+label define tks_21 3 `"three"', modify
+label define tks_21 4 `"four"', modify
+label define tks_20 1 `"through"', modify
+label define tks_20 2 `"off"', modify
+label define tks_20 3 `"sour"', modify
+label define tks_20 4 `""', modify
+label define tks_19 1 `"T"', modify
+label define tks_19 2 `"F"', modify
+label define tks_19 3 `"E"', modify
+label define tks_19 4 `"R"', modify
+label define tks_18 1 `"A"', modify
+label define tks_18 2 `"M"', modify
+label define tks_18 3 `"U"', modify
+label define tks_18 4 `"O"', modify
+label define tks_17 1 `"after the story"', modify
+label define tks_17 2 `"before, during & after the story"', modify
+label define tks_17 3 `"durinh the story"', modify
+label define tks_17 4 `"never"', modify
+label define tks_16 1 `"motivation"', modify
+label define tks_16 2 `"reading speed"', modify
+label define tks_16 3 `"proper accent"', modify
+label define tks_16 4 `"answer comprehension questions"', modify
+label define tks_15 1 `"phonemic awareness"', modify
+label define tks_15 2 `"object awareness"', modify
+label define tks_15 3 `"comprehension"', modify
+label define tks_15 4 `"critical thinking"', modify
+label define tks_14 1 `"My role is to teach my pupils all the words they need to know and they will become good readers."', modify
+label define tks_14 2 `"My role is to teach skills my pupils need so they can learn to read words independently."', modify
+label define tks_13 1 `"To teach children to learn to read a new word, it is best to show them how to break it up into sounds or syllables."', modify
+label define tks_13 2 `"To teach children to learn to read a new word, it is best to point at the word and tell them to repeat it."', modify
+label define tks_12 1 `"Some literacy skills in a child’s first language transfer to other language literacy skills."', modify
+label define tks_12 2 `"Literacy skills in a child’s first language only benefit the first language. They are not related to the other languages."', modify
+label define tks_11 1 `"Illiterate parents cannot assist with their children’s early reading learning."', modify
+label define tks_11 2 `"Illiterate parents can play an important part when their children learn to read."', modify
+label define tks_10 1 `"Intelligence is the main reason children struggle to learn to read."', modify
+label define tks_10 2 `"Other factors are the reason children struggle to learn to read."', modify
+label define tks_9 1 `"Reading the words correctly indicates if the child understands the text."', modify
+label define tks_9 2 `"Reading with expression indicates if the child understands the text."', modify
+label define tks_8 1 `"Reading and writing are related. The skills in one area are beneficial to the other area."', modify
+label define tks_8 2 `"Reading and writing skills are unrelated. This is one reason to teach them separately."', modify
+label define tks_7 1 `"Comprehension questions that have multiple possible answers are the most beneficial for children."', modify
+label define tks_7 2 `"Comprehension questions that have one correct answer are the most beneficial for children."', modify
+label define cin_subject 1 `"Reading"', modify
+label define cin_subject 2 `"Math"', modify
+label define t_76_7 0 `"No"', modify
+label define t_76_7 1 `"Yes"', modify
+label define t_76_6 0 `"No"', modify
+label define t_76_6 1 `"Yes"', modify
+label define t_76_5 0 `"No"', modify
+label define t_76_5 1 `"Yes"', modify
+label define t_76_4 0 `"No"', modify
+label define t_76_4 1 `"Yes"', modify
+label define t_76_3 0 `"No"', modify
+label define t_76_3 1 `"Yes"', modify
+label define t_76_2 0 `"No"', modify
+label define t_76_2 1 `"Yes"', modify
+label define t_76_1 0 `"No"', modify
+label define t_76_1 1 `"Yes"', modify
+label define t_33_6 0 `"No"', modify
+label define t_33_6 1 `"Yes"', modify
+label define t_33_5 0 `"No"', modify
+label define t_33_5 1 `"Yes"', modify
+label define t_33_4 0 `"No"', modify
+label define t_33_4 1 `"Yes"', modify
+label define t_33_3 0 `"No"', modify
+label define t_33_3 1 `"Yes"', modify
+label define t_33_2 0 `"No"', modify
+label define t_33_2 1 `"Yes"', modify
+label define t_33_1 0 `"No"', modify
+label define t_33_1 1 `"Yes"', modify
+label define t_32_5 0 `"No"', modify
+label define t_32_5 1 `"Yes"', modify
+label define t_32_4 0 `"No"', modify
+label define t_32_4 1 `"Yes"', modify
+label define t_32_3 0 `"No"', modify
+label define t_32_3 1 `"Yes"', modify
+label define t_32_2 0 `"No"', modify
+label define t_32_2 1 `"Yes"', modify
+label define t_32_1 0 `"No"', modify
+label define t_32_1 1 `"Yes"', modify
+label define t_31_5 0 `"No"', modify
+label define t_31_5 1 `"Yes"', modify
+label define t_31_4 0 `"No"', modify
+label define t_31_4 1 `"Yes"', modify
+label define t_31_3 0 `"No"', modify
+label define t_31_3 1 `"Yes"', modify
+label define t_31_2 0 `"No"', modify
+label define t_31_2 1 `"Yes"', modify
+label define t_31_1 0 `"No"', modify
+label define t_31_1 1 `"Yes"', modify
+label define t_30_5 0 `"No"', modify
+label define t_30_5 1 `"Yes"', modify
+label define t_30_4 0 `"No"', modify
+label define t_30_4 1 `"Yes"', modify
+label define t_30_3 0 `"No"', modify
+label define t_30_3 1 `"Yes"', modify
+label define t_30_2 0 `"No"', modify
+label define t_30_2 1 `"Yes"', modify
+label define t_30_1 0 `"No"', modify
+label define t_30_1 1 `"Yes"', modify
+label define t_76 0 `"Stay within the school compound"', modify
+label define t_76 1 `"15 minutes or less"', modify
+label define t_76 2 `"16 to 30 minutes"', modify
+label define t_76 3 `"31 to 45 minutes"', modify
+label define t_76 4 `"46 to 60 minutes"', modify
+label define t_76 5 `"More than 60 minutes"', modify
+label define t_28 0 `"Never"', modify
+label define t_28 1 `"1 day a week"', modify
+label define t_28 2 `"2 days a week"', modify
+label define t_28 3 `"3 days a week"', modify
+label define t_28 4 `"4 days a week"', modify
+label define t_28 5 `"5 days a week"', modify
+label define prim_schl 0 `"No"', modify
+label define prim_schl 1 `"Yes"', modify
+label define t_65 0 `"None"', modify
+label define t_65 1 `"One"', modify
+label define t_65 2 `"Two"', modify
+label define t_65 3 `"Three"', modify
+label define t_65 4 `"More than three"', modify
+label define t_66 1 `"Very poor quality"', modify
+label define t_66 2 `"Poor quality"', modify
+label define t_66 3 `"High quality"', modify
+label define t_66 4 `"Very high quality"', modify
+label define t_67 1 `"Not relevant"', modify
+label define t_67 2 `"Relevant"', modify
+label define t_67 3 `"Very relevant"', modify
+label define t_68 1 `"Not effective"', modify
+label define t_68 2 `"Effective"', modify
+label define t_68 3 `"Very effective"', modify
+label define t_72 1 `"Not useful"', modify
+label define t_72 2 `"A little bit useful"', modify
+label define t_72 3 `"Somewhat useful"', modify
+label define t_72 4 `"Useful"', modify
+label define t_72 5 `"Very useful"', modify
+label define t_20 0 `"Stay within the school compound"', modify
+label define t_20 1 `"15 minutes or less"', modify
+label define t_20 2 `"16 to 30 minutes"', modify
+label define t_20 3 `"31 to 45 minutes"', modify
+label define t_20 4 `"46 to 60 minutes"', modify
+label define t_20 5 `"More than 60 minutes"', modify
+label define t_21 0 `"About once a week"', modify
+label define t_21 1 `" About once a month"', modify
+label define t_21 2 `" About once a term"', modify
+label define t_21 3 `"About once a year"', modify
+label define t_21 4 `"Never"', modify
+label define t_freq 0 `"Never"', modify
+label define t_freq 1 `"1 day a week"', modify
+label define t_freq 2 `"2 days a week"', modify
+label define t_freq 3 `"3 days a week"', modify
+label define t_freq 4 `"4 days a week"', modify
+label define t_freq 5 `"5 days a week"', modify
+label define t_33 0 `"Never"', modify
+label define t_33 1 `"One day per week"', modify
+label define t_33 2 `"Two days per week"', modify
+label define t_33 3 `"Three days per week"', modify
+label define t_33 4 `"Four days per week"', modify
+label define t_33 5 `"Five days per week"', modify
+label define t_useful 1 `"Not useful"', modify
+label define t_useful 2 `"A little bit useful"', modify
+label define t_useful 3 `"Somewhat useful"', modify
+label define t_useful 4 `"Useful"', modify
+label define t_useful 5 `"Very useful"', modify
+label define t_37 1 `"Doesn’t have it"', modify
+label define t_37 2 `"Not well prepared"', modify
+label define t_37 3 `"Reasonably well prepared"', modify
+label define t_37 4 `"Well prepared"', modify
+label define t_37 5 `"Refuses/No response"', modify
+label define t_when 0 `"Before St 1"', modify
+label define t_when 1 `"St 1"', modify
+label define t_when 2 `"St 2"', modify
+label define t_when 3 `"St 3"', modify
+label define t_when 4 `"St 4 or later"', modify
+label define t_69 1 `"Much easier"', modify
+label define t_69 2 `"A little bit easier"', modify
+label define t_69 3 `"Not any different"', modify
+label define t_69 4 `"A little bit more difficult"', modify
+label define t_69 5 `"Much more difficult"', modify
+label define t_70 1 `"Very Good"', modify
+label define t_70 2 `"Good"', modify
+label define t_70 3 `"Average"', modify
+label define t_70 4 `"Poor"', modify
+label define t_70 5 `"Very Poor"', modify
 label define strata1 1 `"Baseline BABADOGO"', modify
 label define strata1 2 `"Baseline CENTRAL"', modify
 label define strata1 3 `"Baseline CHOKAA"', modify
@@ -1730,449 +1824,341 @@ label define strata1 94 `"Endline THIKA WEST"', modify
 label define strata1 95 `"Endline VIWANDA"', modify
 label define strata1 96 `"Endline WARUKU"', modify
 label define strata1 97 `"Endline ZIMMERMAN"', modify
-label define t_70 1 `"Very Good"', modify
-label define t_70 2 `"Good"', modify
-label define t_70 3 `"Average"', modify
-label define t_70 4 `"Poor"', modify
-label define t_70 5 `"Very Poor"', modify
-label define t_69 1 `"Much easier"', modify
-label define t_69 2 `"A little bit easier"', modify
-label define t_69 3 `"Not any different"', modify
-label define t_69 4 `"A little bit more difficult"', modify
-label define t_69 5 `"Much more difficult"', modify
-label define t_when 0 `"Before St 1"', modify
-label define t_when 1 `"St 1"', modify
-label define t_when 2 `"St 2"', modify
-label define t_when 3 `"St 3"', modify
-label define t_when 4 `"St 4 or later"', modify
-label define t_37 1 `"Doesn’t have it"', modify
-label define t_37 2 `"Not well prepared"', modify
-label define t_37 3 `"Reasonably well prepared"', modify
-label define t_37 4 `"Well prepared"', modify
-label define t_37 5 `"Refuses/No response"', modify
-label define t_useful 1 `"Not useful"', modify
-label define t_useful 2 `"A little bit useful"', modify
-label define t_useful 3 `"Somewhat useful"', modify
-label define t_useful 4 `"Useful"', modify
-label define t_useful 5 `"Very useful"', modify
-label define t_33 0 `"Never"', modify
-label define t_33 1 `"One day per week"', modify
-label define t_33 2 `"Two days per week"', modify
-label define t_33 3 `"Three days per week"', modify
-label define t_33 4 `"Four days per week"', modify
-label define t_33 5 `"Five days per week"', modify
-label define t_freq 0 `"Never"', modify
-label define t_freq 1 `"1 day a week"', modify
-label define t_freq 2 `"2 days a week"', modify
-label define t_freq 3 `"3 days a week"', modify
-label define t_freq 4 `"4 days a week"', modify
-label define t_freq 5 `"5 days a week"', modify
-label define t_21 0 `"About once a week"', modify
-label define t_21 1 `" About once a month"', modify
-label define t_21 2 `" About once a term"', modify
-label define t_21 3 `"About once a year"', modify
-label define t_21 4 `"Never"', modify
-label define t_20 0 `"Stay within the school compound"', modify
-label define t_20 1 `"15 minutes or less"', modify
-label define t_20 2 `"16 to 30 minutes"', modify
-label define t_20 3 `"31 to 45 minutes"', modify
-label define t_20 4 `"46 to 60 minutes"', modify
-label define t_20 5 `"More than 60 minutes"', modify
-label define t_72 1 `"Not useful"', modify
-label define t_72 2 `"A little bit useful"', modify
-label define t_72 3 `"Somewhat useful"', modify
-label define t_72 4 `"Useful"', modify
-label define t_72 5 `"Very useful"', modify
-label define t_68 1 `"Not effective"', modify
-label define t_68 2 `"Effective"', modify
-label define t_68 3 `"Very effective"', modify
-label define t_67 1 `"Not relevant"', modify
-label define t_67 2 `"Relevant"', modify
-label define t_67 3 `"Very relevant"', modify
-label define t_66 1 `"Very poor quality"', modify
-label define t_66 2 `"Poor quality"', modify
-label define t_66 3 `"High quality"', modify
-label define t_66 4 `"Very high quality"', modify
-label define t_65 0 `"None"', modify
-label define t_65 1 `"One"', modify
-label define t_65 2 `"Two"', modify
-label define t_65 3 `"Three"', modify
-label define t_65 4 `"More than three"', modify
-label define prim_schl 0 `"No"', modify
-label define prim_schl 1 `"Yes"', modify
-label define t_28 0 `"Never"', modify
-label define t_28 1 `"1 day a week"', modify
-label define t_28 2 `"2 days a week"', modify
-label define t_28 3 `"3 days a week"', modify
-label define t_28 4 `"4 days a week"', modify
-label define t_28 5 `"5 days a week"', modify
-label define t_76 0 `"Stay within the school compound"', modify
-label define t_76 1 `"15 minutes or less"', modify
-label define t_76 2 `"16 to 30 minutes"', modify
-label define t_76 3 `"31 to 45 minutes"', modify
-label define t_76 4 `"46 to 60 minutes"', modify
-label define t_76 5 `"More than 60 minutes"', modify
-label define t_30_1 0 `"No"', modify
-label define t_30_1 1 `"Yes"', modify
-label define t_30_2 0 `"No"', modify
-label define t_30_2 1 `"Yes"', modify
-label define t_30_3 0 `"No"', modify
-label define t_30_3 1 `"Yes"', modify
-label define t_30_4 0 `"No"', modify
-label define t_30_4 1 `"Yes"', modify
-label define t_30_5 0 `"No"', modify
-label define t_30_5 1 `"Yes"', modify
-label define t_31_1 0 `"No"', modify
-label define t_31_1 1 `"Yes"', modify
-label define t_31_2 0 `"No"', modify
-label define t_31_2 1 `"Yes"', modify
-label define t_31_3 0 `"No"', modify
-label define t_31_3 1 `"Yes"', modify
-label define t_31_4 0 `"No"', modify
-label define t_31_4 1 `"Yes"', modify
-label define t_31_5 0 `"No"', modify
-label define t_31_5 1 `"Yes"', modify
-label define t_32_1 0 `"No"', modify
-label define t_32_1 1 `"Yes"', modify
-label define t_32_2 0 `"No"', modify
-label define t_32_2 1 `"Yes"', modify
-label define t_32_3 0 `"No"', modify
-label define t_32_3 1 `"Yes"', modify
-label define t_32_4 0 `"No"', modify
-label define t_32_4 1 `"Yes"', modify
-label define t_32_5 0 `"No"', modify
-label define t_32_5 1 `"Yes"', modify
-label define t_33_1 0 `"No"', modify
-label define t_33_1 1 `"Yes"', modify
-label define t_33_2 0 `"No"', modify
-label define t_33_2 1 `"Yes"', modify
-label define t_33_3 0 `"No"', modify
-label define t_33_3 1 `"Yes"', modify
-label define t_33_4 0 `"No"', modify
-label define t_33_4 1 `"Yes"', modify
-label define t_33_5 0 `"No"', modify
-label define t_33_5 1 `"Yes"', modify
-label define t_33_6 0 `"No"', modify
-label define t_33_6 1 `"Yes"', modify
-label define t_76_1 0 `"No"', modify
-label define t_76_1 1 `"Yes"', modify
-label define t_76_2 0 `"No"', modify
-label define t_76_2 1 `"Yes"', modify
-label define t_76_3 0 `"No"', modify
-label define t_76_3 1 `"Yes"', modify
-label define t_76_4 0 `"No"', modify
-label define t_76_4 1 `"Yes"', modify
-label define t_76_5 0 `"No"', modify
-label define t_76_5 1 `"Yes"', modify
-label define t_76_6 0 `"No"', modify
-label define t_76_6 1 `"Yes"', modify
-label define t_76_7 0 `"No"', modify
-label define t_76_7 1 `"Yes"', modify
-label define cin_subject 1 `"Reading"', modify
-label define cin_subject 2 `"Math"', modify
-label define tks_7 1 `"Comprehension questions that have multiple possible answers are the most beneficial for children."', modify
-label define tks_7 2 `"Comprehension questions that have one correct answer are the most beneficial for children."', modify
-label define tks_8 1 `"Reading and writing are related. The skills in one area are beneficial to the other area."', modify
-label define tks_8 2 `"Reading and writing skills are unrelated. This is one reason to teach them separately."', modify
-label define tks_9 1 `"Reading the words correctly indicates if the child understands the text."', modify
-label define tks_9 2 `"Reading with expression indicates if the child understands the text."', modify
-label define tks_10 1 `"Intelligence is the main reason children struggle to learn to read."', modify
-label define tks_10 2 `"Other factors are the reason children struggle to learn to read."', modify
-label define tks_11 1 `"Illiterate parents cannot assist with their children’s early reading learning."', modify
-label define tks_11 2 `"Illiterate parents can play an important part when their children learn to read."', modify
-label define tks_12 1 `"Some literacy skills in a child’s first language transfer to other language literacy skills."', modify
-label define tks_12 2 `"Literacy skills in a child’s first language only benefit the first language. They are not related to the other languages."', modify
-label define tks_13 1 `"To teach children to learn to read a new word, it is best to show them how to break it up into sounds or syllables."', modify
-label define tks_13 2 `"To teach children to learn to read a new word, it is best to point at the word and tell them to repeat it."', modify
-label define tks_14 1 `"My role is to teach my pupils all the words they need to know and they will become good readers."', modify
-label define tks_14 2 `"My role is to teach skills my pupils need so they can learn to read words independently."', modify
-label define tks_15 1 `"phonemic awareness"', modify
-label define tks_15 2 `"object awareness"', modify
-label define tks_15 3 `"comprehension"', modify
-label define tks_15 4 `"critical thinking"', modify
-label define tks_16 1 `"motivation"', modify
-label define tks_16 2 `"reading speed"', modify
-label define tks_16 3 `"proper accent"', modify
-label define tks_16 4 `"answer comprehension questions"', modify
-label define tks_17 1 `"after the story"', modify
-label define tks_17 2 `"before, during & after the story"', modify
-label define tks_17 3 `"durinh the story"', modify
-label define tks_17 4 `"never"', modify
-label define tks_18 1 `"A"', modify
-label define tks_18 2 `"M"', modify
-label define tks_18 3 `"U"', modify
-label define tks_18 4 `"O"', modify
-label define tks_19 1 `"T"', modify
-label define tks_19 2 `"F"', modify
-label define tks_19 3 `"E"', modify
-label define tks_19 4 `"R"', modify
-label define tks_20 1 `"through"', modify
-label define tks_20 2 `"off"', modify
-label define tks_20 3 `"sour"', modify
-label define tks_20 4 `""', modify
-label define tks_21 1 `"one"', modify
-label define tks_21 2 `"two"', modify
-label define tks_21 3 `"three"', modify
-label define tks_21 4 `"four"', modify
-label define tks_22 1 `"awareness of multi-syllable words"', modify
-label define tks_22 2 `"ability to isolate ind sounds in words"', modify
-label define tks_22 3 `"skills to anaylse structure of text"', modify
-label define tks_22 4 `"ability to blend sounds in words"', modify
-label define tks_23 1 `"word meaning"', modify
-label define tks_23 2 `"spelling"', modify
-label define tks_23 3 `"vocabulary development"', modify
-label define tks_23 4 `"sentence reading"', modify
-label define tks_24 1 `"That's correct, the words has 2 parts"', modify
-label define tks_24 2 `"Almost , the word has three parts"', modify
-label define tks_24 3 `"That’s correct, the word has 2 parts"', modify
-label define tks_24 4 `"Almost, the word has 4 parts"', modify
-label define tks_25 1 `"dissapointment"', modify
-label define tks_25 2 `"surprise"', modify
-label define tks_25 3 `"hope"', modify
-label define tks_25 4 `"frustration"', modify
-label define tks_26 1 `"vocabulary"', modify
-label define tks_26 2 `"handwriting"', modify
-label define tks_26 3 `"classroom management"', modify
-label define tks_26 4 `"decoding"', modify
-label define tks_27 1 `"understand text directionality"', modify
-label define tks_27 2 `"identify parts of a book"', modify
-label define tks_27 3 `"understnd  concept of text structure"', modify
-label define tks_27 4 `"dev comprehension strategies"', modify
-label define tks_28 1 `"make predictions in MT"', modify
-label define tks_28 2 `"waste learning time"', modify
-label define tks_28 3 `"make predictions in MT and other"', modify
-label define tks_28 4 `"waste instructional time"', modify
-label define tks_29 1 `"partner reading"', modify
-label define tks_29 2 `"choral reading"', modify
-label define tks_29 3 `"echo reading"', modify
-label define tks_29 4 `"whisper reading"', modify
-label define tks_30 1 `"delay reading in new language"', modify
-label define tks_30 2 `"are not helpful"', modify
-label define tks_30 3 `"are helpful"', modify
-label define tks_30 4 `"are neutral"', modify
-label define tks_31 1 `"reteach it to entire class"', modify
-label define tks_31 2 `"break the class in two"', modify
-label define tks_31 3 `"note the pupils who did not learn letter"', modify
-label define tks_31 4 `"skip it"', modify
-label define tks_32 1 `"untrained teacher"', modify
-label define tks_32 2 `"P1"', modify
-label define tks_32 3 `"diploma/S1"', modify
-label define tks_32 4 `"Batchelors' of Ed"', modify
-label define tks_33 1 `"0"', modify
-label define tks_33 2 `"1"', modify
-label define tks_33 3 `"2"', modify
-label define tks_33 4 `"3 or more"', modify
-label define tks_34 1 `"0"', modify
-label define tks_34 2 `"1"', modify
-label define tks_34 3 `"2"', modify
-label define tks_34 4 `"3 or more"', modify
-label define tks_35 1 `"Class 1"', modify
-label define tks_35 2 `"Class 2"', modify
-label define tks_35 3 `"both Class 1 and Class 2"', modify
-label define tks_35 4 `"Head Teacher"', modify
-label define tks_36 1 `"less than 1"', modify
-label define tks_36 2 `"1 to 3"', modify
-label define tks_36 3 `"4 to 7"', modify
-label define tks_36 4 `"7 or more"', modify
-label define tt_47_5 0 `"No"', modify
-label define tt_47_5 1 `"Yes"', modify
-label define tt_47_4 0 `"No"', modify
-label define tt_47_4 1 `"Yes"', modify
-label define tt_47_3 0 `"No"', modify
-label define tt_47_3 1 `"Yes"', modify
-label define tt_47_2 0 `"No"', modify
-label define tt_47_2 1 `"Yes"', modify
-label define tt_47_1 0 `"No"', modify
-label define tt_47_1 1 `"Yes"', modify
-label define tt_46_5 0 `"No"', modify
-label define tt_46_5 1 `"Yes"', modify
-label define tt_46_4 0 `"No"', modify
-label define tt_46_4 1 `"Yes"', modify
-label define tt_46_3 0 `"No"', modify
-label define tt_46_3 1 `"Yes"', modify
-label define tt_46_2 0 `"No"', modify
-label define tt_46_2 1 `"Yes"', modify
-label define tt_46_1 0 `"No"', modify
-label define tt_46_1 1 `"Yes"', modify
-label define tt_45_7 0 `"No"', modify
-label define tt_45_7 1 `"Yes"', modify
-label define tt_45_6 0 `"No"', modify
-label define tt_45_6 1 `"Yes"', modify
-label define tt_45_5 0 `"No"', modify
-label define tt_45_5 1 `"Yes"', modify
-label define tt_45_4 0 `"No"', modify
-label define tt_45_4 1 `"Yes"', modify
-label define tt_45_3 0 `"No"', modify
-label define tt_45_3 1 `"Yes"', modify
-label define tt_45_2 0 `"No"', modify
-label define tt_45_2 1 `"Yes"', modify
-label define tt_45_1 0 `"No"', modify
-label define tt_45_1 1 `"Yes"', modify
-label define tt_44_7 0 `"No"', modify
-label define tt_44_7 1 `"Yes"', modify
-label define tt_44_6 0 `"No"', modify
-label define tt_44_6 1 `"Yes"', modify
-label define tt_44_5 0 `"No"', modify
-label define tt_44_5 1 `"Yes"', modify
-label define tt_44_4 0 `"No"', modify
-label define tt_44_4 1 `"Yes"', modify
-label define tt_44_3 0 `"No"', modify
-label define tt_44_3 1 `"Yes"', modify
-label define tt_44_2 0 `"No"', modify
-label define tt_44_2 1 `"Yes"', modify
-label define tt_44_1 0 `"No"', modify
-label define tt_44_1 1 `"Yes"', modify
-label define tt_35_4 0 `"No"', modify
-label define tt_35_4 1 `"Yes"', modify
-label define tt_35_3 0 `"No"', modify
-label define tt_35_3 1 `"Yes"', modify
-label define tt_35_2 0 `"No"', modify
-label define tt_35_2 1 `"Yes"', modify
-label define tt_35_1 0 `"No"', modify
-label define tt_35_1 1 `"Yes"', modify
-label define tt_19_7 0 `"No"', modify
-label define tt_19_7 1 `"Yes"', modify
-label define tt_19_6 0 `"No"', modify
-label define tt_19_6 1 `"Yes"', modify
-label define tt_19_5 0 `"No"', modify
-label define tt_19_5 1 `"Yes"', modify
-label define tt_19_4 0 `"No"', modify
-label define tt_19_4 1 `"Yes"', modify
-label define tt_19_3 0 `"No"', modify
-label define tt_19_3 1 `"Yes"', modify
-label define tt_19_2 0 `"No"', modify
-label define tt_19_2 1 `"Yes"', modify
-label define tt_19_1 0 `"No"', modify
-label define tt_19_1 1 `"Yes"', modify
-label define tt_18_5 0 `"No"', modify
-label define tt_18_5 1 `"Yes"', modify
-label define tt_18_4 0 `"No"', modify
-label define tt_18_4 1 `"Yes"', modify
-label define tt_18_3 0 `"No"', modify
-label define tt_18_3 1 `"Yes"', modify
-label define tt_18_2 0 `"No"', modify
-label define tt_18_2 1 `"Yes"', modify
-label define tt_18_1 0 `"No"', modify
-label define tt_18_1 1 `"Yes"', modify
-label define tt_9_8 0 `"No"', modify
-label define tt_9_8 1 `"Yes"', modify
-label define tt_9_7 0 `"No"', modify
-label define tt_9_7 1 `"Yes"', modify
-label define tt_9_6 0 `"No"', modify
-label define tt_9_6 1 `"Yes"', modify
-label define tt_9_5 0 `"No"', modify
-label define tt_9_5 1 `"Yes"', modify
-label define tt_9_4 0 `"No"', modify
-label define tt_9_4 1 `"Yes"', modify
-label define tt_9_3 0 `"No"', modify
-label define tt_9_3 1 `"Yes"', modify
-label define tt_9_2 0 `"No"', modify
-label define tt_9_2 1 `"Yes"', modify
-label define tt_9_1 0 `"No"', modify
-label define tt_9_1 1 `"Yes"', modify
-label define tt_9_0 0 `"No"', modify
-label define tt_9_0 1 `"Yes"', modify
-label define tt_18 0 `"Male"', modify
-label define tt_18 1 `"Female"', modify
-label define tt_3 1 `"Teacher"', modify
-label define tt_3 2 `"Deputy Head Teacher"', modify
-label define tt_3 3 `"Head Teacher"', modify
-label define tt_3 4 `"Other(specify)"', modify
-label define tt_4 1 `"Form Four (High School)"', modify
-label define tt_4 2 `"Diploma"', modify
-label define tt_4 3 `"First Degree"', modify
-label define tt_4 4 `"Masters"', modify
-label define tt_5 1 `"Bachelor of education"', modify
-label define tt_5 2 `"Diploma"', modify
-label define tt_5 3 `"S1"', modify
-label define tt_5 4 `"PII"', modify
-label define tt_5 5 `"Other"', modify
-label define tt_12 0 `"No"', modify
-label define tt_12 1 `"Yes"', modify
-label define tt_13 1 `"PRIMR"', modify
-label define tt_13 2 `"In-service"', modify
-label define tt_13 3 `"Other(Specify)"', modify
-label define tt_14 1 `"MoE invited me"', modify
-label define tt_14 2 `"PRIMR"', modify
-label define tt_14 3 `"I initiated it"', modify
-label define tt_14 4 `"Program/Project/Donor"', modify
-label define tt_14 5 `"Other(Specify)"', modify
-label define tt_16 0 `"No"', modify
-label define tt_16 1 `"Yes"', modify
-label define tt_17 0 `"No"', modify
-label define tt_17 1 `"Yes"', modify
-label define tt_21 0 `"No"', modify
-label define tt_21 1 `"Yes"', modify
-label define tt_24 1 `"Not useful"', modify
-label define tt_24 2 `"Somewhat useful"', modify
-label define tt_24 3 `"Useful"', modify
-label define tt_24 4 `"Very useful"', modify
-label define tt_25 1 `"Not useful"', modify
-label define tt_25 2 `"Somewhat useful"', modify
-label define tt_25 3 `"Useful"', modify
-label define tt_25 4 `"Very useful"', modify
-label define tt_26 1 `"Not useful"', modify
-label define tt_26 2 `"Somewhat useful"', modify
-label define tt_26 3 `"Useful"', modify
-label define tt_26 4 `"Very useful"', modify
-label define tt_27 1 `"Not useful"', modify
-label define tt_27 2 `"Somewhat useful"', modify
-label define tt_27 3 `"Useful"', modify
-label define tt_27 4 `"Very useful"', modify
-label define tt_28 1 `"Not useful"', modify
-label define tt_28 2 `"Somewhat useful"', modify
-label define tt_28 3 `"Useful"', modify
-label define tt_28 4 `"Very useful"', modify
-label define tt_29 1 `"Not useful"', modify
-label define tt_29 2 `"Somewhat useful"', modify
-label define tt_29 3 `"Useful"', modify
-label define tt_29 4 `"Very useful"', modify
-label define tt_29 5 `"Not applicable(Training Only)"', modify
-label define tt_30 1 `"Not useful"', modify
-label define tt_30 2 `"Somewhat useful"', modify
-label define tt_30 3 `"Useful"', modify
-label define tt_30 4 `"Very useful"', modify
-label define tt_30 5 `"Not applicable(Training Only)"', modify
-label define tt_31 1 `"Not useful"', modify
-label define tt_31 2 `"Somewhat useful"', modify
-label define tt_31 3 `"Useful"', modify
-label define tt_31 4 `"Very useful"', modify
-label define tt_32 1 `"Not useful"', modify
-label define tt_32 2 `"Somewhat useful"', modify
-label define tt_32 3 `"Useful"', modify
-label define tt_32 4 `"Very useful"', modify
-label define tt_33 1 `"Not useful"', modify
-label define tt_33 2 `"Somewhat useful"', modify
-label define tt_33 3 `"Useful"', modify
-label define tt_33 4 `"Very useful"', modify
-label define tt_34 1 `"Not useful"', modify
-label define tt_34 2 `"Somewhat useful"', modify
-label define tt_34 3 `"Useful"', modify
-label define tt_34 4 `"Very useful"', modify
-label define tt_35 1 `"Too little"', modify
-label define tt_35 2 `"Just enough"', modify
-label define tt_35 3 `"More than enough"', modify
-label define tt_36 1 `"Too little"', modify
-label define tt_36 2 `"Just enough"', modify
-label define tt_36 3 `"More than enough"', modify
-label define tt_37 1 `"Too little"', modify
-label define tt_37 2 `"Just enough"', modify
-label define tt_37 3 `"More than enough"', modify
-label define tt_38 1 `"Too little"', modify
-label define tt_38 2 `"Just enough"', modify
-label define tt_38 3 `"More than enough"', modify
-label define tt_39 1 `"Too little"', modify
-label define tt_39 2 `"Just enough"', modify
-label define tt_39 3 `"More than enough"', modify
-label define tt_40 1 `"Too little"', modify
-label define tt_40 2 `"Just enough"', modify
-label define tt_40 3 `"More than enough"', modify
-label define tt_41 1 `"Too little"', modify
-label define tt_41 2 `"Just enough"', modify
-label define tt_41 3 `"More than enough"', modify
-label define tt_42 1 `"Too little"', modify
-label define tt_42 2 `"Just enough"', modify
-label define tt_42 3 `"More than enough"', modify
-label define tt_43 1 `"Too little"', modify
-label define tt_43 2 `"Just enough"', modify
-label define tt_43 3 `"More than enough"', modify
+label define language 0 `"Other"', modify
+label define language 1 `"English"', modify
+label define language 2 `"French"', modify
+label define language 3 `"Spanish"', modify
+label define language 4 `"Miskito"', modify
+label define language 5 `"Panamaska"', modify
+label define language 6 `"Kreol"', modify
+label define language 7 `"Bamanankan"', modify
+label define language 8 `"Bomu"', modify
+label define language 9 `"Fulfulde"', modify
+label define language 10 `"Songhoi"', modify
+label define language 11 `"Arabic"', modify
+label define language 12 `"Chichewa"', modify
+label define language 13 `"Hausa"', modify
+label define language 14 `"Kinyarwanda"', modify
+label define language 15 `"Swahili"', modify
+label define language 16 `"Kikongo"', modify
+label define language 17 `"Lingala"', modify
+label define language 18 `"Mixed"', modify
+label define language 19 `"Kikuyu"', modify
+label define language 20 `"Dholuo"', modify
+label define language 21 `"Kiswahili"', modify
+label define language 23 `"Cinyanja"', modify
+label define language 24 `"Icibemba"', modify
+label define language 25 `"Kiikaonde"', modify
+label define language 26 `"Lunda"', modify
+label define language 27 `"Luvale"', modify
+label define language 28 `"Silozi"', modify
+label define language 29 `"Bemba"', modify
+label define language 30 `"Luganda"', modify
+label define language 31 `"Lango"', modify
+label define language 32 `"Tigrinya"', modify
+label define language 33 `"Amharic"', modify
+label define language 34 `"Afan Oromo"', modify
+label define language 35 `"Somaligna"', modify
+label define language 36 `"Sidaamu Afoo"', modify
+label define language 37 `"Hararigna"', modify
+label define language 38 `"Indonesian"', modify
+label define language 39 `"Ateso"', modify
+label define language 40 `"Runyankore/Rukiga"', modify
+label define language 41 `"Tamil"', modify
+label define language 42 `"Kikamba"', modify
+label define language 43 `"Lubukusu"', modify
+label define treatment 0 `"Control"', modify
+label define treatment 1 `"Partial Treatment"', modify
+label define treatment 2 `"Full Treatment"', modify
+label define urban 0 `"Rural"', modify
+label define urban 1 `"Urban"', modify
+label define exit_interview20 0 `"No"', modify
+label define exit_interview20 1 `"Yes"', modify
+label define exit_interview20 9 `"Do not know / No response"', modify
+label define exit_interview19 0 `"No"', modify
+label define exit_interview19 1 `"Yes"', modify
+label define exit_interview19 9 `"Do not know / No response"', modify
+label define exit_interview17 0 `"No (skip to question 19)"', modify
+label define exit_interview17 1 `"Yes"', modify
+label define exit_interview17 9 `"Do not know / No response"', modify
+label define exit_interview16 0 `"No"', modify
+label define exit_interview16 1 `"Yes"', modify
+label define exit_interview16 9 `"Do not know / No response"', modify
+label define exit_interview15 0 `"No"', modify
+label define exit_interview15 1 `"Yes"', modify
+label define exit_interview15 9 `"Do not know / No response"', modify
+label define exit_interview14 0 `"No"', modify
+label define exit_interview14 1 `"Yes"', modify
+label define exit_interview14 9 `"Do not know / No response"', modify
+label define exit_interview13 0 `"No"', modify
+label define exit_interview13 1 `"Yes"', modify
+label define exit_interview13 9 `"Do not know / No response"', modify
+label define exit_interview12 0 `"Pre-school/Pre-unit/KG/Baby Class"', modify
+label define exit_interview12 1 `"Class 1"', modify
+label define exit_interview12 2 `"Class 2"', modify
+label define exit_interview12 3 `"Not in school"', modify
+label define exit_interview12 9 `"Do not know / No response"', modify
+label define exit_interview11 0 `"No"', modify
+label define exit_interview11 1 `"Yes"', modify
+label define exit_interview11 9 `"Do not know / No response"', modify
+label define exit_interview10 0 `"No"', modify
+label define exit_interview10 1 `"Yes"', modify
+label define exit_interview10 8 `"Don't Know"', modify
+label define exit_interview10 9 `"No Response"', modify
+label define exit_interview9 0 `"No"', modify
+label define exit_interview9 1 `"Yes"', modify
+label define exit_interview9 8 `"Don't Know"', modify
+label define exit_interview9 9 `"No response"', modify
+label define exit_interview8 0 `"No"', modify
+label define exit_interview8 1 `"Yes"', modify
+label define exit_interview8 8 `"Don't Know"', modify
+label define exit_interview8 9 `"No response"', modify
+label define exit_interview7 0 `"No"', modify
+label define exit_interview7 1 `"Yes"', modify
+label define exit_interview7 8 `"Don't Know"', modify
+label define exit_interview7 9 `"No response"', modify
+label define exit_interview6 0 `"No"', modify
+label define exit_interview6 1 `"Yes"', modify
+label define exit_interview6 8 `"Don't Know"', modify
+label define exit_interview6 9 `"No response"', modify
+label define exit_interview5 0 `"No"', modify
+label define exit_interview5 1 `"Yes"', modify
+label define exit_interview5 8 `"Don't Know"', modify
+label define exit_interview5 9 `"No response"', modify
+label define exit_interview4 0 `"No"', modify
+label define exit_interview4 1 `"Yes"', modify
+label define exit_interview4 8 `"Don't Know"', modify
+label define exit_interview4 9 `"No response"', modify
+label define exit_interview3 0 `"No"', modify
+label define exit_interview3 1 `"Yes"', modify
+label define exit_interview3 8 `"Don't Know"', modify
+label define exit_interview3 9 `"No response"', modify
+label define exit_interview2 0 `"No"', modify
+label define exit_interview2 1 `"Yes"', modify
+label define exit_interview2 8 `"Don't Know"', modify
+label define exit_interview2 9 `"No response"', modify
+label define exit_interview1a 0 `"No"', modify
+label define exit_interview1a 1 `"Yes"', modify
+label define longitudinal_id_number 1 `"1"', modify
+label define longitudinal_id_number 2 `"2"', modify
+label define longitudinal_id_number 3 `"3"', modify
+label define longitudinal_id_number 4 `"4"', modify
+label define longitudinal_id_number 5 `"5"', modify
+label define longitudinal_id_number 6 `"6"', modify
+label define longitudinal_id_number 7 `"7"', modify
+label define longitudinal_id_number 8 `"8"', modify
+label define longitudinal_id_number 9 `"9"', modify
+label define longitudinal_id_number 10 `"10"', modify
+label define longitudinal_id_number 11 `"11"', modify
+label define longitudinal_id_number 12 `"12"', modify
+label define longitudinal_id_number 13 `"13"', modify
+label define longitudinal_id_number 14 `"14"', modify
+label define longitudinal_id_number 15 `"15"', modify
+label define longitudinal_id_number 16 `"16"', modify
+label define longitudinal_id_number 17 `"17"', modify
+label define longitudinal_id_number 18 `"18"', modify
+label define longitudinal_id_number 19 `"19"', modify
+label define longitudinal_id_number 20 `"20"', modify
+label define exit_interview1b_1 0 `"No"', modify
+label define exit_interview1b_1 1 `"Yes"', modify
+label define exit_interview1b_2 0 `"No"', modify
+label define exit_interview1b_2 1 `"Yes"', modify
+label define exit_interview1b_3 0 `"No"', modify
+label define exit_interview1b_3 1 `"Yes"', modify
+label define exit_interview1b_4 0 `"No"', modify
+label define exit_interview1b_4 1 `"Yes"', modify
+label define exit_interview1b_9 0 `"No"', modify
+label define exit_interview1b_9 1 `"Yes"', modify
+label define exit_interview1c_1 0 `"No"', modify
+label define exit_interview1c_1 1 `"Yes"', modify
+label define exit_interview1c_2 0 `"No"', modify
+label define exit_interview1c_2 1 `"Yes"', modify
+label define exit_interview1c_3 0 `"No"', modify
+label define exit_interview1c_3 1 `"Yes"', modify
+label define exit_interview1c_4 0 `"No"', modify
+label define exit_interview1c_4 1 `"Yes"', modify
+label define exit_interview1c_9 0 `"No"', modify
+label define exit_interview1c_9 1 `"Yes"', modify
+label define exit_interview18_1 0 `"No"', modify
+label define exit_interview18_1 1 `"Yes"', modify
+label define exit_interview18_2 0 `"No"', modify
+label define exit_interview18_2 1 `"Yes"', modify
+label define exit_interview18_3 0 `"No"', modify
+label define exit_interview18_3 1 `"Yes"', modify
+label define exit_interview18_9 0 `"No"', modify
+label define exit_interview18_9 1 `"Yes"', modify
+label define yesno 0 `"No"', modify
+label define yesno 1 `"Yes"', modify
+label define lvl2ordinal 0 `"Incorrect"', modify
+label define lvl2ordinal 1 `"Correct"', modify
+label define zeroscores 0 `"Proportion > 0 Correct"', modify
+label define zeroscores 1 `"Proportion = 0 Correct"', modify
+label define shift 0 `"Full day"', modify
+label define shift 1 `"Morning"', modify
+label define shift 2 `"Afternoon"', modify
+label define shift 3 `"Alternating"', modify
+label define female 0 `"Male"', modify
+label define female 1 `"Female"', modify
+label define month 1 `"January"', modify
+label define month 2 `"February"', modify
+label define month 3 `"March"', modify
+label define month 4 `"April"', modify
+label define month 5 `"May"', modify
+label define month 6 `"June"', modify
+label define month 7 `"July"', modify
+label define month 8 `"August"', modify
+label define month 9 `"September"', modify
+label define month 10 `"October"', modify
+label define month 11 `"November"', modify
+label define month 12 `"December"', modify
+label define ht_68 1 `"Yes, quite a lot"', modify
+label define ht_68 2 `"Yes, somewhat"', modify
+label define ht_68 3 `"No change"', modify
+label define ht_68 4 `"No, made things worse"', modify
+label define ht_68 5 `"No, made things much worse"', modify
+label define ht_58 1 `"Very good"', modify
+label define ht_58 2 `"Good"', modify
+label define ht_58 3 `"Average"', modify
+label define ht_58 4 `"Poor"', modify
+label define ht_58 5 `"Very poor"', modify
+label define ht_58 6 `"Did not attend"', modify
+label define ht_44 1 `"1 to 1"', modify
+label define ht_44 2 `"2 to 1"', modify
+label define ht_44 3 `"3 to 1"', modify
+label define ht_44 4 `"4 to 1"', modify
+label define ht_44 5 `"5+ to 1"', modify
+label define ht_44 8 `"No books"', modify
+label define ht_44 99 `"Don't know/no response"', modify
+label define ht_41 0 `"Never"', modify
+label define ht_41 1 `"Once"', modify
+label define ht_41 2 `"Twice"', modify
+label define ht_41 3 `"Thrice"', modify
+label define ht_41 4 `"Four or more times"', modify
+label define ht_41 5 `"Other"', modify
+label define ht_40 0 `"No one observes"', modify
+label define ht_40 1 `"Head teacher"', modify
+label define ht_40 2 `"Deputy head teacher"', modify
+label define ht_40 3 `"Other"', modify
+label define ht_39 0 `"Never"', modify
+label define ht_39 1 `"Once per year"', modify
+label define ht_39 2 `"Once every 2-3 months"', modify
+label define ht_39 3 `"Once every month"', modify
+label define ht_39 4 `"Once every two weeks"', modify
+label define ht_39 5 `"Every week"', modify
+label define ht_39 6 `"Once per day"', modify
+label define ht_39 99 `"Don't know/No Response"', modify
+label define ht_38 0 `"No one"', modify
+label define ht_38 1 `"Head teacher"', modify
+label define ht_38 2 `"Deputy head teacher"', modify
+label define ht_38 3 `"Other"', modify
+label define dknow 99 `"Don't Know"', modify
+label define ht_22 1 `"Not Satisfied at all"', modify
+label define ht_22 2 `"Satisfied"', modify
+label define ht_22 3 `"Very Satisfied"', modify
+label define ht_17 1 `"MoE invited me"', modify
+label define ht_17 2 `"City/Municipal Council"', modify
+label define ht_17 3 `"I initiated it"', modify
+label define ht_17 4 `"Program/Project/Donor"', modify
+label define ht_17 5 `"Other"', modify
+label define ht_11 1 `"Graduate"', modify
+label define ht_11 2 `"Approved Teacher Status"', modify
+label define ht_11 3 `"Diploma"', modify
+label define ht_11 4 `"PI"', modify
+label define ht_11 5 `"PII"', modify
+label define ht_11 6 `"Other"', modify
+label define ht_8 1 `"Head Teacher"', modify
+label define ht_8 2 `"Teacher"', modify
+label define ht_8 3 `"Other"', modify
+label define ht_67 1 `"Not useful"', modify
+label define ht_67 2 `"A little bit useful"', modify
+label define ht_67 3 `"Somewhat useful"', modify
+label define ht_67 4 `"Useful"', modify
+label define ht_67 5 `"Very useful"', modify
+label define ht_64 1 `"Not effective"', modify
+label define ht_64 2 `"Effective"', modify
+label define ht_64 3 `"Very effective"', modify
+label define ht_63 1 `"Not effective"', modify
+label define ht_63 2 `"Effective"', modify
+label define ht_63 3 `"Very effective"', modify
+label define ht_62 1 `"Not relevant"', modify
+label define ht_62 2 `"Relevant"', modify
+label define ht_62 3 `"Very relevant"', modify
+label define ht_61 1 `"Very poor quality"', modify
+label define ht_61 2 `"Poor quality"', modify
+label define ht_61 3 `"High quality"', modify
+label define ht_61 4 `"Very high quality"', modify
+label define ht_60 0 `"None"', modify
+label define ht_60 1 `"One"', modify
+label define ht_60 2 `"Two"', modify
+label define ht_60 3 `"Three"', modify
+label define ht_60 4 `"More than three"', modify
+label define ht_0 0 `"No"', modify
+label define ht_0 1 `"Yes"', modify
+label define ht_50 1 `"1 to 1"', modify
+label define ht_50 2 `"2 to 1"', modify
+label define ht_50 3 `"3 to 1"', modify
+label define ht_50 4 `"4 to 1"', modify
+label define ht_50 5 `"5 to 1 or more"', modify
+label define ht_50 8 `"No books"', modify
+label define ht_50 99 `"Doesn't know/refuses to respond"', modify
+label define ht_28 0 `"No"', modify
+label define ht_28 1 `"Yes"', modify
+label define ht_45a_7 0 `"No"', modify
+label define ht_45a_7 1 `"Yes"', modify
+label define ht_49a_1 0 `"No"', modify
+label define ht_49a_1 1 `"Yes"', modify
+label define ht_49a_2 0 `"No"', modify
+label define ht_49a_2 1 `"Yes"', modify
+label define ht_49a_3 0 `"No"', modify
+label define ht_49a_3 1 `"Yes"', modify
+label define ht_49a_4 0 `"No"', modify
+label define ht_49a_4 1 `"Yes"', modify
+label define ht_49a_5 0 `"No"', modify
+label define ht_49a_5 1 `"Yes"', modify
+label define ht_49a_6 0 `"No"', modify
+label define ht_49a_6 1 `"Yes"', modify
+label define ht_49a_7 0 `"No"', modify
+label define ht_49a_7 1 `"Yes"', modify
+label define ht_49a_99 0 `"No"', modify
+label define ht_49a_99 1 `"Yes"', modify
+label define ht_71_1 0 `"No"', modify
+label define ht_71_1 1 `"Yes"', modify
+label define ht_71_2 0 `"No"', modify
+label define ht_71_2 1 `"Yes"', modify
+label define ht_71_3 0 `"No"', modify
+label define ht_71_3 1 `"Yes"', modify
+label define ht_71_4 0 `"No"', modify
+label define ht_71_4 1 `"Yes"', modify
+label define ht_71_5 0 `"No"', modify
+label define ht_71_5 1 `"Yes"', modify
+label define ht_71_6 0 `"No"', modify
+label define ht_71_6 1 `"Yes"', modify
+label define ht_71_7 0 `"No"', modify
+label define ht_71_7 1 `"Yes"', modify
+label define sitting_formation 0 `"Rows"', modify
+label define sitting_formation 1 `"Small Groups"', modify
+label define sitting_formation 2 `"Circles"', modify
+label define sitting_formation 3 `"Other"', modify
+label define catnum 0 `"0"', modify
+label define catnum 1 `"1-4"', modify
+label define catnum 2 `"5-9"', modify
+label define catnum 3 `"10-19"', modify
+label define catnum 4 `"20-39"', modify
+label define catnum 5 `"40+"', modify
+label define lbl_treat_phase 1 `"Baseline"', modify
+label define lbl_treat_phase 2 `"Midline"', modify
+label define lbl_treat_phase 6 `"Endline"', modify
+label define lbl_female 0 `"Male"', modify
+label define lbl_female 1 `"Female"', modify
+label define lbl_grade 1 `"Gr1"', modify
+label define lbl_grade 2 `"Gr2"', modify
+label define lbl_grade 3 `"Gr3"', modify
+label define lbl_cohort 1 `"Coh1"', modify
+label define lbl_cohort 2 `"Coh2"', modify
+label define lbl_cohort 3 `"Coh3"', modify
+label define lbl_ebmark 0 `"[eng_orf < 20]"', modify
+label define lbl_ebmark 1 `"[eng_orf >=20 <35]"', modify
+label define lbl_ebmark 2 `"[eng_orf >35]"', modify
+label define lbl_kbmark 0 `"[kis_orf < 10] "', modify
+label define lbl_kbmark 1 `"[kis_orf >=10 <30]"', modify
+label define lbl_kbmark 2 `"[kis_orf >30]"', modify

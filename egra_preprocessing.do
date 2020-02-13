@@ -100,11 +100,11 @@ svyset
 // Super-granular analyses by subpopulation with additional parameters
 // Student-level data
 
-quietly: apply_analysis eng_orf kis_orf, data("tusome") core(treat_phase grade) res("tusome_core") svy(1) wt(wt_final) varlabel("English Kiswahili") ver(0) deb(0)
-quietly: apply_analysis eng_orf kis_orf, data("tusome") core(treat_phase grade female) res("tusome_bysex") svy(1) wt(wt_final) varlabel("English Kiswahili") ver(0) deb(0)
-quietly: apply_analysis eng_orf kis_orf, data("tusome") core(treat_phase grade eng_bmark) res("tusome_engbmarks") svy(1) wt(wt_final) varlabel("English Kiswahili") ver(0) deb(0)
-quietly: apply_analysis eng_orf kis_orf, data("tusome") core(treat_phase grade kis_bmark) res("tusome_kisbmarks") svy(1) wt(wt_final) varlabel("English Kiswahili") ver(0) deb(0)
-quietly: apply_analysis eng_orf kis_orf, data("tusome") core(treat_phase grade school_code) res("tusome_byschool") svy(1) wt(wt_final) varlabel("English Kiswahili") ver(0) deb(0)
+quietly: apply_analysis eng_orf kis_orf, data("tusome") core(treat_phase grade) res("tusome_core") svy(1) wt(wt_final) zeros(1) varlabel("English Kiswahili") ver(0) deb(0)
+quietly: apply_analysis eng_orf kis_orf, data("tusome") core(treat_phase grade female) res("tusome_bysex") svy(1) wt(wt_final) zeros(1) varlabel("English Kiswahili") ver(0) deb(0)
+quietly: apply_analysis eng_orf kis_orf, data("tusome") core(treat_phase grade eng_bmark) res("tusome_engbmarks") svy(1) wt(wt_final) zeros(1) varlabel("English Kiswahili") ver(0) deb(0)
+quietly: apply_analysis eng_orf kis_orf, data("tusome") core(treat_phase grade kis_bmark) res("tusome_kisbmarks") svy(1) wt(wt_final) zeros(1) varlabel("English Kiswahili") ver(0) deb(0)
+quietly: apply_analysis eng_orf kis_orf, data("tusome") core(treat_phase grade school_code) res("tusome_byschool") svy(1) wt(wt_final) zeros(1) varlabel("English Kiswahili") ver(0) deb(0)
 
 /***********************************************
 **************** PRIMR Section *****************

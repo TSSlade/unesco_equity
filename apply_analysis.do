@@ -1,6 +1,6 @@
 program define apply_analysis
     * syntax [varlist] [if] , over(varname) langlabel(string) resultsfile(string) [verbose(default=0) detail *]
-    syntax [varlist] [if] , DATAset(string) CORE(varlist) RESultsfile(string) [ SVY(integer 1) WTvar(varname) ZEROsinentropy(integer 1) EXTended(varlist) VARlabel(string) BENchmarks(varlist) VERbose(integer 0) DEBug(integer 0)]
+    syntax [varlist] [if] , DATAset(string) CORE(varlist) RESultsfile(string) [ PARent_ge2(varname) SVY(integer 1) WTvar(varname) ZEROsinentropy(integer 1) EXTended(varlist) VARlabel(string) BENchmarks(varlist) VERbose(integer 0) DEBug(integer 0)]
 
     // Assumptions
     // 'female' variable is coded 1 = female, 0 = male
@@ -26,7 +26,7 @@ program define apply_analysis
     loc extended_sps = cond("`extended'"!="", 1, 0)
 
     // Define core subpopulations and extended subpopulations
-    tempvar core_pops ext_pops iszero ingroup
+    tempvar core_pops ext_pops iszero ingroup parent_pops
     egen core_pops = group(`core'), label
     levelsof core_pops, loc(core_pops_id)
     loc core_pops_label: value label core_pops      // So we can extract the labels later during debugging
@@ -36,6 +36,10 @@ program define apply_analysis
         levelsof ext_pops, loc(ext_pops_id)
         loc ext_pops_ct: word count `ext_pops_id'
     }
+    egen parent_pops = group(`parent_ge2'), label
+    levelsof parent_pops, loc(parent_pops_id)
+    loc parent_pops_label: value label parent_pops      // So we can extract the labels later during debugging
+    loc parent_pops_ct: word count `parent_pops_id'
 
     // Reporting on the results of the subpopulations
     `verbosity': di as error "These were the variables provided to define core subpopulations of interest:"
@@ -65,7 +69,7 @@ program define apply_analysis
     // Core variables: expect 31 of them
     local coreVars "str20(dataset performance_measure measure_label) weighted str60(subpop_label) subpop_id float(mean mean_95cil mean_95cih se sd cv pct_zero p90 p10 ratio_p90p10 p75 p25 ratio_p75p25 gini)"
     if `zerosinentropy' {
-        local entropyVars "ge2_overall ge2_ingroup ge2_outgroup between_ge2 within_ge2"
+        local entropyVars "ge2_overall ge2_ingroup ge2_outgroup ge2_for_subpop between_ge2 within_ge2"
         di as error "Because we are retaining the zeros for our entropy calculations, our output vars will be [`entropyVars']"
     }
     else {
@@ -196,10 +200,19 @@ program define apply_analysis
 
                     // Capturing Gini using pshare because it retains zeros and accepts
                     // svy weights as pweights.
-                    pshare `v', gini svy(if core_pops==`id')
-                    mat gini_result = e(G)
-                    mat gini_counts = e(N_sub)
-                    loc gini_sp`id' = gini_result[1,1]
+                    // Need to first check whether all of the observations for the subpop are 0.
+                    // If they are, the pshare command will fail b/c there's no way to calculate
+                    // the Gini of all zeros.
+                    inspect `v' if core_pops==`id'
+                    if r(N_0) != r(N) {
+                        pshare `v', gini svy(if core_pops==`id')
+                        mat gini_result = e(G)
+                        mat gini_counts = e(N_sub)
+                        loc gini_sp`id' = gini_result[1,1]
+                    }
+                    else {
+                        loc gini_sp`id' = .
+                    }
                 }
                 else {
                     if `debug' noisily di as error "Calculating Gini for [`v'] for subpop [`id'] without weights"
@@ -243,13 +256,16 @@ program define apply_analysis
                     // inaccurately (as aweights, not pweights) and therefore standard errors
                     // and confidence intervals should not be trusted. Nor should Gini coefficients,
                     // which the package could also provide.
-                        di as error "Deriving GEs using ineqdec0 b/c we need to retain zero scores"
-                        ineqdec0 `v' [aweight=`wtvar'], bygroup(ingroup)
-                        loc ge2_overall = r(ge2)
-                        loc ge2_sp`id'_ingroup = r(ge2_1)
-                        loc ge2_sp`id'_outgroup = r(ge2_0)
-                        loc between_ge2_sp`id' = r(between_ge2)
-                        loc within_ge2_sp`id' = r(within_ge2)
+                        di as error "Deriving GEs using ineqdec0 and in/outgroup approach b/c we need to retain zero scores"
+                            * ineqdec0 `v' [aweight=`wtvar'], bygroup(ingroup)
+                            ineqdec0 `v' [aweight=`wtvar'], bygroup(core_pops)
+                            loc ge2_overall = r(ge2)
+                            loc ge2_sp`id'_ingroup = . // r(ge2_1)
+                            loc ge2_sp`id'_outgroup = . // r(ge2_0)
+                            loc ge2_for_subpop_sp`id' = r(ge2_`id')
+                            loc between_ge2_sp`id' = r(between_ge2)
+                            loc within_ge2_sp`id' = r(within_ge2)
+                    di "Inside the yes-zeros loop: zerosinentropy = [`zerosinentropy']"
                     }
                     else {
                     // If we are NOT retaining the zeros, this enables us to get generalized entropy
@@ -336,7 +352,7 @@ program define apply_analysis
             // Store these core results to be concatenated into the final post after adding in any optional ones
             loc coreResults " ("`dataset'") ("`performance_measure'") ("`measure_label'") (`svy') ("`subpop_label'") (`id') (`mean_sp`id'') (`mean_95cil_sp`id'') (`mean_95cih_sp`id'') (`se_sp`id'') (`sd_sp`id'') (`cv_sp`id'') (`pct_zero_sp`id'') (`p90_sp`id'') (`p10_sp`id'') (`ratio_p90p10_sp`id'') (`p75_sp`id'') (`p25_sp`id'') (`ratio_p75p25_sp`id'') (`gini_sp`id'') "
             if `zerosinentropy' {
-                loc entropyResults "(`ge2_overall') (`ge2_sp`id'_ingroup') (`ge2_sp`id'_outgroup') (`between_ge2_sp`id'') (`within_ge2_sp`id'')"
+                loc entropyResults "(`ge2_overall') (`ge2_sp`id'_ingroup') (`ge2_sp`id'_outgroup') (`ge2_for_subpop_sp`id'') (`between_ge2_sp`id'') (`within_ge2_sp`id'') "
             }
             else {
                 loc entropyResults " (`gem1_sp_`id'') (`ge0_sp_`id'') (`ge1_sp_`id'') (`ge2_overall') (`ge2_sp_`id'_ingroup') (`ge2_sp_`id'_outgroup') (`gem1_se_sp_`id'') (`ge0_se_sp_`id'') (`ge1_se_sp_`id'') (`ge2_se_sp_`id'') (`gem1_95cil_sp_`id'') (`gem1_95cih_sp_`id'') (`ge0_95cil_sp_`id'') (`ge0_95cih_sp_`id'') (`ge1_95cil_sp_`id'') (`ge1_95cih_sp_`id'') (`ge2_95cil_sp_`id'') (`ge2_95cih_sp_`id'') "
@@ -377,7 +393,7 @@ program define apply_analysis
         loc pv `++pv'
     }
 
-set trace on
+* set trace on
 foreach c of var `core' {
     capture confirm str var `c'
     if _rc != 0 {
@@ -399,7 +415,7 @@ foreach c of var `core' {
         label val `c' lbl_`c'
     }
 }
-set trace off
+* set trace off
 `verbosity' di "Find results in `:pwd' at `target'"
 save `target'.dta, replace
 * pause "Check appropriately labeled..."
