@@ -240,6 +240,13 @@ Conceptually, we need to be thinking of
 
 However, if we keep cohorts 
 
+Tusome
+parent: treat_phase_x_grade --> e.g.,  Baseline_Gr1
+child:  treat_phase_x_grade_x_school --> e.g., Baseline_Gr1_123456
+
+PRIMR
+parent: treat_phase_x_cohort_x_grade --> e.g., Baseline_Coh1_Gr1
+parent: treat_phase_x_cohort_x_grade_x_school --> e.g., Baseline_Coh1_Gr1
 
 
 
