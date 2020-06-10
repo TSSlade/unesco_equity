@@ -22,7 +22,7 @@ groups grade treat_phase sub_population
 pause       // Just to make you think about it...
 
 // Start defining elements of our other loops
-local lang_vars "eq_orf k_eq_orf"                         // Variable names for our ORF
+local lang_vars "eq_orf k_eq_orf"                       // Variable names for our ORF
 local n_lang_vars : word count `lang_vars'              // Need a counter to convert varnames into human names
 local lang_names "eng kis"                              // Define the human names
 assert `n_lang_vars'==`:word count `lang_names''        // Make sure these list lengths match
@@ -34,6 +34,6 @@ foreach i of num 1/`n_lang_vars' {                      // Looping over our lang
     local lang_var `: word `i' of `lang_vars''
     egen schl_`lang_name'_orf = mean(`lang_var'), by(school_code sub_population)               // School-level ORF by language
     gen `lang_name'_zero = 1 if `lang_var'==0                                                  // Zero-score dummy for each child
-    recode `lang_name'_zero (. = 0)                                                             // Making non-zeros non-missing for the dummy var
-    egen schl_zero_pct_`lang_name' = mean(`lang_name'_zero), by(school_code sub_population)     // School-level pct of zeros by lang
+    recode `lang_name'_zero (. = 0)                                                            // Making non-zeros non-missing for the dummy var
+    egen schl_zero_pct_`lang_name' = mean(`lang_name'_zero), by(school_code sub_population)    // School-level pct of zeros by lang
 }
