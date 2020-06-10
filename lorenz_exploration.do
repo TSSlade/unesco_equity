@@ -11,6 +11,7 @@ postfile `postLorenz' `vars_of_interest' using `lorenzes'
 local primr = "C:\Dropbox\BerkeleyMIDS\projects\unesco_chapter\primr_unesco.dta"
 local tusome = "C:\Dropbox\BerkeleyMIDS\projects\unesco_chapter\tusome_unesco.dta"
 local languages = "English Kiswahili"
+* local langvars = "eng_orf kis_orf"
 local langvars = "eng_orf kis_orf"
 local datasets = "primr tusome"
 local cohortvars = "1 2 3"
@@ -25,6 +26,16 @@ local cohortvars = "1 2 3"
 // Datasets
 foreach dataset of loc datasets {
     use ``dataset'', clear                // Nested local macro to pull data from URL above
+
+    if "`dataset'"=="primr" {
+    egen subpop = group(cohort treat_phase grade), label
+    }
+    else if "`dataset'"=="tusome" {
+        egen subpop = group(treat_phase grade), label
+    }
+    gen resc_eng_orf = .
+    gen resc_kis_orf = .
+
     levelsof treat_phase, loc(treat_phases)
 
     // Languages
@@ -34,6 +45,20 @@ foreach dataset of loc datasets {
         di "`SHORTLANGLABEL'"
         if `verbose' pause
         loc LANGVAR `: word `lang' of `langvars''
+        * loc BASEVAR = substr("`lang'", 6, 12)
+
+        foreach s of loc subpops {
+            qui summ(`BASEVAR') if subpop==`s'
+            loc max = `r(max)'
+            loc min = `r(min)'
+            loc range = `max' - `min'
+            if "`LANGVAR'"=="eng_orf" {
+                replace resc_`lang' = ((`LANGVAR' - `min')/`range') * 210 if subpop==`s'
+            }
+            else if "`LANGVAR'"=="kis_orf" {
+                replace resc_`lang' = ((`LANGVAR' - `min')/`range') * 168 if subpop==`s'
+            }
+            }
 
         // Rounds
         foreach round of loc treat_phases {
@@ -59,9 +84,9 @@ foreach dataset of loc datasets {
                         loc result_row = `" `raw_results' "'
                         `debug' post `postLorenz' `result_row'
                         if `verbose' set trace off
-                        qui lorenz `LANGVAR' if grade==`grade' & cohort==`cohort', svy over(treat_phase) graph(overlay aspectratio(1) xlabels(,grid) legend(cols(1)) ciopts(recast(rline) lp(dash)) title("Lorenz curve for Grade `grade' Coh`cohort' `LANGLABEL'" "by Round of Assessment") text(1 25 "Grade `grade' Coh`cohort' `LANGLABEL'", orient(horizontal) justification(left) box) xtitle("Percentage of Population") ytitle("Cumulative Proportion of ORF"))
-                        qui graph save bins/`LANGLABEL'_gr`grade'_coh`cohort'_lorenz_`dataset', replace
-                        qui graph export bins/`LANGLABEL'_gr`grade'_coh`cohort'_lorenz_`dataset'.png, replace width(800) height(500)
+                        qui lorenz `LANGVAR' if grade==`grade' & cohort==`cohort', svy over(treat_phase) graph(overlay aspectratio(1) xlabels(,grid) legend(cols(1)) ciopts(recast(rline) lp(dash)) title("Lorenz curve for Rescaled Grade `grade' Coh`cohort' `LANGLABEL'" "by Round of Assessment") text(1 25 "Grade `grade' Coh`cohort' `LANGLABEL'", orient(horizontal) justification(left) box) xtitle("Percentage of Population") ytitle("Cumulative Proportion of ORF"))
+                        qui graph save bins/resc_`LANGLABEL'_gr`grade'_coh`cohort'_lorenz_`dataset', replace
+                        qui graph export bins/resc_`LANGLABEL'_gr`grade'_coh`cohort'_lorenz_`dataset'.png, replace width(800) height(500)
                     }
                 }
                 else if "`dataset'"=="tusome" {
@@ -80,9 +105,9 @@ foreach dataset of loc datasets {
                         loc result_row = `" `raw_results' "'
                         `debug' post `postLorenz' `result_row'
                         if `verbose' set trace off
-                        qui lorenz `LANGVAR' if grade==`grade', svy over(treat_phase) graph(overlay aspectratio(1) xlabels(,grid) legend(cols(1)) ciopts(recast(rline) lp(dash)) title("Lorenz curve for Grade `grade' `LANGLABEL'" "by Round of Assessment") text(1 25 "Grade `grade' `LANGLABEL'", orient(horizontal) justification(left) box) xtitle("Percentage of Population") ytitle("Cumulative Proportion of ORF"))
-                        qui graph save bins/`LANGLABEL'_gr`grade'_lorenz_`dataset', replace
-                        qui graph export bins/`LANGLABEL'_gr`grade'_lorenz_`dataset'.png, replace width(800) height(500)
+                        qui lorenz `LANGVAR' if grade==`grade', svy over(treat_phase) graph(overlay aspectratio(1) xlabels(,grid) legend(cols(1)) ciopts(recast(rline) lp(dash)) title("Lorenz curve for Rescaled Grade `grade' `LANGLABEL'" "by Round of Assessment") text(1 25 "Grade `grade' `LANGLABEL'", orient(horizontal) justification(left) box) xtitle("Percentage of Population") ytitle("Cumulative Proportion of ORF"))
+                        qui graph save bins/resc_`LANGLABEL'_gr`grade'_lorenz_`dataset', replace
+                        qui graph export bins/resc_`LANGLABEL'_gr`grade'_lorenz_`dataset'.png, replace width(800) height(500)
                 }
             }
         }
@@ -114,6 +139,6 @@ foreach p of loc percentages {
 }
 
 save "C:\Dropbox\BerkeleyMIDS\projects\unesco_chapter\bins\lorenz_data_both.dta", replace
-export excel "lorenz_data_both.xlsx", firstrow(var) sheet("raw", mod)
+export excel "lorenz_data_both_rescaled.xlsx", firstrow(var) sheet("raw", modify)
 pause "What do you see?"
 di "Made it here..."

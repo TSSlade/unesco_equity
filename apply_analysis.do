@@ -36,10 +36,10 @@ program define apply_analysis
         levelsof ext_pops, loc(ext_pops_id)
         loc ext_pops_ct: word count `ext_pops_id'
     }
-    egen parent_pops = group(`parent_ge2'), label
-    levelsof parent_pops, loc(parent_pops_id)
-    loc parent_pops_label: value label parent_pops      // So we can extract the labels later during debugging
-    loc parent_pops_ct: word count `parent_pops_id'
+    * egen parent_pops = group(`parent_ge2'), label
+    * levelsof parent_pops, loc(parent_pops_id)
+    * loc parent_pops_label: value label parent_pops      // So we can extract the labels later during debugging
+    * loc parent_pops_ct: word count `parent_pops_id'
 
     // Reporting on the results of the subpopulations
     `verbosity': di as error "These were the variables provided to define core subpopulations of interest:"
@@ -258,7 +258,12 @@ program define apply_analysis
                     // which the package could also provide.
                         di as error "Deriving GEs using ineqdec0 and in/outgroup approach b/c we need to retain zero scores"
                             * ineqdec0 `v' [aweight=`wtvar'], bygroup(ingroup)
-                            ineqdec0 `v' [aweight=`wtvar'], bygroup(core_pops)
+                            if `svy' {
+                                ineqdec0 `v' [aweight=`wtvar'], bygroup(core_pops)
+                            }
+                            else {
+                                ineqdec0 `v', bygroup(core_pops)
+                            }
                             loc ge2_overall = r(ge2)
                             loc ge2_sp`id'_ingroup = . // r(ge2_1)
                             loc ge2_sp`id'_outgroup = . // r(ge2_0)
