@@ -35,7 +35,7 @@ global uwezo_dir="data/uwezo/"
 cd $p_dir
 log using "logs/egra_preprocessing_$c_datetime.txt", text name(main_log)
 
-do apply_analysis.do
+do 00_apply_analysis.do
 
 capture postutil clear      // Wiping out any open postfiles we may have
 
