@@ -34,8 +34,8 @@ In brief, the approach involves
 1. Writing your narrative in a `.txt` file
 1. Embedding executable code blocks within that file using the paradigm shown below
 ```stata
-~~~~            <- these mark the beginning of a code block
-<<dd_do>>       <- this indicates the kind of execution/compilation Stata should do
+~~~~       /* <- these mark the beginning of a code block */
+<<dd_do>>  /* <- this indicates the kind of execution/compilation Stata should do */
 summ orf if grade==2 & lat_round==3 /* This is the code /*
 scalar pre1 = `r(mean)'             /* that will be both displayed and */
 summ orf if grade==3 & lat_round==4 /* executed during the compilation */
