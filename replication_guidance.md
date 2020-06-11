@@ -50,3 +50,7 @@ scalar pct_loss1 = loss1 / pre1
     1. For our purposes, please compile to HTML. You can then simply read it in your browser.
 
 When you have analytical code that you are ready to have reviewed, you can upload it to GitHub. There is a whole command line-based process you can read up on if you'd like, but you can also simply do it via the GUI. Please do your work in a _branch_ of the codebase bearing your name so we don't have multiple versions of the `main` codebase running into each other. Please reach out for assistance if you require it.
+
+## A side note
+
+There is an unfortunate history in the field of computing of using the terms 'master' and 'slave' to refer to various features of computer architecture and infrastructure. That language also applies to GitHub's default `master` branch language. As [described here by Prof. Hanselman](https://www.hanselman.com/blog/EasilyRenameYourGitDefaultBranchFromMasterToMain.aspx) it is trivially easy to choose to use different language when engaging with these computing systems, and so we will. Our 'main' or 'primary' or 'production' version of the codebase is now called `main`. If you choose to read up on GitHub and `git` more broadly and see that the default examples always refer to `master`, simply know that you can mentally swap in `main` for `master` within the context of our repo and you'll be fine.
