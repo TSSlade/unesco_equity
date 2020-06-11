@@ -305,8 +305,10 @@ program define apply_analysis
                 di as error "{p}While working on [`v'] and [`id']{p_end} encountered subgroup where the scores cannot support the calculation requested{p}GEI counts were{p_end}"
             }
             else if _rc != 0 {
-                loc code = _rc
+                loc code = _r
                 di as error "Another error arose while calculating{p}Generalized entropy indices for [`v'] and [`id']{p_end}"
+                
+                ****code runs smoothly up to here. Does it have anything to do with including 0 in the entropy calculations???*****
                 pause di as inform "The program will exit with return code `code': care to investigate first?"
                 exit `code'
             }
