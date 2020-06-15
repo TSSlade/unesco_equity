@@ -5,6 +5,7 @@
     - pshare
     - svygei
     - lorenz
+    - groups
 2) Parameters:
     - Depending on the number of subpopulations you provide, you may need to -set matsize-
         to a larger value than the default (400). I have been able to get away with
