@@ -402,7 +402,7 @@ program define apply_analysis
 foreach c of var `core' {
     capture confirm str var `c'
     if _rc != 0 {
-        label save `: value label `c'' using labels_`c', replace
+        label save `: value label `c'' using 99_labels_`c', replace
     }
 }
 
