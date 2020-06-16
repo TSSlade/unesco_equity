@@ -424,7 +424,8 @@ foreach c of var `core' {
 `verbosity' di "Find results in `:pwd' at `target'"
 save `target'.dta, replace
 * pause "Check appropriately labeled..."
-restore
+restore 
 drop core_pops iszero ingroup
+label drop core_pops
 capture drop ext_pops
 end
