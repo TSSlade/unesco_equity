@@ -26,7 +26,7 @@ Once you have done so, there are several areas of inquiry to pursue. The public 
         1. Replicate the analysis using heavily right-skewed data, such as
             1. [the Malawi EGRA external evaluation (pending)](TBD)
             2. [Malawi EGRA internal LAT data (pending)](TBD)
-            3. [Malawi MERIT](rtifile02/cidprojectshares/09354 EdData II/Task 3 EGRA/Final Databases/_Public Use Data/PUF_3.Malawi2016-2017-2018-MERIT_grade1-2-3_EGRA-SSME_Chichewa.zip)
+            3. [Malawi MERIT](file://///rtifile02/cidprojectshares/09354 EdData II/Task 3 EGRA/Final Databases/_Public Use Data/PUF_3.Malawi2016-2017-2018-MERIT_grade1-2-3_EGRA-SSME_Chichewa.zip)
             4. [DRC PAQUED (Gr 2,4,6 Baseline-Endline)](rtifile02\cidprojectshares\09354 EdData II\Task 3 EGRA\Final Databases\_Public Use Data\PUF_DRC_Baseline_Endline Grade 2-4-6 French Sample A.zip), [DRC PAQUED IRI Plus](\\rtifile02\cidprojectshares\09354 EdData II\Task 3 EGRA\Final Databases\_Public Use Data\PUF_DRC_Midline_Endline Grade 2-4 French IRI Plus.zip)
             5. [DRC EdData II](\\rtifile02\cidprojectshares\09354 EdData II\Task 3 EGRA\Final Databases\_Public Use Data\PUF_3.DRC2015-4Regions_grade3-5_EGRA-EGMA-SSME_French-Lingala-Tshiluba-Kiswahili.zip)
         1. ...as well as with more-normally distributed data, such as
