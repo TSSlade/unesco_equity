@@ -193,3 +193,80 @@ twoway ///
     graph export "qreg_`p'_stata.svg" ,name(`p')
     graph export "qreg_`p'_stata.png" ,name(`p')
 }
+
+**** Graphs with fitted lines
+
+loc gini_plot       = `" gini_com gini_ref gini_line_of_equality gini_line_at_85 gini_line_at_15 "0.3(0.1)1" "0.3(0.1)1" "'   
+loc gini_plot_labels = `" "Gini Coefficient at t_0" "Gini Coefficient at t_1" "'
+loc gini_plot_title = `" "Change in Gini coefficient" "over time" "'
+loc gini_plot_legend = `" label(3 "Gini") label(1 "Line of Equality") label(2 "fitted line") "'
+
+loc mean_plot       = `" mean_com mean_ref mean_line_of_equality mean_line_at_85 mean_line_at_15 "0(10)70" "0(10)70" "'
+loc mean_plot_labels = `" "Mean ORF (cwpm) at t_0" "Mean ORF (cwpm) at t_1" "'
+loc mean_plot_title = `" "Change in Mean ORF (cwpm)" "over time" "'
+loc mean_plot_legend = `" label(3 "Mean ORF") label(1 "Line of Equality") label(2 "fitted line") "'
+
+loc cv_plot         = `" cv_com cv_ref cv_line_of_equality cv_line_at_85 cv_line_at_15 "0(4)20" "0(4)20" "'
+loc cv_plot_labels = `" "Coefficient of Variation at t_0" "Coefficient of Variation at t_1" "'
+loc cv_plot_title = `" "Change in Coefficient of Variation (%)" "over time" "'
+loc cv_plot_legend = `" label(3 "Coefficient of Variation") label(1 "Line of Equality") label(2 "fitted line") "'
+
+loc pct_zero_plot   = `" pct_zero_com pct_zero_ref pct_zero_line_of_equality pct_zero_line_at_85 pct_zero_line_at_15 "0(.1).70" "0(.1).70" "'
+loc pct_zero_plot_labels = `" "Percentage of Zero Scores at t_0" "Percentage of Zero Scores at t_1" "'
+loc pct_zero_plot_title = `" "Change in Percentage of Zero Scores (%)" "over time" "'
+loc pct_zero_plot_legend = `" label(3 "Pct Zero Scores") label(1 "Line of Equality") label(2 "fitted line") "'
+
+loc plotlist "gini_plot mean_plot cv_plot pct_zero_plot"  
+
+foreach p of loc plotlist {
+    loc yvar: word 1 of ``p''
+    loc xvar: word 2 of ``p''
+    loc eqlin: word 3 of ``p''
+    loc trend_lower: word 5 of ``p''
+    loc yrange: word 6 of ``p''
+    loc xrange: word 7 of ``p''
+	loc xline: word 6 of ``p''
+	loc yline: word 6 of ``p''
+    loc xaxis_title: word 1 of ``p'_labels'
+    loc yaxis_title: word 2 of ``p'_labels'
+    
+twoway ///
+    line `eqlin' `xvar', msymbol(o) lcolor(gs12) lpattern(solid) lwidth(vthin)  ||    ///
+    lfit `yvar' `xvar', lpattern(shortdash) lcolor(gs0) || ///
+    scatter `yvar' `xvar' , msymbol(o) mcolor(cranberry) msize(small)    ///
+    yscale(range(`yrange') titlegap(4))      ///
+    xscale(range(`xrange') titlegap(2))      ///
+    ylabel(`yline', nogrid) ytitle(`yaxis_title', margin(medium))    ///
+    xlabel(`xline', nogrid) xtitle(`xaxis_title', margin(medium))    ///
+     ///
+    legend(``p'_legend' span) ///
+    aspect(1) name(`p', replace) title(``p'_title') ///
+    graphregion(margin(l+5 r+5)) ///
+    plotregion(margin(l+5 r+5)) ///
+    xsize(5) ysize(5)
+    graph save "bins/CS20-mt-S03-V01-qreg_`p'_stata_lfit.gph", replace
+    graph export "bins/CS20-mt-S03-V01-qreg_`p'_stata_lfit.svg" ,name(`p') replace
+    graph export "bins/CS20-mt-S03-V01-qreg_`p'_stata_lfit.png" ,name(`p') replace
+
+}
+ 
+**** Quantile regression using differences
+ 
+ gen mean_diff_squared = mean_diff^2
+    foreach n of num 15 85 {
+        qreg gini_diff mean_diff mean_diff_squared, quantile(0.`n')
+        matrix diff_qreg`n' = r(table)
+        scalar diff_qreg_coeff`n' = diff_qreg`n'[1,1]
+        scalar diff_qreg_coeff`n'_squared = diff_qreg`n'[1,2]
+        scalar diff_qreg_coeff`n'_int = diff_qreg`n'[1,3]
+
+        gen diff_line_at_`n' = diff_qreg_coeff`n'_int + (mean_diff * diff_qreg_coeff`n') + (mean_diff_squared * diff_qreg_coeff`n'_squared)
+    }
+
+twoway scatter gini_diff mean_diff , msymbol(o) mcolor(cranberry) msize(small) legend(label(3 "p15 regression line") label(1 Change in Gini Coefficient) label(2 "fitted line") label(4 "p85 regression line")) || lfit gini_diff mean_diff, lpattern(solid) lcolor(gs0) || lfit diff_line_at_15 mean_diff,lpattern(shortdash) lcolor(gs0) || lfit diff_line_at_85 mean_diff,lpattern(longdash) lcolor(gs0) ///
+       ///
+       yscale(range(-0.4(0.1)0.1) titlegap(4))  ylabel(-0.4(0.1)0.1, nogrid) ytitle(Change in Gini Index, margin(medium))  ///
+	   xscale(range(0(5)35) titlegap(2))  xlabel(0(5)35, nogrid) xtitle( Change in mean ORF, margin(medium))  ||
+	   graph save "bins/CS20-mt-S03-V01-qreg_diff_lfit.gph", replace
+       graph export "bins/CS20-mt-S03-V01-qreg_diff_lfit.svg" ,replace
+       graph export "bins/CS20-mt-S03-V01-qreg_diff_lfit.png" , replace
