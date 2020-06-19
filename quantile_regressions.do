@@ -8,7 +8,7 @@ append using "C:\Dropbox\BerkeleyMIDS\projects\unesco_chapter\tusome_core.dta"
 // we want to separate our demographic variables from our instrumental variables
 local demo_vars = "project language reference comparison"
 // these are the variables we'll comapre across two time points
-local vars_to_compare = "mean cv ratio_p90p10 ratio_p75p25 pct_zero gini ge2_overall ge2_ingroup ge2_outgroup between_ge2 within_ge2"
+local vars_to_compare = "mean cv ratio_p90p10 ratio_p75p25 pct_zero gini ge2_overall between_ge2 within_ge2"
 
 // we'll use a tempfile for our merging process
 tempfile time_0 time_1
@@ -91,6 +91,8 @@ merge 1:1 dataset match_key measure_label using "`time_1'", keepusing(*_com)
 
 drop is_time*
 
+local vars_to_compare = "mean cv ratio_p90p10 ratio_p75p25 pct_zero gini ge2_overall between_ge2 within_ge2"
+
 foreach v of loc vars_to_compare {
     gen `v'_diff = `v'_com - `v'_ref
     order `v'_diff, after(`v'_com)
@@ -117,7 +119,6 @@ order dataset match_key subpop_label_ref subpop_label_com grade cohort measure_l
 export excel "C:\Dropbox\BerkeleyMIDS\projects\unesco_chapter\quantile_regressions.xlsx", sh(quantiles) sheetmod first(var)
 
 
-
 program define make_qreg_scatters
     syntax , Yvar(var) Xvar(var) EQuality(var) [High(var) Low(var) XRange(string) YRange(string)]
 
@@ -137,6 +138,7 @@ end
 clonevar mean_line_of_equality = mean_ref
 clonevar cv_line_of_equality = cv_ref
 clonevar pct_zero_line_of_equality = pct_zero_ref
+clonevar gini_line_of_equality = gini_ref
 
 
 loc gini_plot       = `" gini_com gini_ref gini_line_of_equality gini_line_at_85 gini_line_at_15 "0.3(0.1)1" "0.3(0.1)1" "'
