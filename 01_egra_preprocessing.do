@@ -6,6 +6,7 @@
     - svygei
     - lorenz
     - groups
+ 	  - ineqdec0
 2) Parameters:
     - Depending on the number of subpopulations you provide, you may need to -set matsize-
         to a larger value than the default (400). I have been able to get away with
@@ -25,7 +26,7 @@ pause on
 log close _all
 
 // Define vars
-global p_dir="C:/Dropbox/BerkeleyMIDS/projects/unesco_chapter"
+global p_dir="D:\Users\ccampton\Documents\unesco_equity"
 local c_time: di %td_CY-N-D date("$S_DATE", "DMY") "_$S_TIME"
 global c_datetime=trim(subinstr("`c_time'",":","-",.))
 
