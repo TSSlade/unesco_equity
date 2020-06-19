@@ -4,8 +4,9 @@
 1) Required packages:
     - pshare
     - svygei
-	- lorenz
-	- ineqdec0
+    - lorenz
+    - groups
+ 	  - ineqdec0
 2) Parameters:
     - Depending on the number of subpopulations you provide, you may need to -set matsize-
         to a larger value than the default (400). I have been able to get away with
