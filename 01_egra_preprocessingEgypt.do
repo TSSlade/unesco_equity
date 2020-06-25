@@ -50,8 +50,8 @@ use "$Egy_src", clear
 svyset
 
 // Ensure the variables which define our future subpopulations are well-labeled
-label define lbl_treat_phase 1 "Baseline" 6 "Endline" 
-label val treat_phase lbl_treat_phase
+//label define lbl_treat_phase 1 "Baseline" 6 "Endline" 
+//label val treat_phase lbl_treat_phase
 label define lbl_female 0 "Male" 1 "Female"
 label val female lbl_female
 // label define lbl_grade 1 "Gr1" 2 "Gr2" 3 "Gr3"
@@ -77,8 +77,7 @@ loc ara1_high = 35
 gen ara_bmark = 0
 
 // Applying Low
- recode ara_bmark (0 = 1) if ((grade==1 & ara_orf >= `ara_low') & (grade==1 & ara_orf < `ara_high'))
-
+recode ara_bmark (0 = 1) if ((grade==1 & ara_orf >= `ara1_low') & (grade==1 & ara_orf < `ara1_high'))
 // Applying High
 recode ara_bmark (0 = 2) if (grade==1 & ara_orf >= `ara1_high')
 label define lbl_aramark 0 "[ara_orf < `ara1_low'] " 1 "[ara_orf >=`ara1_low' <`ara1_high']" 2 "[ara_orf >`ara1_high']"
@@ -86,7 +85,7 @@ label val ara_bmark lbl_aramark
 
 // Consider destringing any variables you would use for the grouping
 // destring treat_phase grade female eng_bmark fre_bmark school_code, replace
-destring treat_phase grade female ara_bmark school_id, replace
+destring grade female ara_bmark school_code, replace
 
 save "Egy_unesco.dta", replace
 use "Egy_unesco.dta", clear
@@ -94,17 +93,16 @@ svyset
 
 // Super-granular analyses by subpopulation with additional parameters
 // Student-level data
-
-quietly: apply_analysis ara_orf, data("Egy") core(treat_phase grade) res("Egy_core") svy(1) wt(wt_final) zeros(1) varlabel("Arabic") ver(0) deb(0)
-quietly: apply_analysis ara_orf, data("Egy") core(treat_phase grade female) res("Egy_bysex") svy(1) wt(wt_final) zeros(1) varlabel("Arabic") ver(0) deb(0)
-quietly: apply_analysis ara_orf, data("Egy") core(treat_phase grade ara_bmark) res("Egy_arabmarks") svy(1) wt(wt_final) zeros(1) varlabel("Arabic") ver(0) deb(0)
-quietly: apply_analysis ara_orf, data("Egy") core(treat_phase grade school_code) res("Egy_byschool") svy(1) wt(wt_final) zeros(1) varlabel("Arabic") ver(0) deb(0)
+// Treat phase non-existent
+quietly: apply_analysis ara_orf, data("Egy") core(grade) res("Egy_core") svy(1) wt(wt_final) zeros(1) varlabel("Arabic") ver(0) deb(0)
+quietly: apply_analysis ara_orf, data("Egy") core(grade female) res("Egy_bysex") svy(1) wt(wt_final) zeros(1) varlabel("Arabic") ver(0) deb(0)
+quietly: apply_analysis ara_orf, data("Egy") core(grade ara_bmark) res("Egy_arabmarks") svy(1) wt(wt_final) zeros(1) varlabel("Arabic") ver(0) deb(0)
+quietly: apply_analysis ara_orf, data("Egy") core(grade school_code) res("Egy_byschool") svy(1) wt(wt_final) zeros(1) varlabel("Arabic") ver(0) deb(0)
 
 
 loc dataset_types "core bysex arabmarks byschool"
 
 foreach dt of loc dataset_types {
     use "Egy_`dt'.dta", clear
-	//append using "DRC_`dt'.dta"
 	export excel "bins/inequality_results_$c_datetime.xlsx", sh(`dt') firstrow(var) sheetmod
 }

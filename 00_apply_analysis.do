@@ -7,7 +7,7 @@ program define apply_analysis
     // 'benchmarks' varlist are dummy variables where 1 = in-group, 0 = out-group
     // 'urbanity' variable is a dummy variable where 1 = urban, 0 = rural
     // 'sestatus' varlist are dummy variables where 1 = in-group, 0 = out-group
-
+	pause on
     // Debugging the command inputs
     if `verbose' ==1 {
         di `"`0'"'
@@ -379,9 +379,13 @@ program define apply_analysis
                 pause "The program will exit with return code `code': care to investigate first?"
                 exit `code'
             }
-
+			di as error "Printing results row"
+			di as error `" `resultsOfInterest' "'
+			local row_ct: word count `resultsOfInterest'
+			di as error `row_ct'
+			//pause
             local resultRow `" `resultsOfInterest' "'
-
+			
             capture noisily post `postRes' `resultRow'
             if !_rc==0 {
                 loc code = _rc

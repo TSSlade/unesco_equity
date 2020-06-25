@@ -102,10 +102,10 @@ svyset
 // Super-granular analyses by subpopulation with additional parameters
 // Student-level data
 
-quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade) res("DRC_core") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
-quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade female) res("DRC_bysex") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
-quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade fre_bmark) res("DRC_frebmarks") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
-//quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade school_id) res("DRC_byschool") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
+//quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade) res("DRC_core") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
+//quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade female) res("DRC_bysex") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
+//quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade fre_bmark) res("DRC_frebmarks") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
+quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade school_id) res("DRC_byschool") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
 
 
 //loc dataset_types "core bysex engbmarks byschool"
@@ -114,5 +114,5 @@ loc dataset_types "core bysex engbmarks"
 foreach dt of loc dataset_types {
     use "DRC_`dt'.dta", clear
 	//append using "DRC_`dt'.dta"
-	export excel "bins/inequality_results_$c_datetime.xlsx", sh(`dt') firstrow(var) sheetmod
+	//export excel "bins/inequality_results_$c_datetime.xlsx", sh(`dt') firstrow(var) sheetmod
 }

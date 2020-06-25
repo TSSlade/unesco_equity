@@ -121,14 +121,14 @@ svyset
 // Super-granular analyses by subpopulation with additional parameters
 // Student-level data
 // Treat phase stratification removed. 
-quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRC") core(grade) res("DRC_core") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
-quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRC") core(grade female) res("DRC_bysex") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
-quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRC") core(grade fre_bmark) res("DRC_frebmarks") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
-quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRC") core(grade lin_bmark) res("DRC_linbmarks") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
-quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRC") core(grade tsh_bmark) res("DRC_tshbmarks") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
-quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRC") core(grade kis_bmark) res("DRC_kisbmarks") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
-quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRC") core(grade) res("DRC_frebmarks") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
-quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRC") core(grade school_code) res("DRC_byschool") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
+quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRCe") core(grade) res("DRCe_core") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
+quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRCe") core(grade female) res("DRCe_bysex") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
+quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRCe") core(grade fre_bmark) res("DRCe_frebmarks") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
+quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRCe") core(grade lin_bmark) res("DRCe_linbmarks") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
+quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRCe") core(grade tsh_bmark) res("DRCe_tshbmarks") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
+quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRCe") core(grade kis_bmark) res("DRCe_kisbmarks") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
+quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRCe") core(grade) res("DRCe_frebmarks") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
+quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRCe") core(grade school_code) res("DRCe_byschool") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
 
 loc dataset_types "core bysex frebmarks linbmarks tshbmarks kisbmarks byschool"
 
