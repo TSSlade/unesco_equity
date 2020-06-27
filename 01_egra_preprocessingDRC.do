@@ -107,9 +107,7 @@ quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade female) res(
 quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade fre_bmark) res("DRC_frebmarks") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
 quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade school_id) res("DRC_byschool") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
 
-
-//loc dataset_types "core bysex engbmarks byschool"
-loc dataset_types "core bysex engbmarks"
+loc dataset_types "core bysex engbmarks byschool"
 
 foreach dt of loc dataset_types {
     use "DRC_`dt'.dta", clear

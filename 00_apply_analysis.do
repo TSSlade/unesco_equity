@@ -139,6 +139,7 @@ program define apply_analysis
 					loc se_sp`id' = .
 					loc mean_95cil_sp`id' = .
 					loc mean_95cih_sp`id' = .
+					loc pct_zero_sp`id' = .
 					di as error "Subpopulation `id' has no values for `v' ."
 				}
             }
@@ -202,6 +203,43 @@ program define apply_analysis
             if `spnonmiss' == 0 {
                 `verbosity': di as error "No valid [`v'] for subpop [`id']. Skipping ahead."
 				// Must define as empty all variables which will not be created when skipping
+// 				loc pct_zero_sp`id' = .
+// 				loc p10_sp`id' = .
+// 				loc p90_sp`id' = .
+// 				loc p25_sp`id' = .
+// 				loc p75_sp`id' = .
+// 				loc ratio_p90p10_sp`id' = .
+// 				loc ratio_p75p25_sp`id' = .
+//				
+// 				loc gini_sp`id' = .
+// 				loc ge2_sp`id'_ingroup = .
+// 				loc ge2_sp`id'_outgroup  = .
+// 				loc ge2_for_subpop_sp`id'  = .
+// 				loc between_ge2_sp`id'  = .
+// 				loc within_ge2_sp`id' = .
+// 				loc gem1_sp_`id'  = .
+// 				loc ge0_sp_`id'  = .
+// 				loc ge1_sp_`id'  = .
+// 				loc ge2_sp_`id'_ingroup  = .
+// 				loc ge2_sp_`id'_outgroup  = .
+// 				loc gem1_se_sp_`id'  = .
+// 				loc ge0_se_sp_`id'  = .
+// 				loc ge1_se_sp_`id' = .
+// 				loc ge2_se_sp_`id'  = .
+// 				loc gem1_95cil_sp_`id'  = .
+// 				loc gem1_95cih_sp_`id'  = .
+// 				loc ge0_95cil_sp_`id'  = .
+// 				loc ge0_95cih_sp_`id'  = .
+// 				loc ge1_95cil_sp_`id'  = .
+// 				loc ge1_95cih_sp_`id'  = .
+// 				loc ge2_95cil_sp_`id'  = .
+// 				loc ge2_95cih_sp_`id' = .
+// 				loc ge2_sp`id'_ingroup = . 
+// 				loc ge2_sp`id'_outgroup = . 
+// 				loc ge2_for_subpop_sp`id' = .
+// 				loc between_ge2_sp`id' = .
+// 				loc pct_zero_sp`id' = .
+// 				loc within_ge2_sp`id' = .
                 continue
             }
             capture `verbosity' {
@@ -352,9 +390,10 @@ program define apply_analysis
                 di as error "{p}While calculating pct_zeros [`v'] encountered where the scores cannot support the calculation requested{p_end}"
                 mat list mean_counts
 				if `debug' noisily count if core_pops==`id' & `v' != .
-				loc spnonmiss = r(N)
-				if `spnonmiss' == 0 {
+				capture di pct_zero_sp`id'
+				if !_rc{
 					loc pct_zero_sp`id' = .
+					di as error "Setting pct_zero as empty for `id'"
 				}
             }
             else if _rc != 0 {
@@ -389,7 +428,7 @@ program define apply_analysis
             }
 			capture di pct_zero_sp`id'
 			if !_rc{
-				pct_zero_sp`id' = .
+				loc pct_zero_sp`id' = .
 				di as error "Setting pct_zero as empty for `id'"
 			}
             loc subpop_label  = subinstr("`: label core_pops `id''"," ", "_", .)
