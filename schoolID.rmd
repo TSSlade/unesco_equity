@@ -1,0 +1,67 @@
+---
+title: "School Id Variancee"
+author: "Cole Campton"
+date: "7/27/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(haven)
+library(DescTools)
+library(tidyverse)
+
+# Two data types, PUF and final. Find the 'best' dataset for each file; if there is a `final' version, use that instead.
+fileListingPUF <- list.files("D:/Users/ccampton/Documents/unesco_equity/data",recursive=TRUE,pattern= "^PUF.*.dta$",full.names=TRUE)
+fileListingFinal <- list.files("D:/Users/ccampton/Documents/unesco_equity/data",recursive=TRUE,pattern= "^4.*.dta$",full.names=TRUE)
+mask = unlist(lapply(fileListingPUF, function(x) dirname(x) %in% dirname(fileListingFinal)))
+fileListingPUF <- fileListingPUF[!mask]
+fileListing <- c(fileListingPUF, fileListingFinal)
+# These Strings are searched for as sub-strings in filenames to label the results. 
+countryNames <- c("Malawi", "DRC","Philippines","Egypt","Kenya")
+# This is hierarchial list to define the orf variable when "orf" is not available.
+orfnames <- c("orf","mt_orf","ph_orf","e_orf_a","k_orf")
+# List of factors to consider
+factorList <- c("school_id","treat_phase","grade","language")
+```
+
+```{r analysis, echo=FALSE}
+for(i in 1:length(fileListing)){
+  data <- read_dta(fileListing[i])
+  # Defines treat_phase as either included, year, or month based on hierarchy
+  if (!"treat_phase"%in% colnames(data)){
+      if ("year"%in% colnames(data)){
+        if(length(unique(data$year))>1){
+          data$treat_phase <- data$year
+        }else{
+          data$treat_phase <- data$month
+        }
+      }
+  }
+  # Use school_id
+  if (! "school_id" %in% colnames(data)){
+    data$school_id <- data$school_code
+  }
+  # Language defined
+  if (! "language"%in% colnames(data)){
+    data$language <- rep(1,nrow(data))
+  }
+  # Convert each of the factors into factors
+  data$grade <- as.factor(data$grade)
+  data$treat_phase <- as.factor(data$treat_phase)
+  data$school_id <- as.factor(data$school_id)
+  data$language <- as.factor(data$language)
+  country <- stringr::str_extract(basename(fileListing[i]) ,paste(countryNames,collapse="|"))
+  cat(paste0("Analysis of variance for ",country,"\n"))
+  orfnamesMask <- orfnames %in% colnames(data)
+  for(l in which(orfnamesMask==1)){
+    cat(paste0("Oral fluency measure: ",orfnames[l]),"\n")
+    #Find which of the pre-defined factors have more than one level. 
+    dataSub <- na.omit(data[,c(orfnames[l], factorList)])
+    factorMask <- unlist(lapply(factorList,function(x) length(unlist(unique(dataSub[,x])))))>1
+    #Anova considering the above factors
+    fit <- aov(as.formula(paste(orfnames[l]," ~", paste(factorList[factorMask], collapse="*"))), data=dataSub)
+    print(summary(fit))
+  }
+}
+```
