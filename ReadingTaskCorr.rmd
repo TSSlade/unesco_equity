@@ -1,0 +1,138 @@
+---
+title: "Reading Task Correlation"
+author: "Cole Campton"
+date: "7/27/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(haven)
+library(DescTools)
+library(tidyverse)
+
+# Two data types, PUF and final. Find the 'best' dataset for each file; if there is a `final' version, use that instead.
+fileListingPUF <- list.files("D:/Users/ccampton/Documents/unesco_equity/data",recursive=TRUE,pattern= "^PUF.*.dta$",full.names=TRUE)
+fileListingFinal <- list.files("D:/Users/ccampton/Documents/unesco_equity/data",recursive=TRUE,pattern= "^4.*.dta$",full.names=TRUE)
+mask = unlist(lapply(fileListingPUF, function(x) dirname(x) %in% dirname(fileListingFinal)))
+fileListingPUF <- fileListingPUF[!mask]
+fileListing <- c(fileListingPUF, fileListingFinal)
+# These Strings are searched for as sub-strings in filenames to label the results. 
+countryNames <- c("Malawi", "DRC","Philippines","Egypt","Kenya")
+# This is hierarchial list to define the orf variable when "orf" is not available.
+orfnames <- c("orf","mt_orf","ph_orf","e_orf_a","k_orf")
+# List of factors to consider
+factorList <- c("school_id","treat_phase","grade","language")
+readingvars <- c("syll_sound_score", "fam_word_score","letter_sound_score","pa_phon_sound_score","vocab_word_score","invent_word_score","orf","read_comp_score","read_comp_score_pct","list_comp_score")
+
+
+readingVarLabels <- c("Syllable Sound","Familiar Word","Letter Sound","Sound Id","Vocab Word","Unfamiliar Word", "Connected Text Fluency","Reading Comp %","Reading Comp","Listening Comp")
+NMISSINGTHRESHOLD <- 5
+```
+
+```{r analysis, echo=FALSE}
+for(i in 1:length(fileListing)){
+  data <- read_dta(fileListing[i])
+  
+  prefixmatches <- colnames(data)[!is.na(stringr::str_extract(colnames(data),"orf"))]
+  varind <- unlist(lapply(prefixmatches,function(x) which(strsplit(x,"")[[1]]=="_")[1]))
+  temp <- rep("",length(varind))
+  for(j in 1:length(varind)){
+    if( !is.na(varind[j])){
+      temp[j] <- substr(prefixmatches[j],1,varind[j])
+    }
+  }
+  prefixes = unique(temp)
+  prefixes <- prefixes[unlist(lapply(prefixes, function(x) sum(paste0(x,readingvars) %in% colnames(data)))) >= (NMISSINGTHRESHOLD)]
+  
+    # Defines treat_phase as either included, year, or month based on hierarchy
+  if (!"treat_phase"%in% colnames(data)){
+      if ("year"%in% colnames(data)){
+        if(length(unique(data$year))>1){
+          data$treat_phase <- data$year
+        }else{
+          data$treat_phase <- data$month
+        }
+      }
+  }
+  # Use school_id
+  if (! "school_id" %in% colnames(data)){
+    data$school_id <- data$school_code
+  }
+  # Language defined
+  if (! "language"%in% colnames(data)){
+    data$language <- rep(1,nrow(data))
+  }
+  # Convert each of the factors into factors
+  data$grade <- as.factor(data$grade)
+  data$treat_phase <- as.factor(data$treat_phase)
+  data$school_id <- as.factor(data$school_id)
+  data$language <- as.factor(data$language)
+  country <- stringr::str_extract(basename(fileListing[i]) ,paste(countryNames,collapse="|"))
+  
+  cat(paste0("Reading Task Correlation for ",country,"\n"))
+  grades <- unlist(unique(data[,"grade"]))
+  phases <- unlist(unique(data[,"treat_phase"]))
+  for(g in grades){
+  for(p in phases){
+  gpmask <- data$grade == g & data$treat_phase ==p
+  if(sum(gpmask)>0){
+  for(lang in prefixes){
+    cat(paste0("Results for Grade ",g,", Phase ",p,", ",lang,"orf",". \n"))
+    langvars = paste0(lang,readingvars)
+    langvarsMask <- langvars %in% colnames(data)
+    langsub <- na.omit(data[gpmask, langvars[langvarsMask]])
+    while(nrow(langsub)==0 & sum(langvarsMask)>0){
+      minind <-which.min(unlist(lapply(langvars[langvarsMask], function(x) sum(!is.na(data[gpmask,x])))))
+      langvarsMask[which(langvarsMask)[minind]] <- FALSE
+      langsub <- na.omit(data[gpmask, langvars[langvarsMask]])
+    }
+    nUnique <- unlist(lapply(langvars[langvarsMask], function(x) length(unlist(unique(data[gpmask,x])))))
+    langvarsMask[langvarsMask] <- nUnique>1
+    langsub <- na.omit(data[gpmask, langvars[langvarsMask]])
+    langLab <-  readingVarLabels[langvarsMask]
+    langCor <- cor(langsub)
+    rownames(langCor) <- langLab
+    colnames(langCor) <- langLab
+    print(round(langCor,3))
+    
+    aout <- psych::alpha(langsub)
+    cronbachout <- cbind(aout$item.stats[,c("r.cor","r.drop")],aout$alpha.drop[,c("raw_alpha","average_r")])
+    rownames(cronbachout) <- langLab
+    totalRow <- c("","",round(aout$total[,c("raw_alpha","average_r")],3))
+    names(totalRow) <- c("r.cor","r.drop","raw_alpha","average_r")
+    cronbachout <- rbind(round(cronbachout,3),totalRow)
+    rownames(cronbachout)[nrow(cronbachout)] <- "Overall Test"
+    colnames(cronbachout) <- c("Item-test","Item-rest","Av. Inter-item", "Alpha")
+    print(cronbachout)
+    
+    if(sum(langvarsMask)>4){
+    weakestRemove <- order(aout$item.stats[,"r.drop"])[c(-1,-2)]
+    langsubStrong <- na.omit(data[gpmask, colnames(langsub)[weakestRemove]])
+    aout <- psych::alpha(langsubStrong)
+    cronbachout <- cbind(aout$item.stats[,c("r.cor","r.drop")],aout$alpha.drop[,c("raw_alpha","average_r")])
+    rownames(cronbachout) <- langLab[weakestRemove]
+    totalRow <- c("","",round(aout$total[,c("raw_alpha","average_r")],3))
+    names(totalRow) <- c("r.cor","r.drop","raw_alpha","average_r")
+    cronbachout <- rbind(round(cronbachout,3),totalRow)
+    rownames(cronbachout)[nrow(cronbachout)] <- "Overall Test"
+    colnames(cronbachout) <- c("Item-test","Item-rest","Av. Inter-item", "Alpha")
+    print(cronbachout)
+    }
+    
+    PCA <- prcomp(langsub)
+    compVar <- matrix(PCA$sdev/sum(PCA$sdev))
+    rownames(compVar) <- paste0("Comp",1:length(compVar))
+    colnames(compVar) <- "Variance Explained"
+    print(compVar)
+    
+    itemW <- matrix(abs(PCA$rotation[,1]))
+    rownames(itemW) <- langLab
+    colnames(itemW) <- "Comp1 Weight"
+    print(itemW)
+  }
+  }
+  }
+  }
+}
+```
