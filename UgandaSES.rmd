@@ -87,6 +87,8 @@ We segment into subpopulations by language and grade, producing quantile regress
 It appears from the above analysis that the majority of change in MRF occurs in the lowest tertile of wealth. 
 
 ```{r ntiles,echo=FALSE, warning=FALSE}
+mode <- function(x) names(table(unlist(x)))[table(unlist(x))==max(table(unlist(x)))]
+zero2na <- function(x) ifelse(x==0,NA,x)
 ntiles = c(2,3,4)
 normorf <- matrix(NA, ncol=1,nrow=nrow(data))
 
@@ -127,6 +129,10 @@ subpopVars <- c("grade")
   nsubpops <- length(subpops)
 }
 
+xlsxCols <- c("dataset",	"measure_label","grade", "treat_phase","gini","mean", "cv", "ratio_p90p10","ratio_p75p25", "pct_zero")
+UgandaXlsx <- (matrix('',nrow = nphases*nsubpops+1,ncol = length(xlsxCols)))
+UgandaXlsx[1,] <- xlsxCols
+
 for(ns in 1:length(ntiles)){
 ntile = ntiles[ns]
 # Generate n-tile masks
@@ -146,7 +152,7 @@ ntile = ntiles[ns]
   ntileTab[(4*(ntile+1)+3),1 ] <- "Counts"
 }
 for(sp in 1:nsubpops){
-  SES <- na.omit(data[subpopmasks[,sp],c("orf","treat_phase",SESfeat)])
+  SES <- na.omit(data[subpopmasks[,sp],c("orf","treat_phase","grade",SESfeat)])
   #ORF verse SES index by sub-populations
   if(ns==1){
     SESind <-  projPC(SES[,SESfeat])
@@ -197,6 +203,9 @@ for(sp in 1:nsubpops){
       
     ntileTab[2+4*(ntile+1),2+nphases*(sp-1)+p] <- mean(SESphase) #MRF Qi
     ntileTab[3+4*(ntile+1),2+nphases*(sp-1)+p] <- length(SESphase)
+    
+    xlsxphase <- na.omit(SES[phasemask,])
+    UgandaXlsx[(sp-1)*nphases+p+1,] <- c('Uganda', 'English', mode(xlsxphase$grade), mode(xlsxphase$treat_phase), Gini(SESphase), mean(SESphase), sd(SESphase)/mean(SESphase), quantile(SESphase,.90)/zero2na(quantile(SESphase,.10)), quantile(SESphase,.75)/zero2na(quantile(SESphase,.25)), sum(SESphase==0)/length(SESphase))
     }
     }
     # Add n-tile measures for of of the n n-tiles
@@ -253,6 +262,9 @@ ntileTab[is.na(ntileTab)] <- ""
 print(ntileTab, row.names=FALSE,col.names=FALSE)
 
 }
+library("xlsx")
+xlsxpath = "D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Cole/newResults/Uganda"
+write.xlsx(x = UgandaXlsx, file = "inequality_results_Uganda.xlsx",sheetName = "core", row.names = FALSE, col.names=FALSE)
 
 ```
 
