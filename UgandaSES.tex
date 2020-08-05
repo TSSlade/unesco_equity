@@ -1,0 +1,1773 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Uganda SES},
+  pdfauthor={Cole Campton},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\title{Uganda SES}
+\author{Cole Campton}
+\date{8/3/2020}
+
+\begin{document}
+\maketitle
+
+\hypertarget{coherence-and-summary-statistics}{%
+\section{Coherence and Summary
+Statistics}\label{coherence-and-summary-statistics}}
+
+First we will describe the percentage of the population which claims
+ownership of each asset.
+\includegraphics{UgandaSES_files/figure-latex/summary-1.pdf}
+\includegraphics{UgandaSES_files/figure-latex/summary-2.pdf}
+\includegraphics{UgandaSES_files/figure-latex/summary-3.pdf}
+\includegraphics{UgandaSES_files/figure-latex/summary-4.pdf} There are
+no students which were observed at two of baseline, midline or endline,
+meaning there is no opportunity for validating consistency of answers to
+SES questions.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{overlap =}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\DataTypeTok{data=} \DecValTok{0}\NormalTok{, }\DataTypeTok{nrow=}\DecValTok{8}\NormalTok{,}\DataTypeTok{ncol=}\DecValTok{8}\NormalTok{)}
+\ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\DecValTok{8}\NormalTok{)\{}
+\NormalTok{  di <-}\StringTok{ }\KeywordTok{na.omit}\NormalTok{(data[data}\OperatorTok{$}\NormalTok{treat_phase}\OperatorTok{==}\NormalTok{i,}\StringTok{"id"}\NormalTok{])}
+\NormalTok{  overlap[i,i] <-}\StringTok{ }\KeywordTok{length}\NormalTok{(di)}
+  \ControlFlowTok{for}\NormalTok{(j }\ControlFlowTok{in} \KeywordTok{min}\NormalTok{((i}\OperatorTok{+}\DecValTok{1}\NormalTok{),}\DecValTok{8}\NormalTok{)}\OperatorTok{:}\DecValTok{8}\NormalTok{)\{}
+\NormalTok{    dj <-}\StringTok{ }\KeywordTok{na.omit}\NormalTok{(data[data}\OperatorTok{$}\NormalTok{treat_phase}\OperatorTok{==}\NormalTok{j,}\StringTok{"id"}\NormalTok{])}
+\NormalTok{    overlap[i,j] <-}\StringTok{ }\KeywordTok{length}\NormalTok{(}\KeywordTok{unlist}\NormalTok{(}\KeywordTok{intersect}\NormalTok{(di,dj)))}
+\NormalTok{  \}}
+\NormalTok{\}}
+\KeywordTok{print}\NormalTok{(overlap)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      [,1] [,2]  [,3] [,4] [,5] [,6] [,7] [,8]
+## [1,] 7249    0  1075 1658    0 1886 1737    0
+## [2,]    0 2492   914 2492    0    0    0    0
+## [3,]    0    0 11034 2107    0    0    0    0
+## [4,]    0    0     0 5347    0    0    0    0
+## [5,]    0    0     0    0 3886    0    0    0
+## [6,]    0    0     0    0    0 1886    0    0
+## [7,]    0    0     0    0    0    0 1737    0
+## [8,]    0    0     0    0    0    0    0    0
+\end{verbatim}
+
+\hypertarget{n-tile-ses-index-analysis-of-gini-and-mean-orf}{%
+\section{N-tile SES-index Analysis of Gini and Mean
+ORF}\label{n-tile-ses-index-analysis-of-gini-and-mean-orf}}
+
+First we conduct quantile analysis, evaluating the Gini coefficient,
+mean ORF, CV, and percent zero for each of the 2,3,4-tiles of our SES
+index. We segment into subpopulations by language and grade, producing
+quantile regressions for It appears from the above analysis that the
+majority of change in MRF occurs in the lowest tertile of wealth.
+
+\includegraphics{UgandaSES_files/figure-latex/ntiles-1.pdf}
+
+\begin{verbatim}
+## [1] "Treat phase 1 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value      Std. Error t value    Pr(>|t|)  
+## a          0          0 -700451663          0
+## b          0          0 1515710286          0
+## c          0          0 4855431863          0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value      Std. Error t value    Pr(>|t|)  
+## a          1          0  161210329          0
+## b          1          0  541965841          0
+## c          1          0 1110358134          0
+## [1] "Treat phase 2 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value      Std. Error t value    Pr(>|t|)  
+## a          0          0 -514125330          0
+## b          0          0 -535554167          0
+## c          0          0 2761909161          0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  0.29132  0.13355    2.18140  0.02928
+## b  0.12573  0.06767    1.85802  0.06333
+## c  0.21336  0.00754   28.27866  0.00000
+## [1] "Treat phase 3 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value      Std. Error t value    Pr(>|t|)  
+## a          0          0 -765998478          0
+## b          0          0 3838526786          0
+## c          0          0 4451931300          0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  1.00000  0.27692    3.61109  0.00031
+## b  1.00000  0.28288    3.53507  0.00041
+## c  1.00000  0.07293   13.71182  0.00000
+\end{verbatim}
+
+\includegraphics{UgandaSES_files/figure-latex/ntiles-2.pdf}
+
+\begin{verbatim}
+## [1] "Treat phase 2 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value      Std. Error t value    Pr(>|t|)  
+## a          0          0  306406277          0
+## b          0          0 -240953295          0
+## c          0          0 1177603323          0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a -0.27736  0.95188   -0.29138  0.77085
+## b -0.14559  0.79754   -0.18255  0.85521
+## c  2.05718  0.71360    2.88281  0.00407
+## [1] "Treat phase 3 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value       Std. Error  t value     Pr(>|t|)   
+## a           1           0  1894593953           0
+## b           1           0  3271811762           0
+## c           1           0 24543595504           0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  3.67171  1.16057    3.16372  0.00156
+## b  7.67625  0.71563   10.72655  0.00000
+## c  5.89605  0.48460   12.16677  0.00000
+## [1] "Treat phase 4 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value      Std. Error t value    Pr(>|t|)  
+## a          1          0  269739913          0
+## b          1          0  331766855          0
+## c          1          0 2266611094          0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a -0.33414  2.40269   -0.13907  0.88942
+## b  4.90583  2.01072    2.43983  0.01481
+## c 10.79822  1.44737    7.46057  0.00000
+## [1] "Treat phase 5 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value      Std. Error t value    Pr(>|t|)  
+## a          1          0  262081895          0
+## b          1          0  444510253          0
+## c          1          0 3184073137          0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value   Std. Error t value Pr(>|t|)
+## a 2.90402 3.06628    0.94708 0.34382 
+## b 7.21081 1.99241    3.61914 0.00031 
+## c 8.54476 1.89618    4.50631 0.00001 
+## [1] "Treat phase 7 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value     Std. Error t value   Pr(>|t|) 
+## a         1         0  169858712         0
+## b         1         0  185010897         0
+## c         1         0  947785974         0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a -2.32658  3.50293   -0.66418  0.50675
+## b  1.48746  2.76761    0.53745  0.59109
+## c  8.79005  2.67973    3.28020  0.00108
+\end{verbatim}
+
+\includegraphics{UgandaSES_files/figure-latex/ntiles-3.pdf}
+
+\begin{verbatim}
+## [1] "Treat phase 1 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value      Std. Error t value    Pr(>|t|)  
+## a          1          0  183247553          0
+## b          1          0  204668918          0
+## c          1          0 1844027116          0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  4.12782  2.69676    1.53066  0.12606
+## b 13.86633  1.33408   10.39389  0.00000
+## c 15.61067  0.84260   18.52668  0.00000
+## [1] "Treat phase 4 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value      Std. Error t value    Pr(>|t|)  
+## a          1          0  246610340          0
+## b          1          0  513307203          0
+## c          1          0 4079840634          0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  1.25346  2.09728    0.59766  0.55010
+## b  8.94145  1.64610    5.43189  0.00000
+## c 31.37805  0.88139   35.60084  0.00000
+## [1] "Treat phase 5 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  1.00000 27.11138    0.03688  0.97098
+## b  1.00000 13.71297    0.07292  0.94267
+## c  1.00000  3.47606    0.28768  0.77688
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a -9.99014 70.87093   -0.14096  0.88947
+## b  8.13238 47.77789    0.17021  0.86674
+## c 60.46348 20.87583    2.89634  0.00962
+## [1] "Treat phase 6 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value     Std. Error t value   Pr(>|t|) 
+## a         1         0   82279061         0
+## b         1         0  102964052         0
+## c         1         0  949664463         0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a 10.67919  5.17809    2.06238  0.03969
+## b -1.58865  2.98714   -0.53183  0.59508
+## c 24.47355  1.78995   13.67278  0.00000
+\end{verbatim}
+
+\includegraphics{UgandaSES_files/figure-latex/ntiles-4.pdf}
+
+\begin{verbatim}
+## [1] "Treat phase 5 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value      Std. Error t value    Pr(>|t|)  
+## a          1          0  447726044          0
+## b          1          0  669748567          0
+## c          1          0 4894288016          0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  4.04319  2.51592    1.60704  0.10816
+## b 11.02611  1.95530    5.63910  0.00000
+## c 49.95023  1.13609   43.96667  0.00000
+## [1] "Treat phase 6 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value   Std. Error t value Pr(>|t|)
+## a 1.00000 1.30284    0.76755 0.44288 
+## b 1.00000 1.17843    0.84859 0.39626 
+## c 1.00000 0.33232    3.00915 0.00267 
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a -6.13900  3.12273   -1.96591  0.04951
+## b  4.23061  2.25269    1.87803  0.06059
+## c 50.74126  1.42994   35.48482  0.00000
+\end{verbatim}
+
+\includegraphics{UgandaSES_files/figure-latex/ntiles-5.pdf}
+
+\begin{verbatim}
+## [1] "Treat phase 7 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a -7.87377  5.77738   -1.36286  0.17329
+## b  8.05286  4.83006    1.66724  0.09583
+## c 15.94491  3.00033    5.31438  0.00000
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a -1.68333  5.55615   -0.30297  0.76199
+## b  2.77245  5.05306    0.54867  0.58338
+## c 76.71471  2.86374   26.78831  0.00000
+\end{verbatim}
+
+\includegraphics{UgandaSES_files/figure-latex/ntiles-6.pdf}
+
+\begin{verbatim}
+## [1] "Treat phase 4 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value        Std. Error   t value      Pr(>|t|)    
+## a      0.00000      0.00001     -0.00505      0.99597
+## b      0.00000      0.00001     -0.00896      0.99285
+## c     -0.03677      0.00000 -45120.32695      0.00000
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  0.00639  0.00635    1.00573  0.31459
+## b  0.02865  0.00483    5.93593  0.00000
+## c  0.05328  0.00244   21.84796  0.00000
+## [1] "Treat phase 1 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value         Std. Error    t value       Pr(>|t|)     
+## a  0.000000e+00  0.000000e+00 -3.439010e+01  0.000000e+00
+## b  0.000000e+00  0.000000e+00 -5.260105e+02  0.000000e+00
+## c -9.826000e-02  0.000000e+00 -1.220774e+09  0.000000e+00
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  0.04884  0.01505    3.24477  0.00118
+## b  0.09135  0.01314    6.95325  0.00000
+## c -0.02456  0.00374   -6.56212  0.00000
+## [1] "Treat phase 2 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value         Std. Error    t value       Pr(>|t|)     
+## a  0.000000e+00  0.000000e+00  1.274834e+03  0.000000e+00
+## b  0.000000e+00  0.000000e+00 -4.490275e+03  0.000000e+00
+## c -1.796500e-01  0.000000e+00 -1.484246e+09  0.000000e+00
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  0.22602  0.03620    6.24327  0.00000
+## b  0.07983  0.01898    4.20692  0.00003
+## c  0.02359  0.00205   11.53026  0.00000
+## [1] "Treat phase 3 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value         Std. Error    t value       Pr(>|t|)     
+## a  0.000000e+00  0.000000e+00 -4.652288e+02  0.000000e+00
+## b  0.000000e+00  0.000000e+00  1.872472e+03  0.000000e+00
+## c -5.168000e-02  0.000000e+00 -1.571035e+09  0.000000e+00
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  0.03778  0.00939    4.02474  0.00006
+## b  0.09897  0.00648   15.26478  0.00000
+## c  0.06927  0.00475   14.59092  0.00000
+## [1] "Treat phase 6 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value     Std. Error t value   Pr(>|t|) 
+## a  -0.00276   0.00319   -0.86688   0.38612
+## b   0.00458   0.00276    1.65631   0.09783
+## c  -0.04391   0.00194  -22.58328   0.00000
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a -0.00339  0.00758   -0.44746  0.65460
+## b  0.00168  0.00602    0.27959  0.77982
+## c  0.05236  0.00220   23.80608  0.00000
+## [1] "Treat phase 7 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value         Std. Error    t value       Pr(>|t|)     
+## a  0.000000e+00  0.000000e+00  1.343360e+02  0.000000e+00
+## b  0.000000e+00  0.000000e+00 -2.429265e+02  0.000000e+00
+## c -3.741000e-02  0.000000e+00 -1.202440e+09  0.000000e+00
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a -0.00456  0.00710   -0.64238  0.52071
+## b  0.00670  0.00598    1.12016  0.26280
+## c  0.04031  0.00364   11.07011  0.00000
+## [1] "Treat phase 5 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value         Std. Error    t value       Pr(>|t|)     
+## a  0.000000e+00  0.000000e+00 -2.092076e+01  0.000000e+00
+## b  0.000000e+00  0.000000e+00  1.980841e+02  0.000000e+00
+## c -3.367000e-02  0.000000e+00 -1.565217e+09  0.000000e+00
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  0.00597  0.00432    1.38272  0.16683
+## b  0.02007  0.00353    5.68101  0.00000
+## c  0.03615  0.00166   21.74038  0.00000
+##      X1  X2    X3    X4    X5 X6 X7      X8 X9 X10   X11   X12   X13   X14
+##                                     grade 1                               
+##          Q#     1     2     3  4  5       6  7   1     2     3     4     5
+##    Gini   1 0.986 0.958 0.956                      0.889 0.893 0.856   0.9
+##           2 0.969 0.954 0.943                      0.909 0.864 0.853 0.877
+##         All 0.977 0.955 0.949                      0.903 0.875 0.853 0.884
+##      CV   1 8.208 5.363 4.596                      2.667  2.88 2.519 2.855
+##           2 5.481 5.094 4.215                      3.407 2.488 2.387 2.632
+##         All 6.414  5.18 4.408                      3.179 2.622 2.415 2.722
+##      %0   1 0.972  0.92 0.906                       0.77 0.777 0.691 0.813
+##           2 0.942  0.91 0.871                      0.779  0.73 0.689 0.769
+##         All 0.956 0.913 0.886                      0.777 0.747 0.689 0.783
+##     MRF   1 0.131 0.184 0.747                      1.647 2.471 4.221 3.066
+##           2 0.344 0.218 1.178                      1.456 3.786  4.84 4.886
+##         All 0.247 0.207 0.996                      1.507 3.322 4.662 4.284
+##  Counts      5683  1851  2746                        641  8288  1450  1007
+##      X15   X16   X17 X18 X19    X20    X21     X22 X23 X24 X25 X26 X27    X28
+##  grade 2                                   grade 3                           
+##        6     7     1   2   3      4      5       6   7   1   2   3   4      5
+##          0.887 0.785           0.73  0.664   0.701                      0.636
+##          0.863 0.717           0.71  0.682   0.715                      0.579
+##          0.875 0.747          0.717  0.662   0.707                      0.597
+##          2.691  1.91          1.547  1.138   1.468                      1.213
+##          2.446 1.538          1.469  1.247   1.502                      1.076
+##          2.568 1.684          1.494  1.225   1.488                      1.118
+##           0.76 0.598          0.534  0.429   0.454                      0.431
+##          0.682 0.484          0.499  0.308   0.496                      0.354
+##          0.721 0.533           0.51  0.381   0.475                      0.377
+##          3.419 4.949          11.02 21.987  11.469                     19.593
+##          4.691 8.073         12.941 20.385   9.906                     25.541
+##          4.053 6.731         12.365 19.948   10.71                      23.74
+##            882  1566           3897     21     497                       2858
+##      X29 X30 X31 X32 X33 X34 X35     X36    X37
+##  grade 4                         grade 5       
+##        6   7   1   2   3   4   5       6      7
+##    0.476                                  0.373
+##    0.461                                  0.317
+##    0.468                                  0.349
+##     0.86                                  0.655
+##    0.835                                  0.555
+##    0.847                                  0.611
+##    0.175                                  0.111
+##    0.166                                  0.066
+##    0.171                                   0.09
+##   25.434                                 42.504
+##   26.778                                 49.646
+##   26.083                                 45.729
+##     1389                                    855
+##      X1  X2    X3    X4    X5 X6 X7      X8 X9 X10   X11   X12   X13   X14
+##                                     grade 1                               
+##          Q#     1     2     3  4  5       6  7   1     2     3     4     5
+##    Gini   1 0.987  0.97 0.961                       0.89 0.905 0.887 0.916
+##           2 0.981 0.959 0.952                      0.905 0.881  0.85 0.895
+##           3 0.955 0.945  0.93                      0.908 0.839 0.839 0.857
+##         All 0.977 0.955 0.949                      0.903 0.875 0.853 0.884
+##      CV   1 8.482 6.666 4.978                      2.771 3.088 2.916 3.144
+##           2 7.012 5.773 4.436                      3.035 2.691 2.346 2.764
+##           3 4.535 4.422 3.699                      3.439 2.234 2.281 2.402
+##         All 6.414  5.18 4.408                      3.179 2.622 2.415 2.722
+##      %0   1 0.976 0.938 0.918                      0.762 0.805 0.754 0.828
+##           2 0.963 0.922 0.892                      0.788 0.759 0.669 0.801
+##           3 0.916 0.893 0.843                      0.773 0.684 0.669 0.745
+##         All 0.956 0.913 0.886                      0.777 0.747 0.689 0.783
+##     MRF   1 0.109 0.144 0.586                      1.385 2.061 3.017 2.651
+##           2   0.2 0.174 0.808                      1.649 2.836 4.912 2.997
+##           3 0.514 0.267  1.66                      1.455 4.901  5.34 6.155
+##         All 0.247 0.207 0.996                      1.507 3.322 4.662 4.284
+##  Counts      5683  1851  2746                        641  8288  1450  1007
+##      X15   X16    X17 X18 X19    X20    X21     X22 X23 X24 X25 X26 X27    X28
+##  grade 2                                    grade 3                           
+##        6     7      1   2   3      4      5       6   7   1   2   3   4      5
+##          0.886  0.813          0.765      1   0.703                      0.673
+##          0.868  0.759          0.717  0.688   0.713                      0.585
+##          0.867  0.637          0.689   0.64   0.704                      0.559
+##          0.875  0.747          0.717  0.662   0.707                      0.597
+##           2.66  2.105          1.696  1.732    1.45                      1.323
+##          2.526  1.731          1.495  1.215   1.524                      1.084
+##          2.375  1.256          1.391  1.109   1.408                       1.03
+##          2.568  1.684          1.494  1.225   1.488                      1.118
+##          0.762  0.642          0.585  0.667   0.458                      0.478
+##          0.677  0.553          0.509  0.375   0.485                      0.375
+##          0.708  0.373          0.471  0.222    0.48                      0.323
+##          0.721  0.533           0.51  0.381   0.475                      0.377
+##          3.452   4.17          9.218 17.333  10.982                     16.493
+##          4.681  5.425         11.629 17.489  11.466                     23.276
+##          4.303 11.624         14.545 25.222   8.755                     28.084
+##          4.053  6.731         12.365 19.948   10.71                      23.74
+##            882   1566           3897     21     497                       2858
+##      X29 X30 X31 X32 X33 X34 X35     X36    X37
+##  grade 4                         grade 5       
+##        6   7   1   2   3   4   5       6      7
+##    0.485                                  0.375
+##    0.463                                  0.328
+##    0.447                                  0.304
+##    0.468                                  0.349
+##    0.883                                  0.657
+##    0.832                                  0.574
+##    0.806                                  0.532
+##    0.847                                  0.611
+##    0.189                                  0.112
+##    0.156                                  0.071
+##    0.167                                  0.062
+##    0.171                                   0.09
+##   23.862                                 42.851
+##   27.706                                 48.711
+##   26.997                                 48.959
+##   26.083                                 45.729
+##     1389                                    855
+##      X1  X2    X3    X4    X5 X6 X7      X8 X9 X10   X11   X12   X13   X14
+##                                     grade 1                               
+##          Q#     1     2     3  4  5       6  7   1     2     3     4     5
+##    Gini   1 0.987 0.965 0.962                      0.915 0.901 0.881 0.922
+##           2 0.983 0.953 0.949                      0.867 0.881 0.832 0.884
+##           3 0.978 0.965 0.949                      0.906 0.884 0.868 0.904
+##           4 0.956 0.944 0.934                      0.913  0.84 0.842 0.852
+##         All 0.977 0.955 0.949                      0.903 0.875 0.853 0.884
+##      CV   1 8.592 5.473 4.932                      3.245 3.018 2.861 3.232
+##           2 7.525 4.977 4.137                      2.329  2.71 2.252 2.557
+##           3 6.438 6.696 4.388                      3.161 2.694 2.465 2.912
+##           4 4.606 4.337 3.777                      3.614  2.25 2.319 2.345
+##         All 6.414  5.18 4.408                      3.179 2.622 2.415 2.722
+##      %0   1 0.976 0.938 0.921                      0.798 0.797 0.737 0.822
+##           2 0.964 0.904  0.88                      0.745  0.75 0.642 0.806
+##           3 0.959 0.931 0.891                      0.784 0.772  0.71 0.809
+##           4 0.918 0.892 0.848                      0.775 0.682 0.672 0.739
+##         All 0.956 0.913 0.886                      0.777 0.747 0.689 0.783
+##     MRF   1 0.111 0.117 0.642                      1.112 2.187 3.321 2.851
+##           2  0.17 0.244 0.931                      2.133 2.863 5.177 3.261
+##           3 0.227 0.147 0.735                      1.503  2.74 4.229 2.571
+##           4 0.509 0.278 1.684                      1.419 4.966 5.344 6.609
+##         All 0.247 0.207 0.996                      1.507 3.322 4.662 4.284
+##  Counts      5683  1851  2746                        641  8288  1450  1007
+##      X15   X16    X17 X18 X19    X20    X21     X22 X23 X24 X25 X26 X27    X28
+##  grade 2                                    grade 3                           
+##        6     7      1   2   3      4      5       6   7   1   2   3   4      5
+##          0.891  0.824          0.759      1   0.697                      0.666
+##          0.886  0.728          0.702  0.706   0.713                        0.6
+##          0.865   0.78          0.733   0.93   0.729                      0.602
+##          0.863  0.626           0.69   0.64   0.693                      0.558
+##          0.875  0.747          0.717  0.662   0.707                      0.597
+##          2.711  2.178          1.667  1.414   1.435                      1.305
+##          2.649  1.619          1.437  1.191   1.526                      1.114
+##          2.487  1.825           1.56  1.731   1.561                      1.128
+##          2.335  1.225          1.395  1.109   1.369                      1.026
+##          2.568  1.684          1.494  1.225   1.488                      1.118
+##          0.773  0.658          0.579    0.5   0.447                      0.469
+##          0.728  0.511          0.489    0.4   0.467                      0.388
+##          0.678  0.584           0.53    0.5   0.517                      0.395
+##           0.69  0.357          0.474  0.222   0.459                       0.32
+##          0.721  0.533           0.51  0.381   0.475                      0.377
+##          3.339  3.734          9.501     26  11.234                     16.881
+##           3.62  6.713         12.577 20.382  11.903                     22.694
+##          4.765  4.894         10.897    9.5  10.272                     21.914
+##          4.505 12.097          14.57 25.222   9.264                     28.499
+##          4.053  6.731         12.365 19.948   10.71                      23.74
+##            882   1566           3897     21     497                       2858
+##      X29 X30 X31 X32 X33 X34 X35     X36    X37
+##  grade 4                         grade 5       
+##        6   7   1   2   3   4   5       6      7
+##    0.484                                  0.379
+##    0.459                                  0.361
+##    0.462                                  0.323
+##    0.462                                  0.304
+##    0.468                                  0.349
+##    0.886                                  0.665
+##    0.815                                  0.629
+##    0.834                                  0.564
+##    0.837                                  0.532
+##    0.847                                  0.611
+##     0.19                                  0.114
+##    0.154                                  0.102
+##    0.157                                  0.064
+##    0.183                                  0.071
+##    0.171                                   0.09
+##    23.58                                 42.465
+##   28.198                                 42.605
+##   26.893                                 50.202
+##   26.579                                 48.249
+##   26.083                                 45.729
+##     1389                                    855
+\end{verbatim}
+
+\hypertarget{linear-model-tables-and-plots}{%
+\section{Linear Model Tables and
+Plots}\label{linear-model-tables-and-plots}}
+
+\includegraphics{UgandaSES_files/figure-latex/ntilesLM-1.pdf}
+
+\begin{verbatim}
+## [1] "Treat phase 1 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value      Std. Error t value    Pr(>|t|)  
+## a          0          0  222176982          0
+## b          0          0 -104665041          0
+## c          0          0  103281516          0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value     Std. Error t value   Pr(>|t|) 
+## a   0.02071   0.00116   17.79306   0.00000
+## b  -0.25891   0.01486  -17.42050   0.00000
+## c   0.79583   0.04745   16.77188   0.00000
+## [1] "Treat phase 2 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value      Std. Error t value    Pr(>|t|)  
+## a          0          0 -131112178          0
+## b          0          0  154469009          0
+## c          0          0 -139029809          0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  0.00285  0.00799    0.35614  0.72178
+## b  0.03207  0.10797    0.29707  0.76645
+## c -0.14252  0.36518   -0.39029  0.69637
+## [1] "Treat phase 3 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value      Std. Error t value    Pr(>|t|)  
+## a          0          0 -110133884          0
+## b          0          0  139552790          0
+## c          0          0  -97173467          0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  0.19570  0.05880    3.32822  0.00089
+## b -2.44036  0.82719   -2.95016  0.00320
+## c  7.63529  2.92917    2.60664  0.00919
+\end{verbatim}
+
+\includegraphics{UgandaSES_files/figure-latex/ntilesLM-2.pdf}
+
+\begin{verbatim}
+## [1] "Treat phase 2 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value     Std. Error t value   Pr(>|t|) 
+## a         0         0   26264536         0
+## b         0         0  -43016797         0
+## c         0         0   82706811         0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a -0.03942  0.06224   -0.63334  0.52674
+## b  0.70498  1.10455    0.63825  0.52354
+## c -1.09751  4.69634   -0.23370  0.81530
+## [1] "Treat phase 3 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value      Std. Error t value    Pr(>|t|)  
+## a          0          0 -137292934          0
+## b          0          0  138293385          0
+## c          0          0  -34797349          0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  0.30083  0.06033    4.98686  0.00000
+## b -2.13281  1.02180   -2.08731  0.03689
+## c  4.79920  4.03624    1.18903  0.23446
+## [1] "Treat phase 4 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value      Std. Error t value    Pr(>|t|)  
+## a          0          0 -170378573          0
+## b          0          0  216107512          0
+## c          0          0 -175428478          0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value     Std. Error t value   Pr(>|t|) 
+## a  -0.17931   0.16584   -1.08122   0.27978
+## b   6.03918   2.62827    2.29778   0.02172
+## c -24.61008   9.22080   -2.66897   0.00769
+## [1] "Treat phase 5 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value     Std. Error t value   Pr(>|t|) 
+## a         0         0  -42835715         0
+## b         0         0   50053824         0
+## c         0         0  -40844229         0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  0.63742  0.18092    3.52316  0.00045
+## b -6.03353  3.34529   -1.80359  0.07160
+## c 14.46379 13.84993    1.04432  0.29659
+## [1] "Treat phase 7 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value     Std. Error t value   Pr(>|t|) 
+## a         0         0  -81451360         0
+## b         0         0   89218580         0
+## c         0         0  -32606237         0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a -0.15493  0.19465   -0.79595  0.42628
+## b  1.88914  3.82035    0.49449  0.62108
+## c  3.62125 17.18128    0.21077  0.83312
+\end{verbatim}
+
+\includegraphics{UgandaSES_files/figure-latex/ntilesLM-3.pdf}
+
+\begin{verbatim}
+## [1] "Treat phase 1 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value     Std. Error t value   Pr(>|t|) 
+## a         0         0   24766945         0
+## b         0         0  -24545815         0
+## c         0         0   26225652         0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value     Std. Error t value   Pr(>|t|) 
+## a  -0.08019   0.12901   -0.62162   0.53428
+## b   5.68189   2.30936    2.46037   0.01399
+## c -20.01057   9.15350   -2.18611   0.02896
+## [1] "Treat phase 4 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value     Std. Error t value   Pr(>|t|) 
+## a         0         0   44168823         0
+## b         0         0  -55176062         0
+## c         0         0  122533069         0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a -0.13928  0.13431   -1.03697  0.29981
+## b  6.24104  2.52132    2.47531  0.01335
+## c -8.32515 11.22009   -0.74199  0.45814
+## [1] "Treat phase 5 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  0.00000  1.51957    0.00000  1.00000
+## b  0.00000 24.41924    0.00000  1.00000
+## c  0.00000 94.29591    0.00000  1.00000
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value      Std. Error t value    Pr(>|t|)  
+## a   -7.74325    4.40447   -1.75804    0.09573
+## b  131.15177   76.90957    1.70527    0.10534
+## c -488.83290  326.79067   -1.49586    0.15202
+## [1] "Treat phase 6 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value     Std. Error t value   Pr(>|t|) 
+## a         0         0  -41603535         0
+## b         0         0   54933819         0
+## c         0         0  -19611916         0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  0.41836  0.41911    0.99820  0.31867
+## b -6.13314  6.70504   -0.91471  0.36079
+## c 49.04426 26.20439    1.87160  0.06185
+\end{verbatim}
+
+\includegraphics{UgandaSES_files/figure-latex/ntilesLM-4.pdf}
+
+\begin{verbatim}
+## [1] "Treat phase 5 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value     Std. Error t value   Pr(>|t|) 
+## a         0         0   56483188         0
+## b         0         0  -62359690         0
+## c         0         0   78792515         0
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  0.35498  0.23798    1.49163  0.13591
+## b -1.27206  3.86353   -0.32925  0.74199
+## c 38.67005 15.01646    2.57518  0.01007
+## [1] "Treat phase 6 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value   Std. Error t value Pr(>|t|)
+## a 0.00000 0.08926    0.00000 1.00000 
+## b 0.00000 1.13756    0.00000 1.00000 
+## c 0.00000 3.54879    0.00000 1.00000 
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a -0.22176  0.33380   -0.66436  0.50657
+## b  4.18311  5.39402    0.77551  0.43817
+## c 31.28510 21.16059    1.47846  0.13951
+\end{verbatim}
+
+\includegraphics{UgandaSES_files/figure-latex/ntilesLM-5.pdf}
+
+\begin{verbatim}
+## [1] "Treat phase 7 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value     Std. Error t value   Pr(>|t|) 
+## a  -1.03801   0.52943   -1.96061   0.05025
+## b  17.47663   7.99695    2.18541   0.02913
+## c -55.33554  29.41478   -1.88122   0.06028
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a -0.50904  0.38262   -1.33043  0.18373
+## b  7.50129  6.39701    1.17262  0.24127
+## c 49.56757 24.43242    2.02876  0.04279
+\end{verbatim}
+
+\includegraphics{UgandaSES_files/figure-latex/ntilesLM-6.pdf}
+
+\begin{verbatim}
+## [1] "Treat phase 4 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value         Std. Error    t value       Pr(>|t|)     
+## a  0.000000e+00  0.000000e+00 -4.460316e+03  0.000000e+00
+## b  0.000000e+00  0.000000e+00  6.049534e+03  0.000000e+00
+## c -3.677000e-02  0.000000e+00 -6.519368e+07  0.000000e+00
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a -0.00090  0.00043   -2.07417  0.03811
+## b  0.02903  0.00774    3.75014  0.00018
+## c -0.11480  0.03286   -3.49328  0.00048
+## [1] "Treat phase 1 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value         Std. Error    t value       Pr(>|t|)     
+## a  0.000000e+00  0.000000e+00  1.117506e+16  0.000000e+00
+## b  0.000000e+00  0.000000e+00  2.679801e+01  0.000000e+00
+## c -9.826000e-02  0.000000e+00 -1.413704e+09  0.000000e+00
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  0.00462  0.00072    6.37982  0.00000
+## b -0.05055  0.00831   -6.07930  0.00000
+## c  0.08181  0.02360    3.46700  0.00053
+## [1] "Treat phase 2 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value         Std. Error    t value       Pr(>|t|)     
+## a  0.000000e+00  0.000000e+00 -5.877537e+02  0.000000e+00
+## b  0.000000e+00  0.000000e+00  6.652184e+02  0.000000e+00
+## c -1.796500e-01  0.000000e+00 -1.654319e+08  0.000000e+00
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a -0.00073  0.00202   -0.36333  0.71639
+## b  0.06619  0.02578    2.56721  0.01031
+## c -0.39160  0.08388   -4.66838  0.00000
+## [1] "Treat phase 3 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value         Std. Error    t value       Pr(>|t|)     
+## a  0.000000e+00  0.000000e+00  1.910925e+02  0.000000e+00
+## b  0.000000e+00  0.000000e+00 -1.783456e+02  0.000000e+00
+## c -5.168000e-02  0.000000e+00 -8.033661e+07  0.000000e+00
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  0.00771  0.00086    8.93314  0.00000
+## b -0.08656  0.01348   -6.42208  0.00000
+## c  0.25766  0.04975    5.17877  0.00000
+## [1] "Treat phase 6 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a -0.00047  0.00030   -1.58530  0.11307
+## b  0.00919  0.00489    1.87745  0.06061
+## c -0.08657  0.01973   -4.38834  0.00001
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  0.00038  0.00087    0.43544  0.66329
+## b -0.00378  0.01331   -0.28443  0.77611
+## c  0.05788  0.04939    1.17194  0.24137
+## [1] "Treat phase 7 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value         Std. Error    t value       Pr(>|t|)     
+## a  0.000000e+00  0.000000e+00  3.581720e+01  0.000000e+00
+## b  0.000000e+00  0.000000e+00 -3.268549e+01  0.000000e+00
+## c -3.741000e-02  0.000000e+00 -1.647728e+07  0.000000e+00
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a -0.00101  0.00055   -1.84148  0.06572
+## b  0.01486  0.00922    1.61066  0.10744
+## c -0.01429  0.03569   -0.40047  0.68886
+## [1] "Treat phase 5 quantile regression tests:"
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.15, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.15
+## 
+## Coefficients:
+##   Value      Std. Error t value    Pr(>|t|)  
+## a    0.00000    0.00000    0.01292    0.98969
+## b    0.00000    0.00004   -0.01176    0.99062
+## c   -0.03367    0.00015 -222.05904    0.00000
+## 
+## Call: nlrq(formula = quadrat, data = regdata, start = list(a = 1, b = 1, 
+##     c = 1), tau = 0.85, control = list(maxiter = 100, k = 2, 
+##     InitialStepSize = 1, big = 1e+20, eps = 1e-07, beta = 0.97), 
+##     trace = FALSE)
+## 
+## tau: [1] 0.85
+## 
+## Coefficients:
+##   Value    Std. Error t value  Pr(>|t|)
+## a  0.00118  0.00039    3.01236  0.00261
+## b -0.01087  0.00651   -1.66930  0.09514
+## c  0.04938  0.02597    1.90121  0.05735
+##      X1  X2     X3    X4    X5 X6 X7      X8 X9 X10   X11   X12   X13   X14
+##                                      grade 1                               
+##          Q#      1     2     3  4  5       6  7   1     2     3     4     5
+##    Gini   1  0.991 0.976 0.966                      0.887 0.913 0.897 0.922
+##           2  0.971 0.949 0.941                      0.907  0.86 0.839 0.873
+##         All  0.977 0.955 0.949                      0.903 0.875 0.853 0.884
+##      CV   1 10.077 7.684 5.203                      3.119 3.293 2.906 3.329
+##           2  5.708 4.828 4.076                      3.185 2.443 2.287 2.575
+##         All  6.414  5.18 4.408                      3.179 2.622 2.415 2.722
+##      %0   1  0.981 0.953 0.927                      0.735 0.814 0.776 0.852
+##           2  0.945 0.902  0.87                      0.786 0.722 0.665 0.762
+##         All  0.956 0.913 0.886                      0.777 0.747 0.689 0.783
+##     MRF   1  0.111 0.111 0.427                      1.761 1.856 2.352 2.248
+##           2  0.303 0.233 1.196                      1.453 3.838 5.305 4.883
+##         All  0.247 0.207 0.996                      1.507 3.322 4.662 4.284
+##  Counts       5683  1851  2746                        641  8288  1450  1007
+##      X15   X16   X17 X18 X19    X20    X21     X22 X23 X24 X25 X26 X27    X28
+##  grade 2                                   grade 3                           
+##        6     7     1   2   3      4      5       6   7   1   2   3   4      5
+##          0.878 0.811          0.778    NaN   0.751                      0.675
+##          0.873 0.714          0.698  0.625   0.693                      0.571
+##          0.875 0.747          0.717  0.662   0.707                      0.597
+##          2.542 2.046          1.764    NaN   1.627                      1.326
+##          2.573 1.534          1.426  1.124   1.443                      1.055
+##          2.568 1.684          1.494  1.225   1.488                      1.118
+##          0.741 0.657          0.603      1   0.558                      0.478
+##          0.706 0.474          0.483  0.316   0.446                      0.346
+##          0.721 0.533           0.51  0.381   0.475                      0.377
+##          3.717 3.813          8.538      0    8.66                     15.967
+##          4.307 8.094          13.47 22.048  11.429                     26.077
+##          4.053 6.731         12.365 19.948   10.71                      23.74
+##            882  1566           3897     21     497                       2858
+##      X29 X30 X31 X32 X33 X34 X35     X36    X37
+##  grade 4                         grade 5       
+##        6   7   1   2   3   4   5       6      7
+##    0.498                                  0.376
+##    0.457                                  0.329
+##    0.468                                  0.349
+##    0.906                                  0.657
+##    0.824                                  0.577
+##    0.847                                  0.611
+##    0.209                                  0.111
+##    0.156                                  0.074
+##    0.171                                   0.09
+##   23.264                                 43.505
+##   27.156                                  47.41
+##   26.083                                 45.729
+##     1389                                    855
+##      X1  X2     X3    X4    X5 X6 X7      X8 X9 X10   X11   X12   X13   X14
+##                                      grade 1                               
+##          Q#      1     2     3  4  5       6  7   1     2     3     4     5
+##    Gini   1  0.991 0.976 0.966                      0.887 0.913 0.897 0.922
+##           2  0.983 0.968 0.955                      0.915  0.89 0.878  0.89
+##           3  0.957 0.931 0.925                      0.899  0.82 0.806 0.849
+##         All  0.977 0.955 0.949                      0.903 0.875 0.853 0.884
+##      CV   1 10.077 7.684 5.203                      3.119 3.293 2.906 3.329
+##           2   7.28 7.115 4.629                      3.507 2.789 2.833 2.706
+##           3  4.724 3.908 3.517                      2.921 2.084  1.98 2.299
+##         All  6.414  5.18 4.408                      3.179 2.622 2.415 2.722
+##      %0   1  0.981 0.953 0.927                      0.735 0.814 0.776 0.852
+##           2  0.967  0.94 0.902                      0.807 0.779 0.712 0.798
+##           3   0.92 0.867 0.836                      0.766 0.653 0.624 0.729
+##         All  0.956 0.913 0.886                      0.777 0.747 0.689 0.783
+##     MRF   1  0.111 0.111 0.427                      1.761 1.856 2.352 2.248
+##           2  0.186 0.121 0.664                      1.063 2.413 3.845 2.854
+##           3  0.439 0.337 1.763                      1.822 5.549 6.555 6.781
+##         All  0.247 0.207 0.996                      1.507 3.322 4.662 4.284
+##  Counts       5683  1851  2746                        641  8288  1450  1007
+##      X15   X16    X17 X18 X19    X20    X21     X22 X23 X24 X25 X26 X27    X28
+##  grade 2                                    grade 3                           
+##        6     7      1   2   3      4      5       6   7   1   2   3   4      5
+##          0.878  0.811          0.778    NaN   0.751                      0.675
+##          0.869  0.785          0.753  0.713   0.701                      0.618
+##          0.887  0.628          0.649  0.607   0.689                      0.514
+##          0.875  0.747          0.717  0.662   0.707                      0.597
+##          2.542  2.046          1.764    NaN   1.627                      1.326
+##          2.523  1.838          1.643  1.258   1.444                      1.165
+##          2.704  1.246          1.264  1.063   1.444                      0.927
+##          2.568  1.684          1.494  1.225   1.488                      1.118
+##          0.741  0.657          0.603      1   0.558                      0.478
+##          0.705  0.591          0.558  0.286   0.462                      0.407
+##          0.709  0.343          0.419  0.333   0.429                      0.279
+##          0.721  0.533           0.51  0.381   0.475                      0.377
+##          3.717  3.813          8.538      0    8.66                     15.967
+##          4.529  4.855          9.725 24.571  11.057                     20.631
+##          3.788 11.718         16.678 20.576  11.809                     32.106
+##          4.053  6.731         12.365 19.948   10.71                      23.74
+##            882   1566           3897     21     497                       2858
+##      X29 X30 X31 X32 X33 X34 X35     X36    X37
+##  grade 4                         grade 5       
+##        6   7   1   2   3   4   5       6      7
+##    0.498                                  0.376
+##    0.474                                  0.325
+##     0.44                                  0.331
+##    0.468                                  0.349
+##    0.906                                  0.657
+##    0.864                                   0.57
+##    0.785                                  0.579
+##    0.847                                  0.611
+##    0.209                                  0.111
+##    0.164                                  0.083
+##    0.148                                   0.05
+##    0.171                                   0.09
+##   23.264                                 43.505
+##   26.451                                 49.459
+##    27.87                                  42.28
+##   26.083                                 45.729
+##     1389                                    855
+##      X1  X2    X3    X4    X5 X6 X7      X8 X9 X10   X11   X12   X13   X14
+##                                     grade 1                               
+##          Q#     1     2     3  4  5       6  7   1     2     3     4     5
+##    Gini   1  0.99 0.976 0.972                      0.883  0.92 0.916 0.938
+##           2 0.993 0.982 0.943                        0.9 0.892 0.846 0.864
+##           3 0.981 0.965 0.952                      0.911 0.886 0.874 0.891
+##           4 0.952 0.929 0.921                      0.905 0.808 0.798 0.835
+##         All 0.977 0.955 0.949                      0.903 0.875 0.853 0.884
+##      CV   1 9.575 7.812  5.62                      2.571 3.479 3.287 3.789
+##           2 9.854 5.873 3.772                      3.203 2.833 2.167  2.22
+##           3 6.972 6.528  4.56                      3.323 2.745 2.725 2.719
+##           4 4.438 3.772 3.394                      3.029 1.995 1.934 2.173
+##         All 6.414  5.18 4.408                      3.179 2.622 2.415 2.722
+##      %0   1 0.982 0.947 0.938                      0.757 0.828 0.808 0.868
+##           2 0.975 0.965 0.875                      0.698 0.766 0.679 0.775
+##           3 0.963 0.932 0.895                      0.791 0.772 0.711 0.796
+##           4 0.911 0.865 0.829                      0.779 0.635 0.609 0.717
+##         All 0.956 0.913 0.886                      0.777 0.747 0.689 0.783
+##     MRF   1 0.097 0.124 0.303                      1.365  1.69 2.059 1.893
+##           2 0.186 0.079 0.986                      2.442 2.397 3.231 3.925
+##           3 0.192 0.151 0.741                      1.313 2.524 4.077 2.749
+##           4 0.514 0.339 1.928                      1.637 6.119 6.781  7.69
+##         All 0.247 0.207 0.996                      1.507 3.322 4.662 4.284
+##  Counts      5683  1851  2746                        641  8288  1450  1007
+##      X15   X16    X17 X18 X19    X20    X21     X22 X23 X24 X25 X26 X27    X28
+##  grade 2                                    grade 3                           
+##        6     7      1   2   3      4      5       6   7   1   2   3   4      5
+##          0.878   0.83          0.795          0.735                      0.693
+##          0.887  0.747           0.74    NaN   0.812                      0.613
+##          0.869  0.764          0.749   0.71   0.706                      0.616
+##          0.895  0.618          0.632  0.556   0.674                      0.497
+##          0.875  0.747          0.717  0.662   0.707                      0.597
+##          2.548   2.24          1.858          1.548                      1.386
+##          2.496  1.602           1.57    NaN   1.789                      1.147
+##          2.519   1.72          1.624  1.301    1.47                      1.159
+##          2.804  1.212          1.216  0.954   1.403                      0.891
+##          2.568  1.684          1.494  1.225   1.488                      1.118
+##          0.747  0.683          0.623          0.536                      0.495
+##          0.706  0.573          0.558      1   0.684                      0.419
+##          0.702  0.564          0.555    0.4   0.462                      0.409
+##          0.718  0.321          0.393  0.222   0.415                      0.256
+##          0.721  0.533           0.51  0.381   0.475                      0.377
+##          3.607  3.315          7.608           9.62                     14.665
+##          4.425  5.479          10.74      0   3.105                     20.325
+##          4.481  5.359         10.057   22.4  11.239                     20.549
+##          3.682 12.721         17.713 21.657  11.776                     34.098
+##          4.053  6.731         12.365 19.948   10.71                      23.74
+##            882   1566           3897     21     497                       2858
+##      X29 X30 X31 X32 X33 X34 X35     X36    X37
+##  grade 4                         grade 5       
+##        6   7   1   2   3   4   5       6      7
+##    0.502                                  0.385
+##    0.477                                  0.303
+##    0.461                                  0.327
+##    0.449                                   0.33
+##    0.468                                  0.349
+##    0.919                                  0.674
+##    0.835                                  0.523
+##    0.838                                  0.573
+##    0.799                                  0.577
+##    0.847                                  0.611
+##    0.207                                  0.119
+##    0.218                                  0.049
+##    0.159                                  0.078
+##    0.151                                  0.055
+##    0.171                                   0.09
+##   23.109                                 42.383
+##   24.186                                 52.447
+##   26.644                                 48.666
+##   28.112                                 41.945
+##   26.083                                 45.729
+##     1389                                    855
+\end{verbatim}
+
+\end{document}
