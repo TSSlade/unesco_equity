@@ -88,6 +88,7 @@ It appears from the above analysis that the majority of change in MRF occurs in 
 
 ```{r ntiles,echo=FALSE, warning=FALSE}
 mode <- function(x) names(table(unlist(x)))[table(unlist(x))==max(table(unlist(x)))]
+library(IC2)
 zero2na <- function(x) ifelse(x==0,NA,x)
 ntiles = c(2,3,4)
 normorf <- matrix(NA, ncol=1,nrow=nrow(data))
@@ -129,7 +130,7 @@ subpopVars <- c("grade")
   nsubpops <- length(subpops)
 }
 
-xlsxCols <- c("dataset",	"measure_label","grade", "treat_phase","gini","mean", "cv", "ratio_p90p10","ratio_p75p25", "pct_zero")
+xlsxCols <- c("dataset",	"performance_measure"	,"measure_label","grade", "treat_phase","ge2_for_subpop","gini","mean", "cv", "ratio_p90p10","ratio_p75p25", "pct_zero")
 UgandaXlsx <- (matrix('',nrow = nphases*nsubpops+1,ncol = length(xlsxCols)))
 UgandaXlsx[1,] <- xlsxCols
 
@@ -205,7 +206,8 @@ for(sp in 1:nsubpops){
     ntileTab[3+4*(ntile+1),2+nphases*(sp-1)+p] <- length(SESphase)
     
     xlsxphase <- na.omit(SES[phasemask,])
-    UgandaXlsx[(sp-1)*nphases+p+1,] <- c('Uganda', 'English', mode(xlsxphase$grade), mode(xlsxphase$treat_phase), Gini(SESphase), mean(SESphase), sd(SESphase)/mean(SESphase), quantile(SESphase,.90)/zero2na(quantile(SESphase,.10)), quantile(SESphase,.75)/zero2na(quantile(SESphase,.25)), sum(SESphase==0)/length(SESphase))
+    
+    UgandaXlsx[(sp-1)*nphases+p+1,] <- c('Uganda','orf', 'English', mode(xlsxphase$grade), mode(xlsxphase$treat_phase), calcGEI(SESphase, alpha=2)$ineq$index,Gini(SESphase), mean(SESphase), sd(SESphase)/mean(SESphase), quantile(SESphase,.90)/zero2na(quantile(SESphase,.10)), quantile(SESphase,.75)/zero2na(quantile(SESphase,.25)), sum(SESphase==0)/length(SESphase))
     }
     }
     # Add n-tile measures for of of the n n-tiles

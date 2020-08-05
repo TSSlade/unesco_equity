@@ -27,6 +27,10 @@ D[D$treat_phase =="Midline"& !is.na(D$treat_phase),"treat_phase"] <- 2
 D[D$treat_phase =="Endline"& !is.na(D$treat_phase),"treat_phase"] <- 3
 D$treat_phase <- as.numeric(D$treat_phase)
 D <- D[!is.na(D$gini),]
+D <- D[D$gini != "",]
+numMask <- colSums(is.na(sapply( D, as.numeric )))/nrow(D)!=1
+D[,numMask] <- lapply(D[,numMask],as.numeric)
+
 
 T <- merge(D,D, by= c("grade","dataset", "performance_measure"),suffixes = c(".base",".end"))
 T <- T[!is.na(T$treat_phase.base)&!is.na(T$treat_phase.end),]
@@ -82,7 +86,7 @@ Here we analyze the “well-behavedness,” of these measurements in a similar m
 
 ## 1. Ratio of Px to Py
 
-Ratio of Px to Py. In 53.13% of subpopulations for Egypt, Malawi, Philippines and two DRC datasets ratio_p90p10 cannot be calculated because more than 10 percent of the children assessed recorded a zero score. While ratio_p70p25 can be calculated more frequently, it is not available for approximately 37.5% of the subpopulations. Across these data sets these ratios are more often undefined for colonial languages French and English than for mothertongue languages. This is primarily the result of test languages of countries with many zero scores. That is, the majority of subpopulations with fewer than 10% and 25% zero score readers come from the Philippines which has higher literacy and where only mothertongue languages were tested. This is correlated with the fact that the majority of subpopulations with high zero score rate are tested in a colonial language. A t-test reveals a statistically significant different between the percent zero scores in colonial verse mothertongue languages with p=0.0001867.
+Ratio of Px to Py. In 53.13% of subpopulations for Egypt, Malawi, Philippines and two DRC datasets ratio_p90p10 cannot be calculated because more than 10 percent of the children assessed recorded a zero score. While ratio_p70p25 can be calculated more frequently, it is not available for approximately 37.5% of the subpopulations. Across these data sets these ratios are more often undefined for colonial languages French and English than for mothertongue languages. This is primarily the result of test languages of countries with many zero scores. That is, the majority of subpopulations with fewer than 10% and 25% zero score readers come from the Philippines which has higher literacy and where only mothertongue languages were tested. This is correlated with the fact that the majority of subpopulations with high zero score rate are tested in a colonial language. A t-test reveals a statistically significant different between the percent zero scores in colonial verse mother-tongue languages with p=0.0001867.
 
 ```{r Pctzero, echo=FALSE}
 print(paste("Percent of subpopulations with more than 10% zero scrores: ",as.character(sum(D$pct_zero >.1)/nrow(D)*100,"%.")))
@@ -213,14 +217,25 @@ for (i in 1:length(measures)){
   minv = minv -stepsz
   maxv = maxv +stepsz
   lims = c(minv,maxv)
-  fit15.nlrq <- nlrq(Y~SSlogis(X,Asym, mid, scal),tau=.15,method="L-BFGS-B")
-  fit85.nlrq <- nlrq(Y~SSlogis(X,Asym, mid, scal),tau=.85,method="L-BFGS-B",start = fit15.nlrq$m$getPars()*c(1,1,1))
+  quadrat <- Y~ a*X^2+b*X+c
+  regdata <- data.frame(X= X,Y=Y)
+  fit15.rq <- nlrq(quadrat, data=regdata, start= list(a=1,b=1,c=1),tau=.15)
+  fit85.rq <- nlrq(quadrat, data=regdata, start= list(a=1,b=1,c=1),tau=.85)
+  # fit15.nlrq <- nlrq(Y~SSlogis(X,Asym, mid, scal),tau=.15,method="L-BFGS-B")
+  # fit85.nlrq <- nlrq(Y~SSlogis(X,Asym, mid, scal),tau=.85,method="L-BFGS-B",start = fit15.nlrq$m$getPars()*c(1,1,1))
   upperlabel = paste0(toupper(substring(measures[i],1,1)),substring(measures[i],2))
   plot(X,Y,pch=16,col="blue",main=paste0(upperlabel," at t1 verse t0"),xlim=lims, ylim=lims,xlab = paste0(upperlabel," at t0"), ylab = paste0(upperlabel," at t1"))
   abline(lm(Y~X),col="black",lty=2)
   abline(0,1,col="gray")
-  curve(SSlogis(x,fit15.nlrq$m$getPars()["Asym"],fit15.nlrq$m$getPars()["mid"],fit15.nlrq$m$getPars()["scal"]), from =minv,to=maxv,col="red",add=TRUE)
-  curve(SSlogis(x,fit85.nlrq$m$getPars()["Asym"],fit85.nlrq$m$getPars()["mid"],fit85.nlrq$m$getPars()["scal"]), from =minv,to=maxv,col="red",add=TRUE)
+  
+  plotrange <- data.frame(X= seq(min(X),max(X),length=250))
+  reg15 <- within(plotrange,Y <- predict(fit15.rq, newdata= plotrange))
+  lines(Y~X, data =reg15, col= "red", add=TRUE)
+  reg85 <- within(plotrange,Y <- predict(fit85.rq, newdata= plotrange))
+  lines(Y~X, data =reg85, col= "red", add=TRUE)
+  
+  # curve(SSlogis(x,fit15.nlrq$m$getPars()["Asym"],fit15.nlrq$m$getPars()["mid"],fit15.nlrq$m$getPars()["scal"]), from =minv,to=maxv,col="red",add=TRUE)
+  # curve(SSlogis(x,fit85.nlrq$m$getPars()["Asym"],fit85.nlrq$m$getPars()["mid"],fit85.nlrq$m$getPars()["scal"]), from =minv,to=maxv,col="red",add=TRUE)
   #lines(fitted(fit15.nlrq)~X,col="red")
   #lines(fitted(fit85.nlrq)~X,col="red")
 }
