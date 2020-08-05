@@ -78,6 +78,7 @@ summaryoutput <- D[,c("dataset","measure_label","grade","treat_phase","gini","me
 colnames(summaryoutput) <- tabcnames
 write.xlsx(x = summaryoutput, file = "D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Cole/inequality_results_summary.xlsx",sheetName = "core", row.names = FALSE, col.names=TRUE)
 summaryoutput[,tabcnames[5:10]] <- lapply(summaryoutput[,tabcnames[5:10]],function(x) round(as.numeric(x),3))
+summaryoutput[summaryoutput$Grade=="777","Grade"] <- "Other"
 print(summaryoutput, row.names=FALSE)
 ```
 
