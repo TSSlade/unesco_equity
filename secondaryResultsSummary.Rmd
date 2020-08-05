@@ -77,7 +77,8 @@ summaryTab[is.na(summaryTab)] <- ""
 summaryoutput <- D[,c("dataset","measure_label","grade","treat_phase","gini","mean", "cv", "ratio_p90p10", "ratio_p75p25","pct_zero")]
 colnames(summaryoutput) <- tabcnames
 write.xlsx(x = summaryoutput, file = "D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Cole/inequality_results_summary.xlsx",sheetName = "core", row.names = FALSE, col.names=TRUE)
-print(summaryoutput)
+summaryoutput[,tabcnames[5:10]] <- lapply(summaryoutput[,tabcnames[5:10]],function(x) round(as.numeric(x),3))
+print(summaryoutput, row.names=FALSE)
 ```
 
 In the case of retrospective statistics we study the following subpopulations
