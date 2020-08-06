@@ -187,8 +187,8 @@ for(sp in 1:nsubpops){
     if(ns==1){
         normMask <- subpopmasks[,sp] & unlist(as.character(data$treat_phase)==as.character(phase))
         if(sum(normMask)>0){
-        spMean <- mean(unlist(SES[phasemask,"orf"]))
-        spVar <- var(unlist(SES[phasemask,"orf"]))
+        spMean <- mean(unlist(data[normMask,"orf"]))
+        spVar <- var(unlist(data[normMask,"orf"]))
         normorf[normMask] <- (unlist(data[normMask,"orf"]) - spMean)/spVar
         }
     }
@@ -240,9 +240,11 @@ for(sp in 1:nsubpops){
 if(ns==1){
 SES <- na.omit(data[,c("treat_phase",SESfeat)])
 SESind <-  projPC(SES[,SESfeat])
-plot(SESind,normorf,col=plcolors, main= "Population-normalized ORF verse SES index")
-legend("topleft", legend=colnames(colormap), pch=16,col=unlist(colormap))
-for( k in unique(as.factor(SES$treat_phase))){
+# plot(SESind,normorf,col=plcolors, main= "Population-normalized ORF verse SES index")
+plot(SESind,normorf,type='n', ylim=c(0,1.2), main= "Population-normalized ORF verse SES index")
+tf <- unique(as.factor(SES$treat_phase))
+for( ks in 1:length(tf)){
+    k <- tf[ks]
     Y = normorf[as.character(SES$treat_phase)==k]
     X = SESind[as.character(SES$treat_phase)==k]
     regdata <- data.frame(X= X,Y=Y)
@@ -257,7 +259,8 @@ for( k in unique(as.factor(SES$treat_phase))){
     print(paste0("Treat phase ",k," quantile regression tests:"))
     print(summary(fit15.rq))
     print(summary(fit85.rq))
-  }
+}
+legend("topleft", legend=colnames(colormap), pch=16,col=unlist(colormap))
 }
 
 ntileTab[is.na(ntileTab)] <- ""

@@ -108,11 +108,11 @@ Ratio of Px to Py. In `r ge10pct`% of subpopulations for Egypt, Malawi, Philippi
 ```{r pctzeroHist1, echo=FALSE, warning=FALSE}
 hist(D$pct_zero,20, main = "Percent Zero Histogram", xlab = "Percent Zero")
 ```
-\\
+
 ```{r pctzeroHist2, echo=FALSE, warning=FALSE}
 hist(D[iscolonial,"pct_zero"],20, main = "Percent Zero Histogram, Colonial Languages", xlab = "Percent Zero")
 ```
-\\
+
 ```{r pctzeroHist3, echo=FALSE, warning=FALSE}
 hist(D[!iscolonial,"pct_zero"],20, main = "Percent Zero Histogram, Non-Colonial Languages", xlab = "Percent Zero")
 ```
