@@ -1,0 +1,447 @@
+---
+title: "Uganda SES"
+author: "Cole Campton"
+date: "8/3/2020"
+output:
+  pdf_document:
+    keep_tex: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(haven)
+library(DescTools)
+library(tidyverse)
+library("quantreg")
+library(RColorBrewer)
+library(caret)
+library(e1071)
+
+datapath <- "D:/Users/ccampton/Documents/unesco_equity/data/SHRPUganda/English/4. 20212-2018 Uganda SHRP C1 C2 C3 S_ENGLISH_rewt.dta"
+data <- read_dta(datapath)
+features <- c("grade","treat_phase","orf","language")
+SESfeat = c()
+for(i in c(1:5,8:10)){SESfeat <- c(SESfeat,paste0("exit_interview5",letters[i]))}
+SESlabs = c("Radio","Mobile Phone","Electricity","TV","Computer","Bike","Motor Cycle","Motor Veh")
+
+data$orf <- data$r_orf
+data$language <- data$r_language
+dataSES <- na.omit(data[,c("id",SESfeat)])
+datameasures <- na.omit(data[,c("id",features)])
+data <- merge(datameasures, dataSES, by= c("id"))
+
+n <- length(unique(data$treat_phase))
+qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
+all_colors <- c('#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe', '#008080', '#e6beff', '#9a6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080', '#ffffff', '#000000')
+col_vector = unlist(mapply(brewer.pal,qual_col_pals$maxcolors,rownames(qual_col_pals)))
+colormap <- data.frame(matrix(nrow=1,ncol=n))
+rownames(colormap) <- "color"
+colnames(colormap) <- as.character(unique(data$treat_phase))
+#colormap[as.character(unique(data$treat_phase))]= sample(col_vector,n)
+colormap[as.character(unique(data$treat_phase))] <- all_colors[1:n]
+```
+# Coherence and Summary Statistics
+
+First we will describe the percentage of the population which claims ownership of each asset. 
+```{r summary,echo=FALSE}
+PCA <- prcomp(na.omit(data[,SESfeat]))
+projPC <- function(X) predict(PCA,newdata=X)[,1]
+sesslope <- lm(rowSums(na.omit(data[,SESfeat]))~projPC(na.omit(data[,SESfeat])))
+if(sesslope$coefficients[2]<0){
+  projPC <- function(X) -predict(PCA,newdata=X)[,1]
+}
+ownershipPct <- colSums(data[,SESfeat])/nrow(data)
+barplot(ownershipPct,las=2,names.arg=SESlabs,main="Ownership Percent of each Item")
+barplot(PCA$rotation[,1],las=2,names.arg=SESlabs,main="Item weights for First Principle Component")
+barplot(PCA$sdev/sum(PCA$sdev),names.arg=1:length(SESfeat),main="Variance explained by each Principle Component")
+plot(projPC(na.omit(data[,SESfeat])),rowSums(na.omit(data[,SESfeat])),ylab="#items owned",xlab="SES index",main="Items owned vs SES Index")
+# 
+# CC <- cor(data[,SESfeat] - colSums(data[,SESfeat])/nrow(data))
+# CC <- abs(CC-1)
+# evCC <- eigen(CC)
+# evCC <- evCC$vectors[,1]
+# evCC <- evCC*min(sign(evCC))
+# projPC2 <- function(X) rowSums(mapply('*',X,evCC))
+# plot(projPC2(na.omit(data[,SESfeat])),rowSums(na.omit(data[,SESfeat])),ylab="#items owned",xlab="SES index",main="Items owned vs SES Index")
+```
+There are no students which were observed at two of baseline, midline or endline, meaning there is no opportunity for validating consistency of answers to SES questions. 
+```{r coherence}
+overlap = matrix(data= 0, nrow=8,ncol=8)
+for(i in 1:8){
+  di <- na.omit(data[data$treat_phase==i,"id"])
+  overlap[i,i] <- length(di)
+  for(j in min((i+1),8):8){
+    dj <- na.omit(data[data$treat_phase==j,"id"])
+    overlap[i,j] <- length(unlist(intersect(di,dj)))
+  }
+}
+print(overlap)
+```
+
+
+<!-- # Quantile Regression differences from Baseline to endline -->
+
+
+# N-tile SES-index Analysis of Gini and Mean ORF
+First we conduct quantile analysis, evaluating the Gini coefficient, mean ORF, CV, and percent zero for each of the 2,3,4-tiles of our SES index. 
+We segment into subpopulations by language and grade, producing quantile regressions for 
+It appears from the above analysis that the majority of change in MRF occurs in the lowest tertile of wealth. 
+
+```{r ntiles,echo=FALSE, warning=FALSE}
+mode <- function(x) names(table(unlist(x)))[table(unlist(x))==max(table(unlist(x)))]
+library(IC2)
+zero2na <- function(x) ifelse(x==0,NA,x)
+ntiles = c(2,3,4)
+normorf <- matrix(NA, ncol=1,nrow=nrow(data))
+
+phases <- sort(unlist(unique(unlist(data[,"treat_phase"]))))
+nphases <- length(phases)
+SESind <-  projPC(data)
+subpopVars <- c("grade","language")
+#Compute Subpop labels, and masks for non-empty subpops (uses all phases)
+{
+  subpopVars <- subpopVars[unlist(lapply(subpopVars, function(x) length(unlist(unique(data[,x])))))>1]
+  if(length(subpopVars)>1){
+    subpops <- unique(apply(data[,subpopVars],1,function(x) paste0(sort(x),collapse="-")))
+    subpoplabels <- unique(apply(data[,subpopVars],1,function(x) paste0(subpopVars,": ",sort(x),collapse=", ")))
+  }else{
+    subpops <- sort(unique(data[,subpopVars]))
+    subpoplabels <- paste(subpopVars,subpops)
+  }
+  nsubpops <- length(subpops)
+  subpopmasks <- matrix(ncol=nsubpops,nrow=length(SESind))
+  for(sp in 1:nsubpops){
+    masktemp <- rep(TRUE, length(SESind))
+    indstart = 1
+    for(spv in 1:length(subpopVars)){
+      if(spv < length(subpopVars)){
+      indend = gregexpr("-",subpops[spv])[[1]][spv]-1
+      }else{
+      indend = nchar(subpops[sp])
+      }
+      masktemp <- masktemp & (as.character(unlist(data[,subpopVars[spv]]))==substr(subpops[sp],indstart,indend))
+      indstart = indend+2
+    }
+    subpopmasks[,sp] <- masktemp
+  }
+  nonemptysubpop <- colSums(subpopmasks)>0
+  subpoplabels <- subpoplabels[nonemptysubpop]
+  subpops <- subpops[nonemptysubpop]
+  subpopmasks <- subpopmasks[,nonemptysubpop]
+  nsubpops <- length(subpops)
+}
+
+xlsxCols <- c("dataset",	"performance_measure"	,"measure_label","grade", "treat_phase","ge2_for_subpop","gini","mean", "cv", "ratio_p90p10","ratio_p75p25", "pct_zero")
+UgandaXlsx <- (matrix('',nrow = nphases*nsubpops+1,ncol = length(xlsxCols)))
+UgandaXlsx[1,] <- xlsxCols
+
+for(ns in 1:length(ntiles)){
+ntile = ntiles[ns]
+# Generate n-tile masks
+{
+  ntilemasks <- matrix(ncol=ntile,nrow=length(SESind))
+  for(p in 1:(ntile)){
+    ntilemasks[,p] <- (SESind<quantile(SESind, (p)/(ntile))) & (SESind>=quantile(SESind, (p-1)/ntile))
+  }
+}
+# Intialize table, build labels
+{
+  ntileTab <- data.frame(matrix(ncol=(nphases*nsubpops+2),nrow=(4*(ntile+1)+3)))
+  ntileTab[(0:3)*(ntile+1)+3,1] <- c("Gini","CV","%0","MRF")
+  ntileTab[3:(4*(ntile+1)+2),2] <- rep(c(1:ntile,"All"), 4)
+  ntileTab[1,(1:nsubpops)*nphases+1] <- c(subpoplabels)
+  ntileTab[2,0:(nphases*nsubpops)+2] <- c("Q#",rep(phases,nsubpops))
+  ntileTab[(4*(ntile+1)+3),1 ] <- "Counts"
+}
+for(sp in 1:nsubpops){
+  SES <- na.omit(data[subpopmasks[,sp],c("orf","treat_phase","grade","language",SESfeat)])
+  #ORF verse SES index by sub-populations
+  if(ns==1){
+    SESind <-  projPC(SES[,SESfeat])
+    plcolors <- alpha(unlist(lapply(SES$treat_phase,function(x) colormap[as.character(x)])),.4)
+    plot(SESind,unlist(SES$orf),col=plcolors, main= paste0("ORF verse SES index by phase, ",subpoplabels[sp] ))
+    legend("topleft", legend=colnames(colormap), pch=16,col=unlist(colormap))
+  }
+  for( p in 1:nphases){
+    phase = phases[p]
+    phasemask <- as.character(SES$treat_phase)==as.character(phase)
+    # #ORF verse SES index colored by treatment phase
+    if(ns==1){
+      if(sum(phasemask)>2){
+        Y = unlist(SES[phasemask,"orf"])
+        X = SESind[phasemask]
+        regdata <- data.frame(X= X,Y=Y)
+        quadrat <- Y~ a*X^2+b*X+c
+        fit15.rq <- nlrq(quadrat, data=regdata, start= list(a=1,b=1,c=1),tau=.15)
+        fit85.rq <- nlrq(quadrat, data=regdata, start= list(a=1,b=1,c=1),tau=.85)
+        plotrange <- data.frame(X= seq(min(SESind),max(SESind),length=250))
+        reg15 <- within(plotrange,Y <- predict(fit15.rq, newdata= plotrange))
+        lines(Y~X, data =reg15, col= unlist(colormap[as.character(phase)]), add=TRUE)
+        reg85 <- within(plotrange,Y <- predict(fit85.rq, newdata= plotrange))
+        lines(Y~X, data =reg85, col= unlist(colormap[as.character(phase)]), add=TRUE)
+        print(paste0("Treat phase ",phase," quantile regression tests:"))
+        print(summary(fit15.rq))
+        print(summary(fit85.rq))
+      }
+    }
+    #Compute normalize orf for phase, subpop
+    if(ns==1){
+        normMask <- subpopmasks[,sp] & unlist(as.character(data$treat_phase)==as.character(phase))
+        if(sum(normMask)>0){
+        spMean <- mean(unlist(data[normMask,"orf"]))
+        spVar <- var(unlist(data[normMask,"orf"]))
+        normorf[normMask] <- (unlist(data[normMask,"orf"]) - spMean)/spVar
+        }
+    }
+    #Overall phase, subpop measures
+    {
+    SESphase <- unlist(na.omit(SES[phasemask,"orf"]))
+    if(sum(phasemask)>2){
+    ntileTab[2+(ntile+1),2+nphases*(sp-1)+p] <- Gini(SESphase) #gini Qi
+      
+    ntileTab[2+2*(ntile+1),2+nphases*(sp-1)+p] <- sd(SESphase)/mean(SESphase) #CV Qi
+      
+    ntileTab[2+3*(ntile+1),2+nphases*(sp-1)+p] <- sum(SESphase==0)/length(SESphase)#%0 Qi
+      
+    ntileTab[2+4*(ntile+1),2+nphases*(sp-1)+p] <- mean(SESphase) #MRF Qi
+    ntileTab[3+4*(ntile+1),2+nphases*(sp-1)+p] <- length(SESphase)
+    
+    xlsxphase <- na.omit(SES[phasemask,])
+    
+    UgandaXlsx[(sp-1)*nphases+p+1,] <- c('Uganda','r_orf', mode(xlsxphase$language), mode(xlsxphase$grade), mode(xlsxphase$treat_phase), ifelse(mean(SESphase)==0, 0, calcGEI(SESphase, alpha=2)$ineq$index),Gini(SESphase), mean(SESphase), sd(SESphase)/mean(SESphase), quantile(SESphase,.90)/zero2na(quantile(SESphase,.10)), quantile(SESphase,.75)/zero2na(quantile(SESphase,.25)), sum(SESphase==0)/length(SESphase))
+    }
+    }
+    # Add n-tile measures for of of the n n-tiles
+    for(i in 1:ntile){
+      phase = phases[p]
+      ntileSubpopMask <- ntilemasks[,i] & subpopmasks[,sp] & as.character(data$treat_phase)==as.character(phase)
+      if(sum(ntileSubpopMask)>0){
+      SESntile <- unlist(na.omit(data[ntileSubpopMask,"orf"]))
+      
+      ntileTab[2+i,2+nphases*(sp-1)+p] <- Gini(SESntile) #gini Qi
+        
+      ntileTab[2+1*(ntile+1)+i,2+nphases*(sp-1)+p] <- sd(SESntile)/mean(SESntile) #CV Qi
+        
+      ntileTab[2+2*(ntile+1)+i,2+nphases*(sp-1)+p] <- sum(SESntile==0)/length(SESntile)#%0 Qi
+        
+      ntileTab[2+3*(ntile+1)+i,2+nphases*(sp-1)+p] <- mean(SESntile) #MRF Qi
+      ntileTab[3:nrow(ntileTab),2+nphases*(sp-1)+p] <- round(as.numeric(ntileTab[3:nrow(ntileTab),2+nphases*(sp-1)+p]),digits=3)
+      }
+      }
+  }
+  #T-test for ???
+  {  
+# LowestNtileMRFchange <- data[ntilemasks[,1] & subpopmasks[,sp] & data$treat_phase==phases[1],"orf"]-data[ntilemasks[,1] & subpopmasks[,sp] & data$treat_phase==phases[length(phases)],"orf"]
+# TopNtileMRFchange <- dataTemporal[ntilemasks[,ncol(ntilemasks)] & subpopmasks[,sp],"orf.end"]-dataTemporal[ntilemasks[,ncol(ntilemasks)] & subpopmasks[,sp],"orf.base"]
+# print(t.test(LowestNtileMRFchange,TopNtileMRFchange))
+  }
+}
+
+# Subpop-normalized plots
+if(ns==1){
+SES <- na.omit(data[,c("treat_phase",SESfeat)])
+SESind <-  projPC(SES[,SESfeat])
+# plot(SESind,normorf,col=plcolors, main= "Population-normalized ORF verse SES index")
+plot(SESind,normorf,type='n', ylim=c(0,1.2), main= "Population-normalized ORF verse SES index")
+tf <- unique(as.factor(SES$treat_phase))
+for( ks in 1:length(tf)){
+    k <- tf[ks]
+    Y = normorf[as.character(SES$treat_phase)==k]
+    X = SESind[as.character(SES$treat_phase)==k]
+    regdata <- data.frame(X= X,Y=Y)
+    quadrat <- Y~ a*X^2+b*X+c
+    fit15.rq <- nlrq(quadrat, data=regdata, start= list(a=1,b=1,c=1),tau=.15)
+    fit85.rq <- nlrq(quadrat, data=regdata, start= list(a=1,b=1,c=1),tau=.85)
+    plotrange <- data.frame(X= seq(min(SESind),max(SESind),length=250))
+    reg15 <- within(plotrange,Y <- predict(fit15.rq, newdata= plotrange))
+    lines(Y~X, data =reg15, col= unlist(colormap[as.character(k)]), add=TRUE)
+    reg85 <- within(plotrange,Y <- predict(fit85.rq, newdata= plotrange))
+    lines(Y~X, data =reg85, col= unlist(colormap[as.character(k)]), add=TRUE)
+    print(paste0("Treat phase ",k," quantile regression tests:"))
+    print(summary(fit15.rq))
+    print(summary(fit85.rq))
+}
+legend("topleft", legend=colnames(colormap), pch=16,col=unlist(colormap))
+}
+
+ntileTab[is.na(ntileTab)] <- ""
+print(ntileTab, row.names=FALSE,col.names=FALSE)
+
+}
+UgandaXlsx <- UgandaXlsx[!is.na(UgandaXlsx[,1]),]
+library("xlsx")
+xlsxpath = "D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Cole/newResults/Uganda/"
+write.xlsx(x = UgandaXlsx, file = paste0(xlsxpath,"inequality_results_UgandaRlang.xlsx"),sheetName = "core", row.names = FALSE, col.names=FALSE)
+```
+
+# Linear Model Tables and Plots
+```{r ntilesLM,echo=FALSE, warning=FALSE}
+ntiles = c(2,3,4)
+normorf <- matrix(NA, ncol=1,nrow=nrow(data))
+
+phases <- sort(unlist(unique(unlist(data[,"treat_phase"]))))
+nphases <- length(phases)
+
+temp <- unlist(data$orf)
+for(i in 1:length(SESfeat)){temp <- cbind(temp,unlist(data[,SESfeat[i]]))}
+rownames(temp) <- 1:nrow(temp)
+colnames(temp) <- c("orf",SESfeat)
+temp <- data.frame(temp)
+lmmodel <- lm(orf~.-orf,data=temp)
+SESind <- predict(lmmodel, newdata = temp)
+
+subpopVars <- c("grade","language")
+#Compute Subpop labels, and masks for non-empty subpops (uses all phases)
+{  subpopVars <- subpopVars[unlist(lapply(subpopVars, function(x) length(unlist(unique(data[,x])))))>1]
+  if(length(subpopVars)>1){
+    subpops <- unique(apply(data[,subpopVars],1,function(x) paste0(sort(x),collapse="-")))
+    subpoplabels <- unique(apply(data[,subpopVars],1,function(x) paste0(subpopVars,": ",sort(x),collapse=", ")))
+  }else{
+    subpops <- sort(unique(data[,subpopVars]))
+    subpoplabels <- paste(subpopVars,subpops)
+  }
+  nsubpops <- length(subpops)
+  subpopmasks <- matrix(ncol=nsubpops,nrow=length(SESind))
+  for(sp in 1:nsubpops){
+    masktemp <- rep(TRUE, length(SESind))
+    indstart = 1
+    for(spv in 1:length(subpopVars)){
+      if(spv < length(subpopVars)){
+      indend = gregexpr("-",subpops[spv])[[1]][spv]-1
+      }else{
+      indend = nchar(subpops[sp])
+      }
+      masktemp <- masktemp & (as.character(unlist(data[,subpopVars[spv]]))==substr(subpops[sp],indstart,indend))
+      indstart = indend+2
+    }
+    subpopmasks[,sp] <- masktemp
+  }
+  nonemptysubpop <- colSums(subpopmasks)>0
+  subpoplabels <- subpoplabels[nonemptysubpop]
+  subpops <- subpops[nonemptysubpop]
+  subpopmasks <- subpopmasks[,nonemptysubpop]
+  nsubpops <- length(subpops)
+}
+
+for(ns in 1:length(ntiles)){
+ntile = ntiles[ns]
+# Generate n-tile masks
+{
+  ntilemasks <- matrix(ncol=ntile,nrow=length(SESind))
+  for(p in 1:(ntile)){
+    ntilemasks[,p] <- (SESind<quantile(SESind, (p)/(ntile))) & (SESind>=quantile(SESind, (p-1)/ntile))
+  }
+}
+# Intialize table, build labels
+{
+  ntileTab <- data.frame(matrix(ncol=(nphases*nsubpops+2),nrow=(4*(ntile+1)+3)))
+  ntileTab[(0:3)*(ntile+1)+3,1] <- c("Gini","CV","%0","MRF")
+  ntileTab[3:(4*(ntile+1)+2),2] <- rep(c(1:ntile,"All"), 4)
+  ntileTab[1,(1:nsubpops)*nphases+1] <- c(subpoplabels)
+  ntileTab[2,0:(nphases*nsubpops)+2] <- c("Q#",rep(phases,nsubpops))
+  ntileTab[(4*(ntile+1)+3),1 ] <- "Counts"
+}
+for(sp in 1:nsubpops){
+  SES <- na.omit(data[subpopmasks[,sp],c("orf","treat_phase",SESfeat)])
+  #ORF verse SES index by sub-populations
+  if(ns==1){
+    SESindsub <-  SESind[subpopmasks[,sp]]
+    plcolors <- alpha(unlist(lapply(SES$treat_phase,function(x) colormap[as.character(x)])),.4)
+    plot(SESindsub,unlist(SES$orf),col=plcolors, main= paste0("ORF verse SES index by phase, ",subpoplabels[sp] ))
+    legend("topleft", legend=colnames(colormap), pch=16,col=unlist(colormap))
+  }
+  for( p in 1:nphases){
+    phase = phases[p]
+    phasemask <- as.character(SES$treat_phase)==as.character(phase)
+    # #ORF verse SES index colored by treatment phase
+    if(ns==1){
+      if(sum(phasemask)>2){
+        Y = unlist(SES[phasemask,"orf"])
+        X = SESindsub[phasemask]
+        regdata <- data.frame(X= X,Y=Y)
+        quadrat <- Y~ a*X^2+b*X+c
+        fit15.rq <- nlrq(quadrat, data=regdata, start= list(a=1,b=1,c=1),tau=.15)
+        fit85.rq <- nlrq(quadrat, data=regdata, start= list(a=1,b=1,c=1),tau=.85)
+        plotrange <- data.frame(X= seq(min(SESind),max(SESind),length=250))
+        reg15 <- within(plotrange,Y <- predict(fit15.rq, newdata= plotrange))
+        lines(Y~X, data =reg15, col= unlist(colormap[as.character(phase)]), add=TRUE)
+        reg85 <- within(plotrange,Y <- predict(fit85.rq, newdata= plotrange))
+        lines(Y~X, data =reg85, col= unlist(colormap[as.character(phase)]), add=TRUE)
+        print(paste0("Treat phase ",phase," quantile regression tests:"))
+        print(summary(fit15.rq))
+        print(summary(fit85.rq))
+      }
+    }
+    #Compute normalize orf for phase, subpop
+    if(ns==1){
+        normMask <- subpopmasks[,sp] & unlist(as.character(data$treat_phase)==as.character(phase))
+        if(sum(normMask)>0){
+        spMean <- mean(unlist(SES[phasemask,"orf"]))
+        spVar <- var(unlist(SES[phasemask,"orf"]))
+        normorf[normMask] <- (unlist(data[normMask,"orf"]) - spMean)/spVar
+        }
+    }
+    #Overall phase, subpop measures
+    {
+    SESphase <- unlist(na.omit(SES[phasemask,"orf"]))
+    if(sum(phasemask)>2){
+    ntileTab[2+(ntile+1),2+nphases*(sp-1)+p] <- Gini(SESphase) #gini Qi
+      
+    ntileTab[2+2*(ntile+1),2+nphases*(sp-1)+p] <- sd(SESphase)/mean(SESphase) #CV Qi
+      
+    ntileTab[2+3*(ntile+1),2+nphases*(sp-1)+p] <- sum(SESphase==0)/length(SESphase)#%0 Qi
+      
+    ntileTab[2+4*(ntile+1),2+nphases*(sp-1)+p] <- mean(SESphase) #MRF Qi
+    
+    ntileTab[3+4*(ntile+1),2+nphases*(sp-1)+p] <- length(SESphase)
+    }
+    }
+    # Add n-tile measures for of of the n n-tiles
+    for(i in 1:ntile){
+      phase = phases[p]
+      ntileSubpopMask <- ntilemasks[,i] & subpopmasks[,sp] & as.character(data$treat_phase)==as.character(phase)
+      if(sum(ntileSubpopMask)>0){
+      SESntile <- unlist(na.omit(data[ntileSubpopMask,"orf"]))
+      
+      ntileTab[2+i,2+nphases*(sp-1)+p] <- Gini(SESntile) #gini Qi
+        
+      ntileTab[2+1*(ntile+1)+i,2+nphases*(sp-1)+p] <- sd(SESntile)/mean(SESntile) #CV Qi
+        
+      ntileTab[2+2*(ntile+1)+i,2+nphases*(sp-1)+p] <- sum(SESntile==0)/length(SESntile)#%0 Qi
+        
+      ntileTab[2+3*(ntile+1)+i,2+nphases*(sp-1)+p] <- mean(SESntile) #MRF Qi
+      ntileTab[3:nrow(ntileTab),2+nphases*(sp-1)+p] <- round(as.numeric(ntileTab[3:nrow(ntileTab),2+nphases*(sp-1)+p]),digits=3)
+      }
+      }
+  }
+}
+
+# Subpop-normalized plots
+if(ns==1){
+SES <- na.omit(data[,c("treat_phase",SESfeat)])
+plot(SESind,normorf,col=plcolors, main= "Population-normalized ORF verse SES index")
+legend("topleft", legend=colnames(colormap), pch=16,col=unlist(colormap))
+for( k in unique(as.factor(SES$treat_phase))){
+    Y = normorf[as.character(SES$treat_phase)==k]
+    X = SESind[as.character(SES$treat_phase)==k]
+    regdata <- data.frame(X= X,Y=Y)
+    quadrat <- Y~ a*X^2+b*X+c
+    fit15.rq <- nlrq(quadrat, data=regdata, start= list(a=1,b=1,c=1),tau=.15)
+    fit85.rq <- nlrq(quadrat, data=regdata, start= list(a=1,b=1,c=1),tau=.85)
+    plotrange <- data.frame(X= seq(min(SESind),max(SESind),length=250))
+    reg15 <- within(plotrange,Y <- predict(fit15.rq, newdata= plotrange))
+    lines(Y~X, data =reg15, col= unlist(colormap[as.character(k)]), add=TRUE)
+    reg85 <- within(plotrange,Y <- predict(fit85.rq, newdata= plotrange))
+    lines(Y~X, data =reg85, col= unlist(colormap[as.character(k)]), add=TRUE)
+    print(paste0("Treat phase ",k," quantile regression tests:"))
+    print(summary(fit15.rq))
+    print(summary(fit85.rq))
+  }
+}
+
+ntileTab[is.na(ntileTab)] <- ""
+print(ntileTab, row.names=FALSE,col.names=FALSE)
+
+}
+
+```
