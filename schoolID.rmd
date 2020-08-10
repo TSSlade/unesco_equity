@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(haven)
 library(DescTools)
 library(tidyverse)
+library("xlsx")
 
 # Two data types, PUF and final. Find the 'best' dataset for each file; if there is a `final' version, use that instead.
 fileListingPUF <- list.files("D:/Users/ccampton/Documents/unesco_equity/data",recursive=TRUE,pattern= "^PUF.*.dta$",full.names=TRUE)
@@ -18,12 +19,14 @@ mask = unlist(lapply(fileListingPUF, function(x) dirname(x) %in% dirname(fileLis
 fileListingPUF <- fileListingPUF[!mask]
 fileListing <- c(fileListingPUF, fileListingFinal)
 # These Strings are searched for as sub-strings in filenames to label the results. 
-countryNames <- c("Malawi", "DRC","Philippines","Egypt","Kenya")
+countryNames <- c("Malawi", "DRC","Philippines","Egypt","Kenya","Uganda")
 # This is hierarchial list to define the orf variable when "orf" is not available.
 orfnames <- c("orf","mt_orf","ph_orf","e_orf_a","k_orf")
 # List of factors to consider
 factorList <- c("school_id","treat_phase","grade","language")
 MULTIFACTOR <- FALSE
+out <- data.frame(matrix(nrow=5,ncol=0))
+row.names(out)<- c("Country","Grade","Phase","Prop. Err. Between Schools", "Prop. Err. Within Schools")
 ```
 
 ```{r analysis, echo=FALSE}
@@ -74,13 +77,23 @@ for(i in 1:length(fileListing)){
         if(nSchools>1){
           gpfit <- aov(as.formula(paste(orfnames[l]," ~ school_id")), data=gpdata)
           cat(paste0("ANOVA for Grade ",g,", Phase ",p,". \n"))
-          print(summary(gpfit))}
+          print(summary(gpfit))
           
-        else{
+          gpfitSumSq <- summary(gpfit)[[1]]["Sum Sq"]
+          gpfitSumSq <- gpfitSumSq/sum(gpfitSumSq)
+          colnames(gpfitSumSq) <- ""
+          info <- data.frame(c(country,g,p))
+          colnames(info) <- ""
+          gpfitSumSq <- rbind(info,gpfitSumSq)
+          row.names(gpfitSumSq) <- c("Country","Grade","Phase","Prop. Err. Between Schools", "Prop. Err. Within Schools")
+          out <- cbind(out,gpfitSumSq)
+        }else{
           cat(paste0("Only one school for Grade ",g,", Phase ",p,". \n"))
         }
       }
     }
   }
 }
+xlsxpath = "D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Cole/"
+write.xlsx(x = out, file = paste0(xlsxpath,"SchoolErrors.xlsx"),sheetName = "Schools", row.names = TRUE, col.names=FALSE)
 ```
