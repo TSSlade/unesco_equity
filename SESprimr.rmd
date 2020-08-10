@@ -494,7 +494,7 @@ ntileTab[is.na(ntileTab)] <- ""
 print(ntileTab, row.names=FALSE,col.names=FALSE)
 library("xlsx")
 xlsxpath = "D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Cole/SEStables/"
-write.xlsx(x = ntileTab, file = paste0(xlsxpath,"SES_primr.xlsx"),sheetName = paste0(ntile,"-percentiles"), row.names = FALSE, col.names=FALSE)
+write.xlsx(x = ntileTab, file = paste0(xlsxpath,"SES_primr",ntile,"-percentiles",".xlsx"),sheetName = paste0(ntile,"-percentiles"), row.names = FALSE, col.names=FALSE)
 
 }
 ```

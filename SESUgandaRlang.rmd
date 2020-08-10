@@ -277,6 +277,9 @@ legend("topleft", legend=colnames(colormap), pch=16,col=unlist(colormap))
 
 ntileTab[is.na(ntileTab)] <- ""
 print(ntileTab, row.names=FALSE,col.names=FALSE)
+xlsxpath = "D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Cole/SEStables/"
+write.xlsx(x = as.data.frame(ntileTab), file = paste0(xlsxpath,"SES_UgandaRlang",ntile,"-percentiles",".xlsx"),sheetName = paste0(ntile,"-percentiles"), row.names = FALSE, col.names=FALSE)
+
 
 }
 UgandaXlsx <- UgandaXlsx[!is.na(UgandaXlsx[,1]),]
