@@ -1,10 +1,9 @@
 ---
-title: "School Id Variance"
+title: "Normalized ORF Distribution Changes"
 author: "Cole Campton"
-date: "7/27/2020"
+date: "8/10/2020"
 output: pdf_document
 ---
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(haven)
@@ -25,8 +24,6 @@ orfnames <- c("orf","mt_orf","ph_orf","e_orf_a","k_orf")
 # List of factors to consider
 factorList <- c("school_id","treat_phase","grade","language")
 MULTIFACTOR <- FALSE
-out <- data.frame(matrix(nrow=5,ncol=0))
-row.names(out)<- c("Country","Grade","Phase","Prop. Err. Between Schools", "Prop. Err. Within Schools")
 ```
 
 ```{r analysis, echo=FALSE}
@@ -71,29 +68,32 @@ for(i in 1:length(fileListing)){
     grades <- sort(unlist(unique(dataSub[,"grade"])))
     phases <- sort(unlist(unique(dataSub[,"treat_phase"])))
     for(g in grades){
-      for(p in phases){
-        gpdata <-  na.omit(data[data$grade == g & data$treat_phase ==p,c(orfnames[l], "school_id")])
-        nSchools <- length(unlist(unique(gpdata$school_id)))
-        if(nSchools>1){
-          gpfit <- aov(as.formula(paste(orfnames[l]," ~ school_id")), data=gpdata)
-          cat(paste0("ANOVA for Grade ",g,", Phase ",p,". \n"))
-          print(summary(gpfit))
-          
-          gpfitSumSq <- summary(gpfit)[[1]]["Sum Sq"]
-          gpfitSumSq <- gpfitSumSq/sum(gpfitSumSq)
-          colnames(gpfitSumSq) <- ""
-          info <- data.frame(c(country,g,p))
-          colnames(info) <- ""
-          gpfitSumSq <- rbind(info,gpfitSumSq)
-          row.names(gpfitSumSq) <- c("Country","Grade","Phase","Prop. Err. Between Schools", "Prop. Err. Within Schools")
-          out <- cbind(out,gpfitSumSq)
-        }else{
-          cat(paste0("Only one school for Grade ",g,", Phase ",p,". \n"))
+      phases <- sort(unlist(unique(dataSub[dataSub$grade == g,"treat_phase"])))
+      if(length(phases)>1){
+      orf1 <-  unlist(na.omit(data[data$grade == g & data$treat_phase ==phases[1],orfnames[l]]))
+      m1 <- mean(orf1)
+      s1 <- sd(orf1)
+      if(is.na(s1)){
+        s1 <- 1 
+        cat("Standard deviation is 0, degenerate case. \n")
         }
+      orf1 <- (orf1 -m1)/s1
+      d1 <- density(orf1)
+      for(p in phases[2:length(phases)]){
+        cat(paste0("Disribution changes for Grade ",g,", Phase ",p,". \n"))
+        orfp <-  unlist(na.omit(data[data$grade == g & data$treat_phase ==p,orfnames[l]]))
+        # mp <- mean(orfp)
+        # sp <- sd(orfp)
+        # if(is.na(sp)){sp <- 1 }
+        orfp <- (orfp -m1)/s1
+        dp <- density(orfp)
+        plot(d1,main=paste0("Phase ",phases[1],"-Normalized Densitys, grade ",g),col="red",xlab = "ORF")
+        lines(dp,col="blue")
+        legend("topleft", legend=c(paste0("Phase ",phases[1]),paste0("Phase ",p)), pch=16,col=c("red","blue"))
+      }
       }
     }
   }
 }
-xlsxpath = "D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Cole/"
-write.xlsx(x = out, file = paste0(xlsxpath,"SchoolErrors.xlsx"),sheetName = "Schools", row.names = TRUE, col.names=FALSE)
+
 ```
