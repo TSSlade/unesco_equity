@@ -42,6 +42,18 @@ colnames(colormap) <- as.character(unique(data$treat_phase))
 # colormap[as.character(unique(data$treat_phase))]= sample(col_vector,n)
 colormap[as.character(unique(data$treat_phase))]= c("#800000","#000075","#3cb44b")
 pie(rep(1,n),col=unlist(colormap))
+binnedLine <- function(x,y,n,title,xl,yl){
+  ys <- tapply(y,cut(x, n),mean)
+  xs <- tapply(x,cut(x, n),mean)
+  # cilow <- tapply(y,cut(x, n),function(x) CI(x,.95)["lower"])
+  # cihigh <- tapply(y,cut(x, n),function(x) CI(x,.95)["upper"])
+  ysd <- tapply(y,cut(x, n),sd)
+  cilow <- ys - ysd
+  cihigh <- ys + ysd
+  plot(xs,ys,type='b',ylim=c(min(cilow),max(cihigh)),main=title,xlab=xl,ylab=yl)
+  lines(xs,cilow,col='red')
+  lines(xs,cihigh,col='red')
+}
 ```
 
 # Coherence and Summary Statistics
@@ -313,11 +325,13 @@ for (i in 1:length(subpopFeats)){
     temp <- SES[,paste0(SESfeat,".base")]
     colnames(temp) <- SESfeat
     SESind <- projPC(temp)
-    plot(SESind,SES$orf.end-SES$orf.base, main=paste0("Change in ORF verse SES index for grade ",uniqueFeat[j] ))
-    fit15.rq <- rq((SES$orf.end-SES$orf.base)~SESind,tau=.15)
-    fit85.rq <- rq((SES$orf.end-SES$orf.base)~SESind,tau=.85)
-    abline(fit15.rq$coefficients[1],fit15.rq$coefficients[2],col="red")
-    abline(fit85.rq$coefficients[1],fit85.rq$coefficients[2],col="red")
+    binnedLine(SESind,SES$orf.end-SES$orf.base,10,paste0("Change in ORF verse SES index for grade ",uniqueFeat[j]), "SES index","Change in ORF")
+    
+    # plot(SESind,SES$orf.end-SES$orf.base, main=paste0("Change in ORF verse SES index for grade ",uniqueFeat[j] ))
+    # fit15.rq <- rq((SES$orf.end-SES$orf.base)~SESind,tau=.15)
+    # fit85.rq <- rq((SES$orf.end-SES$orf.base)~SESind,tau=.85)
+    # abline(fit15.rq$coefficients[1],fit15.rq$coefficients[2],col="red")
+    # abline(fit85.rq$coefficients[1],fit85.rq$coefficients[2],col="red")
     hist(SES$orf.end-SES$orf.base,20,main=paste0("Change in ORF for grade ",uniqueFeat[j] ))
     
     print(paste0("Correlation of SES index and change in ORF for grade ", uniqueFeat[j],": ",cor(SESind,SES$orf.end-SES$orf.base)))
@@ -478,6 +492,10 @@ print(t.test(LowestNtileMRFchange,TopNtileMRFchange))
 
 ntileTab[is.na(ntileTab)] <- ""
 print(ntileTab, row.names=FALSE,col.names=FALSE)
+library("xlsx")
+xlsxpath = "D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Cole/SEStables/"
+write.xlsx(x = ntileTab, file = paste0(xlsxpath,"SES_primr.xlsx"),sheetName = paste0(ntile,"-percentiles"), row.names = FALSE, col.names=FALSE)
+
 }
 ```
 

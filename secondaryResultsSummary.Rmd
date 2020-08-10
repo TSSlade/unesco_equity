@@ -40,7 +40,7 @@ T <- T[T$treat_phase.base<T$treat_phase.end,]
 
 ```{r, summary, echo=FALSE, warning=FALSE}
 dsets = unique(D$dataset)
-tabcnames <-  c("Dataset","Language","Grade","Phase","Gini","Mean","CV","p90/p10","p75/p25","% zero")
+tabcnames <-  c("Dataset","Language","Grade","Phase","Gini","CV","p90/p10","p75/p25","% zero","Mean")
 summaryTab <- data.frame(matrix(NA, nrow = nrow(D),ncol=length(tabcnames)))
 colnames(summaryTab) <- tabcnames
 loci = 0
@@ -57,24 +57,24 @@ for (i in 1:length(dsets)){
     summaryTab[loci+locj + ceiling(numj/2), "Language"] <- langs[j]
     lock = 0 
     for (k in 1:length(gr)){
-      Dsub <- D[D$dataset == dsets[i] & D$measure_label == langs[j] & D$grade ==gr[k],c("treat_phase","gini","mean", "cv", "ratio_p90p10", "ratio_p75p25","pct_zero")]
+      Dsub <- D[D$dataset == dsets[i] & D$measure_label == langs[j] & D$grade ==gr[k],c("treat_phase","gini", "cv", "ratio_p90p10", "ratio_p75p25","pct_zero","mean")]
       nk = nrow(Dsub)
       summaryTab[loci+locj + lock + nk, "Grade"] <- "______"
       summaryTab[loci+locj + lock + ceiling(nk/2), "Grade"] <- gr[k]
-      summaryTab[(loci+locj+lock+1):(loci+locj+lock+nk),c("Phase","Gini","Mean","CV","p90/p10","p75/p25","% zero")] <- Dsub
+      summaryTab[(loci+locj+lock+1):(loci+locj+lock+nk),c("Phase","Gini","CV","p90/p10","p75/p25","% zero","Mean")] <- Dsub
       lock = lock +nk
     }
     locj = locj +numj
   }
   loci = loci +locj
 }
-summaryTab[,c("Gini","Mean","CV","p90/p10","p75/p25","% zero")] <- lapply(summaryTab[,c("Gini","Mean","CV","p90/p10","p75/p25","% zero")],as.numeric)
-summaryTab[,c("Gini","Mean","CV","p90/p10","p75/p25","% zero")] <- lapply(summaryTab[,c("Gini","Mean","CV","p90/p10","p75/p25","% zero")],round,3)
+summaryTab[,c("Gini","CV","p90/p10","p75/p25","% zero","Mean")] <- lapply(summaryTab[,c("Gini","CV","p90/p10","p75/p25","% zero","Mean")],as.numeric)
+summaryTab[,c("Gini","CV","p90/p10","p75/p25","% zero","Mean")] <- lapply(summaryTab[,c("Gini","CV","p90/p10","p75/p25","% zero","Mean")],round,3)
 summaryTab[is.na(summaryTab)] <- ""
 # summaryTab[summaryTab$Grade=="777","Grade"] <- "Other"
 # print(summaryTab, row.names=FALSE)
 
-summaryoutput <- D[,c("dataset","measure_label","grade","treat_phase","gini","mean", "cv", "ratio_p90p10", "ratio_p75p25","pct_zero")]
+summaryoutput <- D[,c("dataset","measure_label","grade","treat_phase","gini", "cv", "ratio_p90p10", "ratio_p75p25","pct_zero","mean")]
 colnames(summaryoutput) <- tabcnames
 write.xlsx(x = summaryoutput, file = "D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Cole/inequality_results_summary.xlsx",sheetName = "core", row.names = FALSE, col.names=TRUE)
 summaryoutput[,tabcnames[5:10]] <- lapply(summaryoutput[,tabcnames[5:10]],function(x) round(as.numeric(x),3))
@@ -290,8 +290,7 @@ folderListings <- list.dirs(path,full.names=FALSE)
 for (i in 1:length(folderListings)){
   filesinfolder = list.files(paste0(path,"/",folderListings[i]),recursive=TRUE,pattern= "*.png",full.names=TRUE)
   if (length(filesinfolder)>0){
-    cat(paste0("Dataset ",folderListings[i]))
-    cat('\n')
+    cat(paste0("\n Dataset ",folderListings[i])," \n")
     for (j in 1:length(filesinfolder)){
       cat("![](",filesinfolder[j],")")
       cat('\n')

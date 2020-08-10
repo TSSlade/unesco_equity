@@ -14,6 +14,7 @@ library(DescTools)
 library(tidyverse)
 library("quantreg")
 library(RColorBrewer)
+library("xlsx")
 
 datapath <- "D:/Users/ccampton/Documents/unesco_equity/data/e.PUF_3.DRC2015-4Regions_grade3-5_EGRA-EGMA-SSME_French-Lingala-Tshiluba-Kiswahili/4.3_Finalized_Student-Level-Data_DRC-G3-G5_2015.dta"
 data <- read_dta(datapath)
@@ -275,6 +276,8 @@ for( k in unique(as.factor(SES$treat_phase))){
 
 ntileTab[is.na(ntileTab)] <- ""
 print(ntileTab, row.names=FALSE,col.names=FALSE)
+xlsxpath = "D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Cole/SEStables/"
+write.xlsx(x = as.data.frame(ntileTab), file = paste0(xlsxpath,"SES_DRCe.xlsx"),sheetName = paste0(ntile,"-percentiles"), row.names = FALSE, col.names=FALSE)
 
 }
 

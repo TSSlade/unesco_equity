@@ -16,6 +16,7 @@ library("quantreg")
 library(RColorBrewer)
 library(caret)
 library(e1071)
+library("xlsx")
 
 datapath <- "D:/Users/ccampton/Documents/unesco_equity/data/SHRPUganda/English/4. 20212-2018 Uganda SHRP C1 C2 C3 S_ENGLISH_rewt.dta"
 data <- read_dta(datapath)
@@ -37,6 +38,19 @@ rownames(colormap) <- "color"
 colnames(colormap) <- as.character(unique(data$treat_phase))
 #colormap[as.character(unique(data$treat_phase))]= sample(col_vector,n)
 colormap[as.character(unique(data$treat_phase))] <- all_colors[1:n]
+library(Rmisc)
+binnedLine <- function(x,y,n,title,xl,yl){
+  ys <- tapply(y,cut(x, n),mean)
+  xs <- tapply(x,cut(x, n),mean)
+  # cilow <- tapply(y,cut(x, n),function(x) CI(x,.95)["lower"])
+  # cihigh <- tapply(y,cut(x, n),function(x) CI(x,.95)["upper"])
+  ysd <- tapply(y,cut(x, n),sd)
+  cilow <- ys - ysd
+  cihigh <- ys + ysd
+  plot(xs,ys,type='b',ylim=c(min(cilow),max(cihigh)),main=title,xlab=xl,ylab=yl)
+  lines(xs,cilow,col='red')
+  lines(xs,cihigh,col='red')
+}
 ```
 # Coherence and Summary Statistics
 
@@ -260,16 +274,20 @@ for( ks in 1:length(tf)){
     print(summary(fit85.rq))
 }
 legend("topleft", legend=colnames(colormap), pch=16,col=unlist(colormap))
+cat(paste0("Standard deviation of SES: ", sd(SESind),", Standard deviation of normalized orf: ",sd(normorf),". \n"))
 }
 
 ntileTab[is.na(ntileTab)] <- ""
 print(ntileTab, row.names=FALSE,col.names=FALSE)
+xlsxpath = "D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Cole/SEStables/"
+write.xlsx(x = as.data.frame(ntileTab), file = paste0(xlsxpath,"SES_Uganda.xlsx"),sheetName = paste0(ntile,"-percentiles"), row.names = FALSE, col.names=FALSE)
+
 
 }
 UgandaXlsx <- UgandaXlsx[!is.na(UgandaXlsx[,1]),]
-library("xlsx")
 xlsxpath = "D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Cole/newResults/Uganda/"
-write.xlsx(x = UgandaXlsx, file = paste0(xlsxpath,"inequality_results_Uganda.xlsx"),sheetName = "core", row.names = FALSE, col.names=FALSE)
+# write.xlsx(x = UgandaXlsx, file = paste0(xlsxpath,"inequality_results_Uganda.xlsx"),sheetName = "core", row.names = FALSE, col.names=FALSE)
+
 ```
 
 # Linear Model Tables and Plots

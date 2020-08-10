@@ -19,6 +19,13 @@ library(e1071)
 
 datapath <- "D:/Users/ccampton/Documents/unesco_equity/data/SHRPUganda/English/4. 20212-2018 Uganda SHRP C1 C2 C3 S_ENGLISH_rewt.dta"
 data <- read_dta(datapath)
+langsub <- c("Luganda","Lugwere")
+languageLabels <- attributes(data$r_language)$labels
+keeplangs <- languageLabels[langsub]
+langsubmask <- unlist(data$r_language) %in% keeplangs
+data <- data[langsubmask,]
+# label languages
+data$r_language <- lapply(data$r_language,function(x) names(languageLabels[languageLabels==x]))
 features <- c("grade","treat_phase","orf","language")
 SESfeat = c()
 for(i in c(1:5,8:10)){SESfeat <- c(SESfeat,paste0("exit_interview5",letters[i]))}
@@ -102,10 +109,10 @@ subpopVars <- c("grade","language")
 {
   subpopVars <- subpopVars[unlist(lapply(subpopVars, function(x) length(unlist(unique(data[,x])))))>1]
   if(length(subpopVars)>1){
-    subpops <- unique(apply(data[,subpopVars],1,function(x) paste0(sort(x),collapse="-")))
-    subpoplabels <- unique(apply(data[,subpopVars],1,function(x) paste0(subpopVars,": ",sort(x),collapse=", ")))
+    subpops <- unique(apply(data[,subpopVars],1,function(x) paste0(x,collapse="-")))
+    subpoplabels <- unique(apply(data[,subpopVars],1,function(x) paste0(subpopVars,": ",x,collapse=", ")))
   }else{
-    subpops <- sort(unique(data[,subpopVars]))
+    subpops <-unique(data[,subpopVars])
     subpoplabels <- paste(subpopVars,subpops)
   }
   nsubpops <- length(subpops)
@@ -190,6 +197,9 @@ for(sp in 1:nsubpops){
         if(sum(normMask)>0){
         spMean <- mean(unlist(data[normMask,"orf"]))
         spVar <- var(unlist(data[normMask,"orf"]))
+        if(is.na(spVar)){
+          spVar <- 1
+        }
         normorf[normMask] <- (unlist(data[normMask,"orf"]) - spMean)/spVar
         }
     }
@@ -247,6 +257,7 @@ tf <- unique(as.factor(SES$treat_phase))
 for( ks in 1:length(tf)){
     k <- tf[ks]
     Y = normorf[as.character(SES$treat_phase)==k]
+    Y[is.na(Y)] <- 0
     X = SESind[as.character(SES$treat_phase)==k]
     regdata <- data.frame(X= X,Y=Y)
     quadrat <- Y~ a*X^2+b*X+c
@@ -294,10 +305,10 @@ subpopVars <- c("grade","language")
 #Compute Subpop labels, and masks for non-empty subpops (uses all phases)
 {  subpopVars <- subpopVars[unlist(lapply(subpopVars, function(x) length(unlist(unique(data[,x])))))>1]
   if(length(subpopVars)>1){
-    subpops <- unique(apply(data[,subpopVars],1,function(x) paste0(sort(x),collapse="-")))
-    subpoplabels <- unique(apply(data[,subpopVars],1,function(x) paste0(subpopVars,": ",sort(x),collapse=", ")))
+    subpops <- unique(apply(data[,subpopVars],1,function(x) paste0(x,collapse="-")))
+    subpoplabels <- unique(apply(data[,subpopVars],1,function(x) paste0(subpopVars,": ",x,collapse=", ")))
   }else{
-    subpops <- sort(unique(data[,subpopVars]))
+    subpops <- unique(data[,subpopVars])
     subpoplabels <- paste(subpopVars,subpops)
   }
   nsubpops <- length(subpops)
@@ -378,6 +389,9 @@ for(sp in 1:nsubpops){
         if(sum(normMask)>0){
         spMean <- mean(unlist(SES[phasemask,"orf"]))
         spVar <- var(unlist(SES[phasemask,"orf"]))
+        if(is.na(spVar)){
+          spVar <- 1
+        }
         normorf[normMask] <- (unlist(data[normMask,"orf"]) - spMean)/spVar
         }
     }
@@ -423,6 +437,7 @@ plot(SESind,normorf,col=plcolors, main= "Population-normalized ORF verse SES ind
 legend("topleft", legend=colnames(colormap), pch=16,col=unlist(colormap))
 for( k in unique(as.factor(SES$treat_phase))){
     Y = normorf[as.character(SES$treat_phase)==k]
+    Y[is.na(Y)] <- 0
     X = SESind[as.character(SES$treat_phase)==k]
     regdata <- data.frame(X= X,Y=Y)
     quadrat <- Y~ a*X^2+b*X+c
