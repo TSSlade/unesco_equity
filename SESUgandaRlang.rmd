@@ -273,6 +273,7 @@ for( ks in 1:length(tf)){
     print(summary(fit85.rq))
 }
 legend("topleft", legend=colnames(colormap), pch=16,col=unlist(colormap))
+cat(paste0("Standard deviation of SES: ", sd(SESind),", Standard deviation of normalized orf: ",sd(normorf),". \n"))
 }
 
 ntileTab[is.na(ntileTab)] <- ""

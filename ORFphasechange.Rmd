@@ -2,7 +2,9 @@
 title: "Normalized ORF Distribution Changes"
 author: "Cole Campton"
 date: "8/10/2020"
-output: pdf_document
+output:
+  pdf_document:
+    keep_tex: true
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -24,6 +26,9 @@ orfnames <- c("orf","mt_orf","ph_orf","e_orf_a","k_orf")
 # List of factors to consider
 factorList <- c("school_id","treat_phase","grade","language")
 MULTIFACTOR <- FALSE
+
+pcts <- seq(from=0,to=1,by=.001)
+pngPath <- 'D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Writing/Main folder/Figures/ORFphasechange_files/figure-latex/'
 ```
 
 ```{r analysis, echo=FALSE}
@@ -79,6 +84,7 @@ for(i in 1:length(fileListing)){
         }
       orf1 <- (orf1 -m1)/s1
       d1 <- density(orf1)
+      pcts1 <- quantile(orf1,probs = pcts)
       for(p in phases[2:length(phases)]){
         cat(paste0("Disribution changes for Grade ",g,", Phase ",p,". \n"))
         orfp <-  unlist(na.omit(data[data$grade == g & data$treat_phase ==p,orfnames[l]]))
@@ -87,9 +93,22 @@ for(i in 1:length(fileListing)){
         # if(is.na(sp)){sp <- 1 }
         orfp <- (orfp -m1)/s1
         dp <- density(orfp)
-        plot(d1,main=paste0("Phase ",phases[1],"-Normalized Densitys, grade ",g),col="red",xlab = "ORF")
-        lines(dp,col="blue")
-        legend("topleft", legend=c(paste0("Phase ",phases[1]),paste0("Phase ",p)), pch=16,col=c("red","blue"))
+        # c("#e07b39","#44bcd8") = red,blue
+        par(mar=rep(0,4))
+        png(paste0(pngPath,country,"Gr",g,"Density.png"))
+        plot(d1,main=paste0("Density comparison by data round: ",country," - Grade ",g),col="#e07b39",xlab = "Normalized ORF, by baseline scores",xlim=c(min(d1$x),ifelse(max(d1$x)>10,10,max(dp$x))))
+        lines(dp,col="#44bcd8")
+        if(country == "Malawi" & g==1){
+          legend("topright", legend=c("Baseline","Endline"), pch=16,col=c("#e07b39","#44bcd8"))
+        }
+        dev.off()
+        par(mar=rep(0,4))
+        pctsp <- quantile(orfp,probs = pcts)
+        png(paste0(pngPath,country,"Gr",g,"Percentiles.png"))
+        plot(pcts,pcts1,main=paste0("Mean performance by performance percentile : ",country," - Grade ",g),col="#e07b39",xlab = "Percentile by oral reading fluency (ORF)", ylab= "Mean ORF", type="l")
+        lines(pcts,pctsp,col="#44bcd8",type="l")
+        #legend("topleft", legend=c("Baseline","Endline"), pch=16,col=c("#e07b39","#44bcd8"))
+        dev.off()
       }
       }
     }

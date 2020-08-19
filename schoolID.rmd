@@ -19,19 +19,21 @@ mask = unlist(lapply(fileListingPUF, function(x) dirname(x) %in% dirname(fileLis
 fileListingPUF <- fileListingPUF[!mask]
 fileListing <- c(fileListingPUF, fileListingFinal)
 # These Strings are searched for as sub-strings in filenames to label the results. 
-countryNames <- c("Malawi", "DRC","Philippines","Egypt","Kenya","Uganda")
+countryNames <- c("Malawi", "DRC","Philippines","Egypt","KenyaTusome","Kenya PRIMR","Uganda")
 # This is hierarchial list to define the orf variable when "orf" is not available.
-orfnames <- c("orf","mt_orf","ph_orf","e_orf_a","k_orf")
+orfnames <- c("orf","mt_orf","ph_orf","e_orf_a","k_orf","r_orf")
 # List of factors to consider
-factorList <- c("school_id","treat_phase","grade","language")
+factorList <- c("school_id","treat_phase","grade","language","treatment")
 MULTIFACTOR <- FALSE
-out <- data.frame(matrix(nrow=5,ncol=0))
-row.names(out)<- c("Country","Grade","Phase","Prop. Err. Between Schools", "Prop. Err. Within Schools")
+out <- data.frame(matrix(nrow=6,ncol=0))
+row.names(out)<- c("Country","Language","Grade","Phase","Prop. Err. Between Schools", "Prop. Err. Within Schools")
+zeroScore <- TRUE
 ```
 
 ```{r analysis, echo=FALSE}
 for(i in 1:length(fileListing)){
   data <- read_dta(fileListing[i])
+  country <- stringr::str_extract(basename(fileListing[i]) ,paste(countryNames,collapse="|"))
   # Defines treat_phase as either included, year, or month based on hierarchy
   if (!"treat_phase"%in% colnames(data)){
       if ("year"%in% colnames(data)){
@@ -47,20 +49,48 @@ for(i in 1:length(fileListing)){
     data$school_id <- data$school_code
   }
   # Language defined
-  if (! "language"%in% colnames(data)){
-    data$language <- rep(1,nrow(data))
+  if(!"language"%in% colnames(data)){
+    data$language <- rep("Unspecified",nrow(data))
+  }else if(is.numeric(data$language)){
+    languageLabels <- attributes(data$language)$labels
+    if(country=="Uganda"){languageLabels["English"] =1}
+    if(all(unique(data$language) %in% languageLabels)){
+      data$language <- unlist(lapply(data$language,function(x) names(languageLabels[languageLabels==x])))
+    }else{
+      data$language <- rep("Unspecified",nrow(data))
+    }
+  }
+  if(!"treatment" %in% colnames(data)){
+    data$treatment <- rep(0, nrow(data))
+    includeTreat <- FALSE
+  }else if(length(unique(data$treatment))==1){
+    includeTreat <- FALSE
+  }else{
+    includeTreat <- TRUE
   }
   # Convert each of the factors into factors
   data$grade <- as.factor(data$grade)
   data$treat_phase <- as.factor(data$treat_phase)
   data$school_id <- as.factor(data$school_id)
-  data$language <- as.factor(data$language)
-  country <- stringr::str_extract(basename(fileListing[i]) ,paste(countryNames,collapse="|"))
+  #data$language <- as.factor(data$language)
   cat(paste0("Analysis of variance for ",country,"\n"))
   orfnamesMask <- orfnames %in% colnames(data)
   for(l in which(orfnamesMask==1)){
     cat(paste0("Oral fluency measure: ",orfnames[l]),"\n")
-    dataSub <- na.omit(data[,c(orfnames[l], factorList)])
+    if(orfnames[l]=="r_orf"){
+      #dataSub <- na.omit(data[,c(orfnames[l], "school_id","treat_phase","grade","r_language","treatment")])
+      dataSub <- data[!is.na(data[,orfnames[l]]),c(orfnames[l], "school_id","treat_phase","grade","r_language","treatment")]
+      colnames(dataSub) <- c(orfnames[l],"school_id","treat_phase","grade","language","treatment")
+      orfLabels <- attributes(dataSub$language)$labels
+      if(all(unique(dataSub$language) %in% orfLabels)){
+        dataSub$language <- unlist(lapply(dataSub$language,function(x) names(orfLabels[orfLabels==x])))
+      }else{
+        dataSub$language <- rep("Unspecified",nrow(dataSub))
+      }
+    }else{
+      #dataSub <- na.omit(data[,c(orfnames[l], factorList)])
+      dataSub <- data[!is.na(data[,orfnames[l]]),c(orfnames[l],factorList)]
+    }
     if(MULTIFACTOR){
       #Find which of the pre-defined factors have more than one level. 
       factorMask <- unlist(lapply(factorList,function(x) length(unlist(unique(dataSub[,x])))))>1
@@ -68,32 +98,98 @@ for(i in 1:length(fileListing)){
       fit <- aov(as.formula(paste(orfnames[l]," ~", paste(factorList[factorMask], collapse="*"))), data=dataSub)
       print(summary(fit))
     }
+    langs <- unlist(unique(dataSub[,"language"]))
     grades <- sort(unlist(unique(dataSub[,"grade"])))
-    phases <- sort(unlist(unique(dataSub[,"treat_phase"])))
+    for(lang in langs){
     for(g in grades){
+      phases <- sort(unlist(unique(dataSub[dataSub$grade==g,"treat_phase"])))
+      treatgroups <- sort(unlist(unique(dataSub[dataSub$treatment,"treatment"])))
       for(p in phases){
-        gpdata <-  na.omit(data[data$grade == g & data$treat_phase ==p,c(orfnames[l], "school_id")])
+        for( t in treatgroups){
+        if(includeTreat){
+          countryGroup <- paste0(country,", Treat Group ",t)
+        }else{
+          countryGroup <- country
+        }
+        #gpdata <-  na.omit(data[data$grade == g & data$treat_phase ==p & data$language ==lang,c(orfnames[l], "school_id")])
+        # gpdata <-  na.omit(data[data$grade == g & data$treat_phase ==p & data$language ==lang & data$treatment==t,c(orfnames[l], "school_id")])
+        gpdata <-  na.omit(dataSub[dataSub$grade == g & dataSub$treat_phase ==p & dataSub$language ==lang & dataSub$treatment==t,c(orfnames[l], "school_id")])
+        gpdata$zeroOrf <- gpdata[,orfnames[l]]==0
         nSchools <- length(unlist(unique(gpdata$school_id)))
+        cat(paste0(nSchools," school for country",countryGroup,", Grade ",g,", Phase ",p,". \n"))
         if(nSchools>1){
-          gpfit <- aov(as.formula(paste(orfnames[l]," ~ school_id")), data=gpdata)
+          if(zeroScore){
+            gpfit <- aov(zeroOrf ~ school_id, data=gpdata)
+          }else{
+            gpfit <- aov(as.formula(paste(orfnames[l]," ~ school_id")), data=gpdata)
+          }
           cat(paste0("ANOVA for Grade ",g,", Phase ",p,". \n"))
           print(summary(gpfit))
           
           gpfitSumSq <- summary(gpfit)[[1]]["Sum Sq"]
           gpfitSumSq <- gpfitSumSq/sum(gpfitSumSq)
           colnames(gpfitSumSq) <- ""
-          info <- data.frame(c(country,g,p))
+          if(lang == "Unspecified"){
+            info <- data.frame(c(countryGroup,orfnames[l], g,p))
+          }else{
+            info <- data.frame(c(countryGroup,lang, g,p))
+          }
           colnames(info) <- ""
           gpfitSumSq <- rbind(info,gpfitSumSq)
-          row.names(gpfitSumSq) <- c("Country","Grade","Phase","Prop. Err. Between Schools", "Prop. Err. Within Schools")
+          row.names(gpfitSumSq) <- c("Country","Language","Grade","Phase","Prop. Err. Between Schools", "Prop. Err. Within Schools")
           out <- cbind(out,gpfitSumSq)
         }else{
-          cat(paste0("Only one school for Grade ",g,", Phase ",p,". \n"))
+    
+        }
         }
       }
+    }
     }
   }
 }
 xlsxpath = "D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Cole/"
-write.xlsx(x = out, file = paste0(xlsxpath,"SchoolErrors.xlsx"),sheetName = "Schools", row.names = TRUE, col.names=FALSE)
+if(zeroScore){
+  write.xlsx(x = out, file = paste0(xlsxpath,"SchoolErrorsZeroScore.xlsx"),sheetName = "Schools", row.names = TRUE, col.names=FALSE)
+}else{
+  write.xlsx(x = out, file = paste0(xlsxpath,"SchoolErrors.xlsx"),sheetName = "Schools", row.names = TRUE, col.names=FALSE)
+}
+out <- t(out)
+phases <- sort(as.numeric(unique(out[,"Phase"])))
+temp <- out[out[,"Phase"]==as.character(phases[1]),]
+phases <- phases[2:length(phases)]
+for(p in phases){
+  pd <- out[out[,"Phase"]==as.character(p),]
+  temp <- merge(temp,pd, by= c("Country","Language","Grade"),suffixes = c("",p),all=TRUE)
+}
+mostPhases = max((rowSums(!is.na(temp))-3)/3)
+table = data.frame(matrix(ncol = mostPhases*2+3,nrow=0))
+countries <- unique(out[,"Country"])
+for(c in countries){
+  cdata <- rbind(out[out[,"Country"]==c,],data.frame(matrix(nrow=0,ncol=ncol(out))))
+  colnames(cdata) <- colnames(out)
+  clangs <- unique(cdata[,"Language"])
+  for(l in clangs){
+    ldata <- rbind(cdata[cdata[,"Language"]==l,],data.frame(matrix(nrow=0,ncol=ncol(out))))
+    colnames(ldata) <- colnames(out)
+    ldata <- ldata[order(as.numeric(ldata[,"Grade"])),]
+    grades <-  as.numeric(unique(ldata[,"Grade"]))
+    for(g in grades){
+      gdata <- rbind(ldata[ldata[,"Grade"]==g,],data.frame(matrix(nrow=0,ncol=ncol(out))))
+      colnames(gdata) <- colnames(out)
+      phaseOrder <- order(as.numeric(gdata[,"Phase"]))
+      clgdata <- reshape(gdata[phaseOrder,], idvar=c("Country", "Language", "Grade"), timevar = "Phase", direction="wide")
+      clgdata <- cbind(clgdata, matrix(NA,nrow=1,ncol=2*(mostPhases-nrow(gdata))))
+      colnames(clgdata) <- colnames(table)
+      table <- rbind(table,clgdata)
+    }
+  }
+}
+colnames(table) <- c("Country","Language","Grade",paste(c("Prop. Err. Between Schools, Phase", "Prop. Err. Within Schools, Phase"),rep(t(1:mostPhases),each=2)))
+print(table,row.names=FALSE)
+table[is.na(table)] <- ""
+if(zeroScore){
+  write.xlsx(x = table, file = paste0(xlsxpath,"SchoolPhaseErrorsZeroScore.xlsx"),sheetName = "Schools", row.names = FALSE, col.names=TRUE)
+}else{
+  write.xlsx(x = table, file = paste0(xlsxpath,"SchoolPhaseErrors.xlsx"),sheetName = "Schools", row.names = FALSE, col.names=TRUE)
+}
 ```

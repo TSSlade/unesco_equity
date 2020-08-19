@@ -9,6 +9,8 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 library("xlsx")
 library("quantreg")
+# detach('package:openxlsx',unload=TRUE)
+
 path = "D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Cole/newResults"
 ## path = "/Users/camptonc/Documents/RTI docs/ColeRTI/new results"
 fileListing <- list.files(path,recursive=TRUE,pattern= "inequality_results_*",full.names=TRUE)
@@ -74,8 +76,8 @@ summaryTab[is.na(summaryTab)] <- ""
 # summaryTab[summaryTab$Grade=="777","Grade"] <- "Other"
 # print(summaryTab, row.names=FALSE)
 
-summaryoutput <- D[,c("dataset","measure_label","grade","treat_phase","gini", "cv", "ratio_p90p10", "ratio_p75p25","pct_zero","mean")]
-colnames(summaryoutput) <- tabcnames
+summaryoutput <- D[,c("dataset","subpop_label","measure_label","grade","treat_phase","gini", "cv", "ratio_p90p10", "ratio_p75p25","pct_zero","mean")]
+colnames(summaryoutput) <- c("Dataset","Subpop","Language","Grade","Phase","Gini","CV","p90/p10","p75/p25","% zero","Mean")
 write.xlsx(x = summaryoutput, file = "D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Cole/inequality_results_summary.xlsx",sheetName = "core", row.names = FALSE, col.names=TRUE)
 summaryoutput[,tabcnames[5:10]] <- lapply(summaryoutput[,tabcnames[5:10]],function(x) round(as.numeric(x),3))
 summaryoutput[summaryoutput$Grade=="777","Grade"] <- "Other"

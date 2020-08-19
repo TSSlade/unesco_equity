@@ -9,6 +9,8 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+opts_knit$set(global.par =TRUE)
 library(haven)
 library(DescTools)
 library(tidyverse)
@@ -16,7 +18,7 @@ library("quantreg")
 library(RColorBrewer)
 library(caret)
 library(e1071)
-
+par(mar=c(5,6,4,2)+.1)
 datapath <- "D:/Users/ccampton/Documents/unesco_equity/data/PUF_3.Kenya PRIMR2012-2013-Endline_grade1 2_EGRA EGMA ENG HT T TAC COR COM CIN_Eng Kis.dta"
 data <- read_dta(datapath)
 
@@ -28,7 +30,7 @@ SESlabs = c("Radio","Telephone","Electricity","TV","Fridge","Toilet inside","Bik
 Dbase <- data.frame(data[data$treat_phase==1,c("id",features,SESfeat)])
 Dmid <- data.frame(data[data$treat_phase==2,c("id",features,SESfeat)])
 Dend <- data.frame(data[data$treat_phase==6,c("id",features,SESfeat)])
-# There are no paired ids for baseline to midline of baseline to endline. 
+# There are no paired ids for baseline to midline or baseline to endline. 
 dataTemporal <- merge(Dmid,Dend, by= c("id","grade"),suffixes = c(".base",".end"))
 dataTemporal <- na.omit(dataTemporal)
 
@@ -44,15 +46,19 @@ colormap[as.character(unique(data$treat_phase))]= c("#800000","#000075","#3cb44b
 pie(rep(1,n),col=unlist(colormap))
 binnedLine <- function(x,y,n,title,xl,yl){
   ys <- tapply(y,cut(x, n),mean)
-  xs <- tapply(x,cut(x, n),mean)
+  #xs <- tapply(x,cut(x, n),mean)
+  xs <- seq(from=min(x),to=max(x),by=(max(x)-min(x))/(n+1))+(max(x)-min(x))/(2*(n+1))
+  xs <- xs[1:n]
   # cilow <- tapply(y,cut(x, n),function(x) CI(x,.95)["lower"])
   # cihigh <- tapply(y,cut(x, n),function(x) CI(x,.95)["upper"])
   ysd <- tapply(y,cut(x, n),sd)
   cilow <- ys - ysd
   cihigh <- ys + ysd
+  par(mar=c(5,6,4,2)+0.1)
   plot(xs,ys,type='b',ylim=c(min(cilow),max(cihigh)),main=title,xlab=xl,ylab=yl)
-  lines(xs,cilow,col='red')
-  lines(xs,cihigh,col='red')
+  segments(xs,cilow,xs,cihigh)
+  #lines(xs,cilow,col='red')
+  #lines(xs,cihigh,col='red')
 }
 ```
 
@@ -325,7 +331,8 @@ for (i in 1:length(subpopFeats)){
     temp <- SES[,paste0(SESfeat,".base")]
     colnames(temp) <- SESfeat
     SESind <- projPC(temp)
-    binnedLine(SESind,SES$orf.end-SES$orf.base,10,paste0("Change in ORF verse SES index for grade ",uniqueFeat[j]), "SES index","Change in ORF")
+    print(paste0("Change in ORF verse SES index for grade ",uniqueFeat[j]))
+    binnedLine(SESind,SES$orf.end-SES$orf.base,10,"", "Decile of SES index","Difference between endline and baseline \n oral reading fluency (cwpm)")
     
     # plot(SESind,SES$orf.end-SES$orf.base, main=paste0("Change in ORF verse SES index for grade ",uniqueFeat[j] ))
     # fit15.rq <- rq((SES$orf.end-SES$orf.base)~SESind,tau=.15)
