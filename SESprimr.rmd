@@ -101,8 +101,13 @@ plot(SESBL,SESEL, main="SES index at Endline vs Baseline")
 confmat <- confusionMatrix(as.factor(quartBL), as.factor(quartEL), dnn=c("Basline","Endline"))$table
 cat("Confusion matrix of quartiles based on Baseline/Endline SES Questions. \n")
 print(confmat)
-plot(SESBL,BLitemsowned,ylab="#items owned",main="Items owned BL vs SES Index")
-plot(SESEL,ELitemsowned,ylab="#items owned",main="Items owned EL vs SES Index")
+outPath <- 'D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Writing/Main folder/Figures/'
+png(paste0(outPath,"KenyaOwnershipVsSesIndexBaseline.png"))
+plot(SESBL,BLitemsowned,ylab="Number of items owned at baseline",main="Kenya",xlab="Socioeconomic status variable")
+dev.off()
+png(paste0(outPath,"KenyaOwnershipVsSesIndexEndline.png"))
+plot(SESEL,ELitemsowned,ylab="Number of items owned at endline",main="Kenya",xlab="Socioeconomic status variable")
+dev.off()
 ```
 # Stratified by Grade
 
@@ -304,6 +309,8 @@ for( k in unique(as.factor(SES$treat_phase))){
     reg85 <- within(plotrange,Y <- predict(fit85.rq, newdata= plotrange))
     lines(Y~X, data =reg85, col= unlist(colormap[as.character(k)]), add=TRUE)
     print(paste0("Treat phase ",k," quantile regression tests:"))
+    lmfit <- lm(Y~X, data=regdata)
+    print(summary(lmfit))
     print(summary(fit15.rq))
     print(summary(fit85.rq))
     # fit15.rq <- rq(Y~X,tau=.15)

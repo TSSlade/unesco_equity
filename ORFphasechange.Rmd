@@ -94,7 +94,8 @@ for(i in 1:length(fileListing)){
         orfp <- (orfp -m1)/s1
         dp <- density(orfp)
         # c("#e07b39","#44bcd8") = red,blue
-        par(mar=rep(0,4))
+        #par(mar=rep(0,4))
+        PS = 24;
         png(paste0(pngPath,country,"Gr",g,"Density.png"))
         plot(d1,main=paste0("Density comparison by data round: ",country," - Grade ",g),col="#e07b39",xlab = "Normalized ORF, by baseline scores",xlim=c(min(d1$x),ifelse(max(d1$x)>10,10,max(dp$x))))
         lines(dp,col="#44bcd8")
@@ -102,7 +103,7 @@ for(i in 1:length(fileListing)){
           legend("topright", legend=c("Baseline","Endline"), pch=16,col=c("#e07b39","#44bcd8"))
         }
         dev.off()
-        par(mar=rep(0,4))
+        #par(mar=rep(0,4))
         pctsp <- quantile(orfp,probs = pcts)
         png(paste0(pngPath,country,"Gr",g,"Percentiles.png"))
         plot(pcts,pcts1,main=paste0("Mean performance by performance percentile : ",country," - Grade ",g),col="#e07b39",xlab = "Percentile by oral reading fluency (ORF)", ylab= "Mean ORF", type="l")

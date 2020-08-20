@@ -3,7 +3,8 @@ library(gridExtra)
 library(png)
 library(magick)
 
-pngPath <- 'D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Writing/Main folder/Figures/ORFphasechange_files/'
+pngPath <- 'D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Writing/Main folder/Figures/ORFphasechange_files/figure-latex/'
+outPath <- 'D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Writing/Main folder/Figures/ORFphasechange_files/'
 countries <- c("Malawi","Kenya","DRC")
 grades <- c(1,2,6)
 plot_list <- list()
@@ -19,4 +20,4 @@ for(i in 1:3){
 do.call(grid.arrange,c(plot_list,ncol=2,nrow=3,padding=10))
 g <- do.call(arrangeGrob,c(plot_list,ncol=2,nrow=3,padding=10))
 
-ggsave(file=paste0(pngPath,"joinedORFphasechange.pdf"),g,device="pdf", width=24,height=16,units="in",dpi='retina')
+ggsave(file=paste0(outPath,"joinedORFphasechange.pdf"),g,device="pdf", width=24,height=16,units="in",dpi='retina')

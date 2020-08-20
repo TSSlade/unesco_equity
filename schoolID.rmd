@@ -56,8 +56,6 @@ for(i in 1:length(fileListing)){
     if(country=="Uganda"){languageLabels["English"] =1}
     if(all(unique(data$language) %in% languageLabels)){
       data$language <- unlist(lapply(data$language,function(x) names(languageLabels[languageLabels==x])))
-    }else{
-      data$language <- rep("Unspecified",nrow(data))
     }
   }
   if(!"treatment" %in% colnames(data)){
@@ -103,7 +101,7 @@ for(i in 1:length(fileListing)){
     for(lang in langs){
     for(g in grades){
       phases <- sort(unlist(unique(dataSub[dataSub$grade==g,"treat_phase"])))
-      treatgroups <- sort(unlist(unique(dataSub[dataSub$treatment,"treatment"])))
+      treatgroups <- sort(unlist(unique(dataSub[dataSub$grade==g,"treatment"])))
       for(p in phases){
         for( t in treatgroups){
         if(includeTreat){
@@ -116,7 +114,7 @@ for(i in 1:length(fileListing)){
         gpdata <-  na.omit(dataSub[dataSub$grade == g & dataSub$treat_phase ==p & dataSub$language ==lang & dataSub$treatment==t,c(orfnames[l], "school_id")])
         gpdata$zeroOrf <- gpdata[,orfnames[l]]==0
         nSchools <- length(unlist(unique(gpdata$school_id)))
-        cat(paste0(nSchools," school for country",countryGroup,", Grade ",g,", Phase ",p,". \n"))
+        cat(paste0(nSchools," school for ",countryGroup,", Grade ",g,", Phase ",p,". \n"))
         if(nSchools>1){
           if(zeroScore){
             gpfit <- aov(zeroOrf ~ school_id, data=gpdata)
@@ -129,11 +127,12 @@ for(i in 1:length(fileListing)){
           gpfitSumSq <- summary(gpfit)[[1]]["Sum Sq"]
           gpfitSumSq <- gpfitSumSq/sum(gpfitSumSq)
           colnames(gpfitSumSq) <- ""
-          if(lang == "Unspecified"){
-            info <- data.frame(c(countryGroup,orfnames[l], g,p))
-          }else{
-            info <- data.frame(c(countryGroup,lang, g,p))
-          }
+          info <- data.frame(c(countryGroup,paste0(lang,", ",orfnames[l]), g,p))
+          # if(lang == "Unspecified"){
+          #   info <- data.frame(c(countryGroup,orfnames[l], g,p))
+          # }else{
+          #   info <- data.frame(c(countryGroup,lang, g,p))
+          # }
           colnames(info) <- ""
           gpfitSumSq <- rbind(info,gpfitSumSq)
           row.names(gpfitSumSq) <- c("Country","Language","Grade","Phase","Prop. Err. Between Schools", "Prop. Err. Within Schools")
@@ -153,6 +152,9 @@ if(zeroScore){
 }else{
   write.xlsx(x = out, file = paste0(xlsxpath,"SchoolErrors.xlsx"),sheetName = "Schools", row.names = TRUE, col.names=FALSE)
 }
+# out <- read.xlsx(file = paste0(xlsxpath,"SchoolErrorsZeroScore.xlsx"),sheetName = "Schools",header=FALSE)
+# row.names(out) <- out[,1]
+# out <- out[,2:ncol(out)]
 out <- t(out)
 phases <- sort(as.numeric(unique(out[,"Phase"])))
 temp <- out[out[,"Phase"]==as.character(phases[1]),]

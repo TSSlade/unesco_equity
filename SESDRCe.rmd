@@ -52,7 +52,13 @@ ownershipPct <- colSums(data[,SESfeat])/nrow(data)
 barplot(ownershipPct,las=2,names.arg=SESlabs,main="Ownership Percent of each Item")
 barplot(PCA$rotation[,1],las=2,names.arg=SESlabs,main="Item weights for First Principle Component")
 barplot(PCA$sdev/sum(PCA$sdev),names.arg=1:length(SESfeat),main="Variance explained by each Principle Component")
-plot(projPC(na.omit(data[,SESfeat])),rowSums(na.omit(data[,SESfeat])),ylab="#items owned",xlab="SES index",main="Items owned vs SES Index")
+
+SESBL <- projPC(na.omit(data[,SESfeat]))
+BLitemsowned <- rowSums(na.omit(data[,SESfeat]))
+outPath <- 'D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Writing/Main folder/Figures/'
+png(paste0(outPath,"DRCOwnershipVsSesIndexBaseline.png"))
+plot(SESBL,BLitemsowned,ylab="Number of items owned at baseline",main="Democratic Republic of Congo",xlab="Socioeconomic status variable")
+dev.off()
 ```
 There are no students which were observed at two of baseline, midline or endline, meaning there is no opportunity for validating consistency of answers to SES questions. 
 ```{r coherence}
@@ -197,6 +203,8 @@ for(sp in 1:nsubpops){
         reg85 <- within(plotrange,Y <- predict(fit85.rq, newdata= plotrange))
         lines(Y~X, data =reg85, col= unlist(colormap[as.character(phase)]), add=TRUE)
         print(paste0("Treat phase ",phase," quantile regression tests:"))
+        lmfit <- lm(Y~X, data=regdata)
+        print(summary(lmfit))
         print(summary(fit15.rq))
         print(summary(fit85.rq))
       }
@@ -373,6 +381,8 @@ for(sp in 1:nsubpops){
         reg85 <- within(plotrange,Y <- predict(fit85.rq, newdata= plotrange))
         lines(Y~X, data =reg85, col= unlist(colormap[as.character(phase)]), add=TRUE)
         print(paste0("Treat phase ",phase," quantile regression tests:"))
+        lmfit <- lm(Y~X, data=regdata)
+        print(summary(lmfit))
         print(summary(fit15.rq))
         print(summary(fit85.rq))
       }
