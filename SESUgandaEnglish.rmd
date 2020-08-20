@@ -278,6 +278,10 @@ for( ks in 1:length(tf)){
     reg85 <- within(plotrange,Y <- predict(fit85.rq, newdata= plotrange))
     lines(Y~X, data =reg85, col= unlist(colormap[as.character(k)]), add=TRUE)
     print(paste0("Treat phase ",k," quantile regression tests:"))
+    lmfit <- lm(Y~X, data=regdata)
+    print(summary(lmfit))
+    print(paste0("SES std: ",sd(regdata$X)))
+    print(paste0("ORF std: ",sd(regdata$Y)))
     print(summary(fit15.rq))
     print(summary(fit85.rq))
 }
@@ -394,6 +398,8 @@ for(sp in 1:nsubpops){
         print(paste0("Treat phase ",phase," quantile regression tests:"))
         lmfit <- lm(Y~X, data=regdata)
         print(summary(lmfit))
+        print(paste0("SES std: ",sd(regdata$X)))
+        print(paste0("ORF std: ",sd(regdata$Y)))
         print(summary(fit15.rq))
         print(summary(fit85.rq))
       }
