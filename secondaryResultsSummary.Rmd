@@ -11,7 +11,8 @@ library("xlsx")
 library("quantreg")
 # detach('package:openxlsx',unload=TRUE)
 
-path = "D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Cole/newResults"
+## path = "D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Cole/newResults"
+path = "C:/Users/Cole/Documents/unesco_equity/newResults"
 ## path = "/Users/camptonc/Documents/RTI docs/ColeRTI/new results"
 fileListing <- list.files(path,recursive=TRUE,pattern= "inequality_results_*",full.names=TRUE)
 
@@ -31,7 +32,8 @@ D$treat_phase <- as.numeric(D$treat_phase)
 D <- D[!is.na(D$gini),]
 D <- D[D$gini != "",]
 numMask <- colSums(is.na(sapply( D, as.numeric )))/nrow(D)==0
-D[,numMask] <- lapply(D[,numMask],as.numeric)
+numMask[1] <- FALSE
+#D[,numMask] <- lapply(D[,numMask],as.numeric)
 
 
 T <- merge(D,D, by= c("grade","dataset", "performance_measure"),suffixes = c(".base",".end"))
