@@ -1,3 +1,2 @@
-label define lbl_treat_phase 1 `"Baseline"', modify
-label define lbl_treat_phase 2 `"Midline"', modify
-label define lbl_treat_phase 6 `"Endline"', modify
+label define lbl_treat_phase 2014 `"Baseline"', modify
+label define lbl_treat_phase 2015 `"Endline"', modify

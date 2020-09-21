@@ -6,13 +6,20 @@ tempname postLorenz            // Ensures no namespace clashes
 
 loc vars_of_interest = "str20(dataset language) cohort grade round pct_00 pct_05 pct_10 pct_15 pct_20 pct_25 pct_30 pct_35 pct_40 pct_45 pct_50 pct_55 pct_60 pct_65 pct_70 pct_75 pct_80 pct_85 pct_90 pct_95 pct_100"
 
+postfile `postLorenz' `vars_of_interest' using `lorenzes'
+cd "$HOME/unesco_equity"
 local primr = "$HOME/projects\unesco_chapter\primr_unesco.dta"
 local tusome = "$HOME/projects\unesco_chapter\tusome_unesco.dta"
-local languages = "English Kiswahili"
+local malawi = "$HOME/unesco_equity/malawi_unesco.dta"
+local DRC = "$HOME/unesco_equity\DRC_unesco.dta"
+//local languages = "English Kiswahili"
+local languages = "French"
 * local langvars = "eng_orf kis_orf"
-local langvars = "eng_orf kis_orf"
-local datasets = "primr tusome"
+local langvars = "fre_orf"
+// local datasets = "primr tusome"
+local datasets = "DRC"
 local cohortvars = "1 2 3"
+local grades = "2 4 6"
 
 // Loop through datasets
 // ...then languages

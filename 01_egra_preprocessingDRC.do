@@ -59,8 +59,7 @@ label define lbl_grade 2 "Gr2" 4 "Gr4" 6 "Gr6"
 label val grade lbl_grade
 
 // Ensure consistent/transparent naming of the performance measures we're using
-clonevar eng_orf = orf
-// clonevar fre_orf = f_orf
+clonevar fre_orf = orf
 loc langs "French"
 
 // Benchmark
@@ -80,17 +79,17 @@ gen eng_bmark = 0
 gen fre_bmark = 0
 
 // Applying Low
-recode eng_bmark (0 = 1) if ((grade==1 & eng_orf >= `eng1_low') & (grade==1 & eng_orf < `eng1_high'))
-// recode fre_bmark (0 = 1) if ((grade==1 & fre_orf >= `fre1_low') & (grade==1 & fre_orf < `fre1_high'))
+//recode eng_bmark (0 = 1) if ((grade==1 & eng_orf >= `eng1_low') & (grade==1 & eng_orf < `eng1_high'))
+ recode fre_bmark (0 = 1) if ((grade==1 & fre_orf >= `fre1_low') & (grade==1 & fre_orf < `fre1_high'))
 
 // Applying High
-recode eng_bmark (0 = 2) if (grade==1 & eng_orf >= `eng1_high')
-//recode fre_bmark (0 = 2) if (grade==1 & fre_orf >= `fre1_high')
+//recode eng_bmark (0 = 2) if (grade==1 & eng_orf >= `eng1_high')
+recode fre_bmark (0 = 2) if (grade==1 & fre_orf >= `fre1_high')
 
-label define lbl_ebmark 0 "[eng_orf < `eng1_low']" 1 "[eng_orf >=`eng1_low' <`eng1_high']" 2 "[eng_orf >`eng1_high']"
-label val eng_bmark lbl_ebmark
-// label define lbl_mbmark 0 "[fre_orf < `fre1_low'] " 1 "[fre_orf >=`fre1_low' <`fre1_high']" 2 "[fre_orf >`fre1_high']"
-// label val fre_bmark lbl_mbmark
+//label define lbl_ebmark 0 "[eng_orf < `eng1_low']" 1 "[eng_orf >=`eng1_low' <`eng1_high']" 2 "[eng_orf >`eng1_high']"
+//label val eng_bmark lbl_ebmark
+label define lbl_frmark 0 "[fre_orf < `fre1_low'] " 1 "[fre_orf >=`fre1_low' <`fre1_high']" 2 "[fre_orf >`fre1_high']"
+label val fre_bmark lbl_frmark
 
 // Consider destringing any variables you would use for the grouping
 // destring treat_phase grade female eng_bmark fre_bmark school_code, replace
@@ -103,18 +102,17 @@ svyset
 // Super-granular analyses by subpopulation with additional parameters
 // Student-level data
 
-//quietly: apply_analysis eng_orf, data("DRC") core(treat_phase grade) res("DRC_core") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
-//quietly: apply_analysis eng_orf, data("DRC") core(treat_phase grade female) res("DRC_bysex") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
-// quietly: apply_analysis eng_orf, data("DRC") core(treat_phase grade eng_bmark) res("DRC_engbmarks") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
-//// quietly: apply_analysis eng_orf kis_orf, data("DRC") core(treat_phase grade) res("DRC_malbmarks") svy(1) wt(wt_final) zeros(1) varlabel("English French") ver(0) deb(0)
-quietly: apply_analysis eng_orf, data("DRC") core(treat_phase grade school_id) res("DRC_byschool") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
+quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade) res("DRC_core") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
+quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade female) res("DRC_bysex") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
+quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade fre_bmark) res("DRC_frebmarks") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
+//quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade school_id) res("DRC_byschool") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
 
 
-loc dataset_types "core bysex engbmarks byschool"
-// loc dataset_types "core bysex engbmarks"
+//loc dataset_types "core bysex engbmarks byschool"
+loc dataset_types "core bysex engbmarks"
 
 foreach dt of loc dataset_types {
     use "DRC_`dt'.dta", clear
 	//append using "DRC_`dt'.dta"
-    //export excel "bins/inequality_results_$c_datetime.xlsx", sh(`dt') firstrow(var) sheetmod
+	export excel "bins/inequality_results_$c_datetime.xlsx", sh(`dt') firstrow(var) sheetmod
 }

@@ -29,7 +29,7 @@ global p_dir="D:\Users\ccampton\Documents\unesco_equity"
 local c_time: di %td_CY-N-D date("$S_DATE", "DMY") "_$S_TIME"
 global c_datetime=trim(subinstr("`c_time'",":","-",.))
 
-global DRC_src = "D:\Users\ccampton\Documents\unesco_equity\data\d.PUF_DRC_Baseline_Endline Grade 2-4-6 French Sample A\PUF_3.DRC2010_2014-Baseline_Endline_grade2-4-6_EGRA-EGMA_French_SampleA.dta"
+global DRC_src = "D:\Users\ccampton\Documents\unesco_equity\data\e.PUF_3.DRC2015-4Regions_grade3-5_EGRA-EGMA-SSME_French-Lingala-Tshiluba-Kiswahili\PUF_3.DRC2015-4Regions_grade3-5_EGRA-EGMA-SSME_French-Lingala-Tshiluba-Kiswahili.dta"
 global uwezo_dir="data/uwezo/"
 
 // Change to current dir, begin logging
@@ -54,13 +54,19 @@ label define lbl_treat_phase 1 "Baseline" 6 "Endline"
 label val treat_phase lbl_treat_phase
 label define lbl_female 0 "Male" 1 "Female"
 label val female lbl_female
-// label define lbl_grade 1 "Gr1" 2 "Gr2" 3 "Gr3"
-label define lbl_grade 2 "Gr2" 4 "Gr4" 6 "Gr6"
+label define lbl_grade 3 "Gr3" 5 "Gr5" 777 "Other"
 label val grade lbl_grade
 
 // Ensure consistent/transparent naming of the performance measures we're using
-clonevar fre_orf = orf
-loc langs "French"
+gen fre_orf = .
+replace fre_orf = mt_orf if language==1
+gen lin_orf = .
+replace lin_orf = mt_orf if language==2
+gen tsh_orf = .
+replace tsh_orf = mt_orf if language==3
+gen kis_orf = .
+replace kis_orf = mt_orf if language==4
+loc langs "French Lingala Tshiluba Kiswahili"
 
 // Benchmark
 /* Per KNEC in Kenya, for ORF:
@@ -70,33 +76,43 @@ Grade 1  20      35    10      30
 Grade 3  40      80    30      55
 */
 
-loc eng1_low = 20
-loc eng1_high = 35
-loc fre1_low = 10
-loc fre1_high = 30
+loc low = 10
+loc high = 30
 
-gen eng_bmark = 0
 gen fre_bmark = 0
+gen lig_bmark = 0
+gen tsh_bmark = 0
+gen kis_bmark = 0
 
 // Applying Low
-//recode eng_bmark (0 = 1) if ((grade==1 & eng_orf >= `eng1_low') & (grade==1 & eng_orf < `eng1_high'))
- recode fre_bmark (0 = 1) if ((grade==1 & fre_orf >= `fre1_low') & (grade==1 & fre_orf < `fre1_high'))
+ recode fre_bmark (0 = 1) if ((grade==1 & fre_orf >= `low') & (grade==1 & fre_orf < `high'))
+ recode lin_bmark (0 = 1) if ((grade==1 & lin_orf >= `low') & (grade==1 & lin_orf < `high'))
+ recode tsh_bmark (0 = 1) if ((grade==1 & tsh_orf >= `low') & (grade==1 & tsh_orf < `high'))
+ recode kis_bmark (0 = 1) if ((grade==1 & kis_orf >= `low') & (grade==1 & kis_orf < `high'))
 
 // Applying High
-//recode eng_bmark (0 = 2) if (grade==1 & eng_orf >= `eng1_high')
-recode fre_bmark (0 = 2) if (grade==1 & fre_orf >= `fre1_high')
+recode fre_bmark (0 = 2) if (grade==1 & fre_orf >= `high')
+recode lin_bmark (0 = 2) if (grade==1 & lin_orf >= `high')
+recode tsh_bmark (0 = 2) if (grade==1 & tsh_orf >= `high')
+recode kis_bmark (0 = 2) if (grade==1 & kis_orf >= `high')
 
 //label define lbl_ebmark 0 "[eng_orf < `eng1_low']" 1 "[eng_orf >=`eng1_low' <`eng1_high']" 2 "[eng_orf >`eng1_high']"
 //label val eng_bmark lbl_ebmark
-label define lbl_mbmark 0 "[fre_orf < `fre1_low'] " 1 "[fre_orf >=`fre1_low' <`fre1_high']" 2 "[fre_orf >`fre1_high']"
-label val fre_bmark lbl_mbmark
+label define lbl_frmark 0 "[fre_orf < `low'] " 1 "[fre_orf >=`low' <`high']" 2 "[fre_orf >`high']"
+label val fre_bmark lbl_frmark
+label define lbl_linmark 0 "[lin_orf < `low'] " 1 "[lin_orf >=`low' <`high']" 2 "[lin_orf >`high']"
+label val lin_bmark lbl_linmark
+label define lbl_tshmark 0 "[tsh_orf < `low'] " 1 "[tsh_orf >=`low' <`high']" 2 "[tsh_orf >`high']"
+label val tsh_bmark lbl_tshmark
+label define lbl_kismark 0 "[kis_orf < `low'] " 1 "[kis_orf >=`low' <`high']" 2 "[kis_orf >`high']"
+label val kis_bmark lbl_kismark
 
 // Consider destringing any variables you would use for the grouping
 // destring treat_phase grade female eng_bmark fre_bmark school_code, replace
-destring treat_phase grade female eng_bmark school_id, replace
+destring treat_phase grade female eng_bmark school_code, replace
 
-save "DRC_unesco.dta", replace
-use "DRC_unesco.dta", clear
+save "DRCe_unesco.dta", replace
+use "DRCe_unesco.dta", clear
 svyset
 
 // Super-granular analyses by subpopulation with additional parameters
@@ -106,14 +122,14 @@ quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade) res("DRC_co
 quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade female) res("DRC_bysex") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
 quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade eng_bmark) res("DRC_engbmarks") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
 //// quietly: apply_analysis eng_orf kis_orf, data("DRC") core(treat_phase grade) res("DRC_malbmarks") svy(1) wt(wt_final) zeros(1) varlabel("English French") ver(0) deb(0)
-//quietly: apply_analysis eng_orf, data("DRC") core(treat_phase grade school_id) res("DRC_byschool") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
+quietly: apply_analysis eng_orf, data("DRC") core(treat_phase grade school_code) res("DRC_byschool") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
 
 
 //loc dataset_types "core bysex engbmarks byschool"
 loc dataset_types "core bysex engbmarks"
 
 foreach dt of loc dataset_types {
-    use "DRC_`dt'.dta", clear
+    use "DRCe_`dt'.dta", clear
 	//append using "DRC_`dt'.dta"
 	export excel "bins/inequality_results_$c_datetime.xlsx", sh(`dt') firstrow(var) sheetmod
 }
