@@ -386,6 +386,7 @@ program define apply_analysis
             if !_rc==0 {
                 loc code = _rc
                 di as error `"These are the results we attempted to post:"'
+
                 foreach o of num 1/`output_ct' {
                     di as error `" `o') `: word `o' of `output_tbshoot'' :: `: word `o' of `resultsOfInterest'' "'
                 }
@@ -402,7 +403,7 @@ program define apply_analysis
 foreach c of var `core' {
     capture confirm str var `c'
     if _rc != 0 {
-        label save `: value label `c'' using labels_`c', replace
+        label save `: value label `c'' using 99_labels_`c', replace
     }
 }
 
@@ -424,7 +425,8 @@ foreach c of var `core' {
 `verbosity' di "Find results in `:pwd' at `target'"
 save `target'.dta, replace
 * pause "Check appropriately labeled..."
-restore
+restore 
 drop core_pops iszero ingroup
+label drop core_pops
 capture drop ext_pops
 end

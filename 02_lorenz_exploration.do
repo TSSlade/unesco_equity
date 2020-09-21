@@ -6,16 +6,13 @@ tempname postLorenz            // Ensures no namespace clashes
 
 loc vars_of_interest = "str20(dataset language) cohort grade round pct_00 pct_05 pct_10 pct_15 pct_20 pct_25 pct_30 pct_35 pct_40 pct_45 pct_50 pct_55 pct_60 pct_65 pct_70 pct_75 pct_80 pct_85 pct_90 pct_95 pct_100"
 
-postfile `postLorenz' `vars_of_interest' using `lorenzes'
-
-local primr = "C:\Dropbox\BerkeleyMIDS\projects\unesco_chapter\primr_unesco.dta"
-local tusome = "C:\Dropbox\BerkeleyMIDS\projects\unesco_chapter\tusome_unesco.dta"
+local primr = "$HOME/projects\unesco_chapter\primr_unesco.dta"
+local tusome = "$HOME/projects\unesco_chapter\tusome_unesco.dta"
 local languages = "English Kiswahili"
 * local langvars = "eng_orf kis_orf"
 local langvars = "eng_orf kis_orf"
 local datasets = "primr tusome"
 local cohortvars = "1 2 3"
-
 
 // Loop through datasets
 // ...then languages
@@ -24,22 +21,26 @@ local cohortvars = "1 2 3"
 // ...then cohorts (if applicable)
 
 // Datasets
+loc langs_ct: word count `languages'
+loc grades_ct: word count `grades'
+
 foreach dataset of loc datasets {
     use ``dataset'', clear                // Nested local macro to pull data from URL above
-
-    if "`dataset'"=="primr" {
-    egen subpop = group(cohort treat_phase grade), label
-    }
-    else if "`dataset'"=="tusome" {
-        egen subpop = group(treat_phase grade), label
-    }
+	
+	capture confirm variable cohort
+	if !_rc {
+            egen subpop = group(cohort treat_phase grade), label
+               }
+            else {
+               egen subpop = group(treat_phase grade), label
+               }
     gen resc_eng_orf = .
     gen resc_kis_orf = .
 
     levelsof treat_phase, loc(treat_phases)
 
     // Languages
-    foreach lang of num 1/2 {
+    foreach lang of num 1/`langs_ct' {
         loc LANGLABEL `: word `lang' of `languages''
         loc SHORTLANGLABEL = strlower(substr("`LANGLABEL'", 1, 3))
         di "`SHORTLANGLABEL'"
@@ -64,9 +65,11 @@ foreach dataset of loc datasets {
         foreach round of loc treat_phases {
 
             // Grades
-            foreach grade of num 1/2 {
+            foreach grade of num 1/`grades_ct' {
 
-                if "`dataset'"=="primr" {
+                // if "`dataset'"=="primr" {
+				capture confirm variable cohort
+				if !_rc {	
                 // Cohort if applicable
                     foreach cohort of loc cohortvars {
                         qui lorenz estimate `LANGVAR' if grade==`grade' & cohort==`cohort' & treat_phase==`round'
@@ -89,10 +92,14 @@ foreach dataset of loc datasets {
                         qui graph export bins/resc_`LANGLABEL'_gr`grade'_coh`cohort'_lorenz_`dataset'.png, replace width(800) height(500)
                     }
                 }
-                else if "`dataset'"=="tusome" {
+                else{
+					//summarize if grade==`grade' & treat_phase==`round'
+					di `LANGVAR'
+					count if grade==`grade' & treat_phase==`round'
+					if r(N)>0 {
+					// pause if grade==`grade' & treat_phase==`round'
                     qui lorenz estimate `LANGVAR' if grade==`grade' & treat_phase==`round'
                         return list
-                        * pause
                         mat rmat = r(table)
                         foreach p of num 1/21 {
                             scalar `dataset'_`SHORTLANGLABEL'_gr`grade'_rd`round'_at`p' = rmat[1, `p']
@@ -109,6 +116,7 @@ foreach dataset of loc datasets {
                         qui graph save bins/resc_`LANGLABEL'_gr`grade'_lorenz_`dataset', replace
                         qui graph export bins/resc_`LANGLABEL'_gr`grade'_lorenz_`dataset'.png, replace width(800) height(500)
                 }
+				}
             }
         }
     }
@@ -123,8 +131,9 @@ use `lorenzes', clear
 gen dataset_id = .
 recode dataset_id (. = 1) if dataset=="primr"
 recode dataset_id (. = 2) if dataset=="tusome"
+recode dataset_id (. = 3) if dataset=="malawi"
 
-label define lbl_dataset 1 "primr" 2 "tusome"
+label define lbl_dataset 1 "primr" 2 "tusome" 3 "malawi"
 label val dataset_id lbl_dataset
 
 gen language_id = .
@@ -138,7 +147,7 @@ foreach p of loc percentages {
     replace `p' = 100 * `p'
 }
 
-save "C:\Dropbox\BerkeleyMIDS\projects\unesco_chapter\bins\lorenz_data_both.dta", replace
-export excel "lorenz_data_both_rescaled.xlsx", firstrow(var) sheet("raw", modify)
+save "$HOME/unesco_equity\bins\lorenz_data_both.dta", replace
+export excel "lorenz_data_$c_datetime.xlsx", firstrow(var) sheet("raw", modify)
 pause "What do you see?"
 di "Made it here..."

@@ -4,6 +4,10 @@
 1) Required packages:
     - pshare
     - svygei
+    - lorenz
+    - groups
+    - ineqdec0
+
 2) Parameters:
     - Depending on the number of subpopulations you provide, you may need to -set matsize-
         to a larger value than the default (400). I have been able to get away with
@@ -22,8 +26,10 @@ clear
 pause on
 log close _all
 
+global HOME="C:\Users\tslade\projects"
+
 // Define vars
-global p_dir="C:/Dropbox/BerkeleyMIDS/projects/unesco_chapter"
+global p_dir="$HOME/unesco_chapter"
 local c_time: di %td_CY-N-D date("$S_DATE", "DMY") "_$S_TIME"
 global c_datetime=trim(subinstr("`c_time'",":","-",.))
 
@@ -177,5 +183,6 @@ foreach dt of loc dataset_types {
 
 * use "tusome_inequalities.dta", clear
 * append using "primr_inequalities.dta"
+
 
 * export excel "bins/inequality_results.xlsx", sh("$c_datetime") firstrow(var) sheetmod

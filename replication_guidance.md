@@ -33,21 +33,23 @@ In brief, the approach involves
 
 1. Writing your narrative in a `.txt` file
 1. Embedding executable code blocks within that file using the paradigm shown below
-```stata
-~~~~            <- these mark the beginning of a code block
-<<dd_do>>       <- this indicates the kind of execution/compilation Stata should do
-summ orf if grade==2 & lat_round==3 /* This is the code /*
-scalar pre1 = `r(mean)'             /* that will be both displayed and */
-summ orf if grade==3 & lat_round==4 /* executed during the compilation */
-scalar post1 = `r(mean)'            /* of your document. */
-scalar loss1 = pre1 - post1
-scalar pct_loss1 = loss1 / pre1
-<</dd_do>>
-~~~~
-```
-    + **N.B.** It is also possible to do in-line embedding of variables, graphs, tables, etc. This paradigm is extremely powerful: take some time to read up on it and review examples online. You may find reading up on the use of `R Markdown` documents in the R ecosystem to be useful - it is likely that documentation is more expansive than what you'll find on Stata given the prevalence of literate programming approaches in the data science community relative to the econ community. The principles are the same -- only the syntax is meaningfully different, and that is reasonably simple to pick up once you've caught the broader gist.
-1. Calling `$ dyndoc the-file-to-be-compiled.txt` either interactively or from within a `.do` file to compile your output (e.g., an `.html` or `.pdf` or `.docx` file).
-    1. For our purposes, please compile to HTML. You can then simply read it in your browser.
+
+    ```stata
+    ~~~~       /* <- these mark the beginning of a code block */
+    <<dd_do>>  /* <- this indicates the kind of execution/compilation Stata should do */
+    summ orf if grade==2 & lat_round==3 // This is the code
+    scalar pre1 = `r(mean)'             // that will be both displayed and
+    summ orf if grade==3 & lat_round==4 // executed during the compilation
+    scalar post1 = `r(mean)'            // of your document.
+    scalar loss1 = pre1 - post1
+    scalar pct_loss1 = loss1 / pre1
+    <</dd_do>>
+    ~~~~
+    ```
+1. Calling `$ dyndoc the-file-to-be-compiled.txt` either interactively or from within a `.do` file to compile your output (e.g., an `.html` or `.pdf` or `.docx` file). For our purposes, please compile to HTML. You can then simply read it in your browser.
+
+**N.B.** It is also possible to do in-line embedding of variables, graphs, tables, etc. This paradigm is extremely powerful: take some time to read up on it and review examples online. You may find reading up on the use of `R Markdown` documents in the R ecosystem to be useful - it is likely that documentation is more expansive than what you'll find on Stata given the prevalence of literate programming approaches in the data science community relative to the econ community. The principles are the same -- only the syntax is meaningfully different, and that is reasonably simple to pick up once you've caught the broader gist.
+>>>>>>> 338fffc... fresh commit, eliminate early commit of dta files to branch. branch adds dataset specific preprocessing, merges mavzuma changes, generalizes lorenz generation
 
 When you have analytical code that you are ready to have reviewed, you can upload it to GitHub. There is a whole command line-based process you can read up on if you'd like, but you can also simply do it via the GUI. Please do your work in a _branch_ of the codebase bearing your name so we don't have multiple versions of the `main` codebase running into each other. Please reach out for assistance if you require it.
 
