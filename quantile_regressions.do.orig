@@ -1,17 +1,17 @@
 set autotabgraphs on
 pause on
 // Stack our tusome and primr datasets
-// use "$p_dir/primr_core.dta", clear
-// append using "$p_dir/tusome_core.dta"
-//use "$p_dir/DRC_core.dta"
-use "$p_dir/malawi_core.dta"
+use "D:\Users\ccampton\Documents\unesco_equity\primr_core.dta", clear
+append using "D:\Users\ccampton\Documents\unesco_equity\tusome_core.dta"
 
-local c_time: di %td_CY-N-D date("$S_DATE", "DMY") "_$S_TIME"
-global c_datetime=trim(subinstr("`c_time'",":","-",.))
 
 // we want to separate our demographic variables from our instrumental variables
 local demo_vars = "project language reference comparison"
 // these are the variables we'll comapre across two time points
+<<<<<<< HEAD
+//local vars_to_compare = "mean cv ratio_p90p10 ratio_p75p25 pct_zero gini ge2_overall ge2_ingroup ge2_outgroup between_ge2 within_ge2"
+=======
+>>>>>>> main
 local vars_to_compare = "mean cv ratio_p90p10 ratio_p75p25 pct_zero gini ge2_overall between_ge2 within_ge2"
 
 // we'll use a tempfile for our merging process
@@ -120,7 +120,8 @@ foreach v in gini mean cv pct_zero {
 order *, alphabetic
 order dataset match_key subpop_label_ref subpop_label_com grade cohort measure_label
 
-export excel "$p_dir/quantile_regressions_$c_datetime.xlsx", sh(quantiles) sheetmod first(var)
+export excel "D:\Users\ccampton\Documents\unesco_equity\quantile_regressions.xlsx", sh(quantiles) sheetmod first(var)
+
 
 program define make_qreg_scatters
     syntax , Yvar(var) Xvar(var) EQuality(var) [High(var) Low(var) XRange(string) YRange(string)]
@@ -136,10 +137,13 @@ program define make_qreg_scatters
                aspect(1)
 end
 
+
+
 clonevar mean_line_of_equality = mean_ref
 clonevar cv_line_of_equality = cv_ref
 clonevar pct_zero_line_of_equality = pct_zero_ref
 clonevar gini_line_of_equality = gini_ref
+
 
 loc gini_plot       = `" gini_com gini_ref gini_line_of_equality gini_line_at_85 gini_line_at_15 "0.3(0.1)1" "0.3(0.1)1" "'
 loc gini_plot_labels = `" "Gini Coefficient at t_0" "Gini Coefficient at t_1" "'
@@ -272,4 +276,3 @@ twoway scatter gini_diff mean_diff , msymbol(o) mcolor(cranberry) msize(small) l
 	   graph save "bins/CS20-mt-S03-V01-qreg_diff_lfit.gph", replace
        graph export "bins/CS20-mt-S03-V01-qreg_diff_lfit.svg" ,replace
        graph export "bins/CS20-mt-S03-V01-qreg_diff_lfit.png" , replace
-

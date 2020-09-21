@@ -1,0 +1,10 @@
+bins/**
+logs/**
+data/**
+**.xlsx
+**.dta
+**.png
+**.svg
+**.gph
+**.pdf
+**.tex

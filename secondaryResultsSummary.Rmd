@@ -1,0 +1,305 @@
+---
+title: "DRC, Egypt, Malawi, Philippines Results"
+author: "Cole Campton"
+date: "Summer 2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library("xlsx")
+library("quantreg")
+# detach('package:openxlsx',unload=TRUE)
+
+## path = "D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Cole/newResults"
+path = "C:/Users/Cole/Documents/unesco_equity/newResults"
+## path = "/Users/camptonc/Documents/RTI docs/ColeRTI/new results"
+fileListing <- list.files(path,recursive=TRUE,pattern= "inequality_results_*",full.names=TRUE)
+
+cnam <- lapply(lapply(fileListing, read.xlsx,sheetName="core"),colnames)
+cnam <- unlist(cnam[which.max(unlist(lapply(cnam,length)))])
+D = data.frame(matrix(ncol=length(cnam),nrow=0))
+colnames(D) <- cnam
+for (i in 1:length(fileListing)){
+  df <- read.xlsx(fileListing[i],sheetName="core")
+  df[,setdiff(cnam, colnames(df))] <- NA
+  D <- rbind(D,df)
+}
+D[D$treat_phase =="Baseline"& !is.na(D$treat_phase),"treat_phase"] <- 1
+D[D$treat_phase =="Midline"& !is.na(D$treat_phase),"treat_phase"] <- 2
+D[D$treat_phase =="Endline"& !is.na(D$treat_phase),"treat_phase"] <- 3
+D$treat_phase <- as.numeric(D$treat_phase)
+D <- D[!is.na(D$gini),]
+D <- D[D$gini != "",]
+numMask <- colSums(is.na(sapply( D, as.numeric )))/nrow(D)==0
+numMask[1] <- FALSE
+#D[,numMask] <- lapply(D[,numMask],as.numeric)
+
+
+T <- merge(D,D, by= c("grade","dataset", "performance_measure"),suffixes = c(".base",".end"))
+T <- T[!is.na(T$treat_phase.base)&!is.na(T$treat_phase.end),]
+T <- T[T$treat_phase.base<T$treat_phase.end,]
+```
+## Summary statistics
+
+```{r, summary, echo=FALSE, warning=FALSE}
+dsets = unique(D$dataset)
+tabcnames <-  c("Dataset","Language","Grade","Phase","Gini","CV","p90/p10","p75/p25","% zero","Mean")
+summaryTab <- data.frame(matrix(NA, nrow = nrow(D),ncol=length(tabcnames)))
+colnames(summaryTab) <- tabcnames
+loci = 0
+for (i in 1:length(dsets)){
+  numi = sum(D$dataset== dsets[i])
+  summaryTab[loci+numi, "Dataset"] <- "______"
+  summaryTab[loci+ceiling(numi/2), "Dataset"] <- dsets[i]
+  langs = unique(D[D$dataset == dsets[i],"measure_label"])
+  locj =0
+  for (j in 1:length(langs)){
+    gr = unique(D[D$dataset == dsets[i] & D$measure_label == langs[j],"grade"])
+    numj = sum(D$dataset == dsets[i] & D$measure_label == langs[j])
+    summaryTab[loci+locj + numj, "Language"] <- "______"
+    summaryTab[loci+locj + ceiling(numj/2), "Language"] <- langs[j]
+    lock = 0 
+    for (k in 1:length(gr)){
+      Dsub <- D[D$dataset == dsets[i] & D$measure_label == langs[j] & D$grade ==gr[k],c("treat_phase","gini", "cv", "ratio_p90p10", "ratio_p75p25","pct_zero","mean")]
+      nk = nrow(Dsub)
+      summaryTab[loci+locj + lock + nk, "Grade"] <- "______"
+      summaryTab[loci+locj + lock + ceiling(nk/2), "Grade"] <- gr[k]
+      summaryTab[(loci+locj+lock+1):(loci+locj+lock+nk),c("Phase","Gini","CV","p90/p10","p75/p25","% zero","Mean")] <- Dsub
+      lock = lock +nk
+    }
+    locj = locj +numj
+  }
+  loci = loci +locj
+}
+summaryTab[,c("Gini","CV","p90/p10","p75/p25","% zero","Mean")] <- lapply(summaryTab[,c("Gini","CV","p90/p10","p75/p25","% zero","Mean")],as.numeric)
+summaryTab[,c("Gini","CV","p90/p10","p75/p25","% zero","Mean")] <- lapply(summaryTab[,c("Gini","CV","p90/p10","p75/p25","% zero","Mean")],round,3)
+summaryTab[is.na(summaryTab)] <- ""
+# summaryTab[summaryTab$Grade=="777","Grade"] <- "Other"
+# print(summaryTab, row.names=FALSE)
+
+summaryoutput <- D[,c("dataset","subpop_label","measure_label","grade","treat_phase","gini", "cv", "ratio_p90p10", "ratio_p75p25","pct_zero","mean")]
+colnames(summaryoutput) <- c("Dataset","Subpop","Language","Grade","Phase","Gini","CV","p90/p10","p75/p25","% zero","Mean")
+write.xlsx(x = summaryoutput, file = "D:/Users/ccampton/Dropbox/dukeInternInequalityOutputs/Cole/inequality_results_summary.xlsx",sheetName = "core", row.names = FALSE, col.names=TRUE)
+summaryoutput[,tabcnames[5:10]] <- lapply(summaryoutput[,tabcnames[5:10]],function(x) round(as.numeric(x),3))
+summaryoutput[summaryoutput$Grade=="777","Grade"] <- "Other"
+print(summaryoutput, row.names=FALSE)
+```
+
+In the case of retrospective statistics we study the following subpopulations
+```{r, pairedStudies, echo=FALSE, warning=FALSE}
+  for(i in 1:nrow(T)){
+    print(paste0(as.character(i),") Dataset ",T[i,"dataset"],", ",T[i,"measure_label.base"], ", grade ",as.character(T[i,"grade"]),", phase ",as.character(T[i,"treat_phase.base"])," -> ",as.character(T[i,"treat_phase.end"])))
+  }
+```
+
+Here we analyze the “well-behavedness,” of these measurements in a similar manner to Primr and Tusome datasets.
+
+## 1. Ratio of Px to Py
+
+```{r Pctzero, echo=FALSE, warning=FALSE}
+ge10pct <- sum(D$pct_zero >.1)/nrow(D)*100
+ge25pct <- sum(D$pct_zero >.25)/nrow(D)*100
+print(paste("Percent of subpopulations with more than 10% zero scrores: ",as.character(ge10pct,"%.")))
+print(paste("Percent of subpopulations with more than 25% zero scrores: ",as.character(ge25pct,"%.")))
+tapply(D$pct_zero, D$measure_label, mean)*100
+iscolonial = D$measure_label %in% c("English","French")
+iscolonialT = T$measure_label.base %in% c("English","French")
+testout <- t.test(D[iscolonial,"pct_zero"],D[!iscolonial,"pct_zero"])
+print(testout)
+```
+Ratio of Px to Py. In `r ge10pct`% of subpopulations for Egypt, Malawi, Philippines and two DRC datasets ratio_p90p10 cannot be calculated because more than 10 percent of the children assessed recorded a zero score. While ratio_p70p25 can be calculated more frequently, it is not available for approximately `r ge25pct`% of the subpopulations. Across these data sets these ratios are more often undefined for colonial languages French and English than for mothertongue languages. This is primarily the result of test languages of countries with many zero scores. That is, the majority of subpopulations with fewer than 10% and 25% zero score readers come from the Philippines which has higher literacy and where only mothertongue languages were tested. This is correlated with the fact that the majority of subpopulations with high zero score rate are tested in a colonial language. A t-test reveals a statistically significant different between the percent zero scores in colonial verse mother-tongue languages with p=`r testout$p.value`.
+```{r pctzeroHist1, echo=FALSE, warning=FALSE}
+hist(D$pct_zero,20, main = "Percent Zero Histogram", xlab = "Percent Zero")
+```
+
+```{r pctzeroHist2, echo=FALSE, warning=FALSE}
+hist(D[iscolonial,"pct_zero"],20, main = "Percent Zero Histogram, Colonial Languages", xlab = "Percent Zero")
+```
+
+```{r pctzeroHist3, echo=FALSE, warning=FALSE}
+hist(D[!iscolonial,"pct_zero"],20, main = "Percent Zero Histogram, Non-Colonial Languages", xlab = "Percent Zero")
+```
+
+## 2. Gini Coefficient
+
+```{r giniSummary, echo=TRUE, warning=FALSE}
+ginisum <- summary(D$gini)
+ginivar <- var(D$gini)
+```
+
+The Gini coefficient for learning seems to consistently behave well. The values observed lie between `r ginisum[1]` and `r ginisum[6]`. The mean of values is `r ginisum[4]` and variance `r ginivar`. These values largely lie within a normal range. The lowest and most equal value being observed within endline grade 2 Philippines students tested in their mothertongue of Cebuano. Interestingly this subpopulation does not have the lowest number of zero scores but instead the fifth lowest. The highest Gini coefficients corresponding to the least equal sub-populations are each from Malawi and correspond to the six highest percent zero scores. This makes sense since a high number of zero scores indicates that all of the reading capability is concentrated in a relatively small number of positive scoring students. Thus the effect of dramatically low reading ability within Malawi sub-populations causes it to register as the most unequal group when measured by Gini coefficient, the opposite is not true for the low zero score rate indicating the least inequality. 
+
+```{r ginicorr, echo=TRUE, warning=FALSE}
+ginizerocor <- cor(D$gini,D$pct_zero)
+print("For english with multi-phase")
+colcor <- cor(T[iscolonialT,c("gini.base", "gini.end","pct_zero.base", "pct_zero.end")])
+print("For mothertongue with multi-phase")
+ncolcor <- cor(T[!iscolonialT,c("gini.base", "gini.end","pct_zero.base", "pct_zero.end")])
+```
+There is however a strong correlation between a higher percent of zero scores and lower equity with a correlation coefficient of `r ginizerocor`. This correlation breaks down even stronger between colonial and non-colonial languages such that gini and percent zero score have an over `r min(colcor[c("gini.base","gini.end"),c("pct_zero.base","pct_zero.end")])` correlation coefficient for colonial languages but at most `r max(ncolcor[c("gini.base","gini.end"),c("pct_zero.base","pct_zero.end")])` for non-colonial languages. This indicates that the high number of students reading at zero is the primary driver of inequality for examinations conducted in colonial languages. 
+
+```{r giniT, warning=FALSE}
+ginidifftest <- t.test(T$gini.end,T$gini.base, paired=TRUE,alternative = "less")
+# At baseline:
+summary(T$gini.base)
+# At endline:
+summary(T$gini.end)
+tapply(D$gini, D$measure_label, mean)
+```
+Although there are no control groups we may compare the Gini coefficients at baseline and endline for subpopulations which have these retrospectives. The mean Gini coefficients are `r mean(T$gini.base)` and `r mean(T$gini.end)` at baseline and endline respectively; these means have statistically significantly decreased with a p-value of `r  ginidifftest$p.value` via a paired one sided sample t-test. When evaluated by language we find that is a significant decrease in Gini coefficient. indicating higher equity. The high dependence on language here when compared with tusome and primr data sets is expected due to the diversity of countries represented here.
+
+```{r ginichangebycolonial, warning=FALSE}
+t.test(T[!iscolonialT,"gini.end"],T[!iscolonialT,"gini.base"], paired=TRUE,alternative = "less")
+t.test(T[iscolonialT,"gini.end"],T[iscolonialT,"gini.base"], paired=TRUE,alternative = "less")
+```
+However when stratified by colonial verse non-colonial languages we see that the primary driver of a statistically significant decrease of Gini coefficient and increase in equity comes from mother-tongue examinations, with colonial language examinations not providing a statistically significant increase in equity as measured by Gini coefficient. 
+
+## 3. Coefficient of variation.
+
+```{r Measure Correlations, warning=FALSE}
+cor(D[,c("gini","cv")])
+summary(D$cv)
+t.test(T$cv.end,T$cv.base, paired=TRUE,alternative = "less")
+```
+This indicator also behaves well. The correlation coefficient between the CV and the Gini is 0.8065 across all subpopulations; these two measures of inequality move together well as they did in studies for primr and tusome data. When we perform a similar analysis we obtain expected results, given the high degree of correlation. The value of the coefficient of variation decreases `r mean(T$cv.base)` to `r mean(T$cv.base)` from baseline to endline. A paired t-test does not reveal a statistically significant decrease as it does for the Gini coefficient.
+
+```{r cvttest, warning=FALSE}
+t.test(D[!iscolonial,"cv"],D[iscolonial,"cv"])
+```
+Again the value of CV is highly dependent on language measured and colonial versus non-colonial testing language, however there is no statistically significant difference. A similar longitudinal test stratified based on colonial verse non-colonial languages does not reveal similar results. 
+
+```{r cvcolonial, warning=FALSE}
+hist(D[iscolonial,"cv"],10, main = "Coefficient of Variation Histogram, Colonial Languages", xlab = "Coefficient of Variation")
+```
+
+```{r cvnoncolonial, warning=FALSE}
+hist(D[!iscolonial,"cv"],10, main = "Coefficient of Variation Histogram, Non-Colonial Languages", xlab = "Coefficient of Variation")
+lines(density(D[!iscolonial,"cv"]))
+```
+
+## 4. Percent Reading at 0
+
+The “percent reading at 0” also behaves well, as one would expect. In the case of these data sets the  correlation with the Gini coefficient across the observed data points is `r cor(D$gini, D$pct_zero)`. 
+```{r pctzero, warning=FALSE}
+cor(D$gini, D$pct_zero)
+```
+
+## 5. Generalized Entropy (alpha=2) for Sub-population
+The Generalized Entropy (alpha=2) index appears to behave well for each subpopulation in these data sets. Values decrease over time from baseline to endline for all but three subpopulations. At baseline the average GE(2) value is `r mean(T$ge2_for_subpop.base)` and at endline it is `r mean(T$ge2_for_subpop.end)`. Notably however the variances are large, `r var(T$ge2_for_subpop.base)` and `r var(T$ge2_for_subpop.end)` at baseline and endline. 
+```{r GE, warning=FALSE}
+# At baseline:
+summary(T$ge2_for_subpop.base)
+# variance
+var(T$ge2_for_subpop.base)
+# At endline:
+summary(T$ge2_for_subpop.end)
+# variance
+var(T$ge2_for_subpop.end)
+```
+
+```{r ge2, warning=FALSE}
+ge2test <- t.test(T$ge2_for_subpop.end, T$ge2_for_subpop.base,paired=TRUE, alternative = "greater")
+cor(D$ge2_for_subpop, D$gini)
+```
+The contribution of this large variance is a low confidence in the change from baseline to endline; the value of GE(2) for each subpopulation is not statistically significantly distinct at endline from baseline (p=`r ge2test$p.value`) via a paired t-test. As may be suspect, in turn the values of GE(2) are less correlated with the Gini coefficient with value of rho = `r cor(D$ge2_for_subpop, D$gini)`. 
+
+```{r decreasebyMultiStratification, include=FALSE, echo=FALSE, warning=FALSE}
+stratification = c("performance_measure")
+for (j in 1: length(stratification)){
+  stratTypes = unique(T[,stratification[j]])
+  for(i in 1:length(stratTypes)){
+    print(stratTypes[i])
+    mask = T[,stratification[j]]==stratTypes[i]
+    print(t.test(T[mask,"cv.base"],T[mask,"cv.end"], paired=TRUE,alternative = "greater"))
+  }
+  }
+```
+
+## Scatter plots
+
+In the case of change for the Gini coefficient, the "button hole" shape does not hold for these datasets. That is, the variance of the change is not significantly affected by the Gini coefficient at baseline. The range of values for CV, Gini coefficient, mean reading fluency and percent reading at zero all are slightly more extreme than for Tusome and Primr datasets but still within a reasonable range. 
+```{r plots, echo=FALSE, warning=FALSE}
+N= 10
+measures = c("gini","cv","mean","pct_zero")
+for (i in 1:length(measures)){
+  X = T[,paste0(measures[i],".base")]
+  Y = T[,paste0(measures[i],".end")]
+  ids =order(X)
+  X = X[ids]
+  Y = Y[ids]
+  minv = min(min(X),min(Y))
+  maxv = max(max(X),max(Y))
+  stepsz = (maxv-minv)/N
+  minv = minv -stepsz
+  maxv = maxv +stepsz
+  lims = c(minv,maxv)
+  quadrat <- Y~ a*X^2+b*X+c
+  regdata <- data.frame(X= X,Y=Y)
+  fit15.rq <- nlrq(quadrat, data=regdata, start= list(a=1,b=1,c=1),tau=.15)
+  fit85.rq <- nlrq(quadrat, data=regdata, start= list(a=1,b=1,c=1),tau=.85)
+  # fit15.nlrq <- nlrq(Y~SSlogis(X,Asym, mid, scal),tau=.15,method="L-BFGS-B")
+  # fit85.nlrq <- nlrq(Y~SSlogis(X,Asym, mid, scal),tau=.85,method="L-BFGS-B",start = fit15.nlrq$m$getPars()*c(1,1,1))
+  upperlabel = paste0(toupper(substring(measures[i],1,1)),substring(measures[i],2))
+  plot(X,Y,pch=16,col="blue",main=paste0(upperlabel," at t1 verse t0"),xlim=lims, ylim=lims,xlab = paste0(upperlabel," at t0"), ylab = paste0(upperlabel," at t1"))
+  abline(lm(Y~X),col="black",lty=2)
+  abline(0,1,col="gray")
+  
+  plotrange <- data.frame(X= seq(min(X),max(X),length=250))
+  reg15 <- within(plotrange,Y <- predict(fit15.rq, newdata= plotrange))
+  lines(Y~X, data =reg15, col= "red", add=TRUE)
+  reg85 <- within(plotrange,Y <- predict(fit85.rq, newdata= plotrange))
+  lines(Y~X, data =reg85, col= "red", add=TRUE)
+  
+  # curve(SSlogis(x,fit15.nlrq$m$getPars()["Asym"],fit15.nlrq$m$getPars()["mid"],fit15.nlrq$m$getPars()["scal"]), from =minv,to=maxv,col="red",add=TRUE)
+  # curve(SSlogis(x,fit85.nlrq$m$getPars()["Asym"],fit85.nlrq$m$getPars()["mid"],fit85.nlrq$m$getPars()["scal"]), from =minv,to=maxv,col="red",add=TRUE)
+  #lines(fitted(fit15.nlrq)~X,col="red")
+  #lines(fitted(fit85.nlrq)~X,col="red")
+}
+```
+
+The same general trend continues with the plot of change in gini coefficient with respect to change in mean reading fluency. There is a larger variance in the change in gini coefficient as the change in mean reading fluency grows larger. 
+
+```{r deltaMRFdeltaGini, echo=FALSE, warning=FALSE}
+  X = T$mean.end-T$mean.base
+  Y = T$gini.end-T$gini.base
+  ids =order(X)
+  X = X[ids]
+  Y = Y[ids]
+  stepsz = (maxv-minv)/N
+  minv = minv -stepsz
+  maxv = maxv +stepsz
+  lims = c(minv,maxv)
+  fit15.rq <- rq(Y~X,tau=.15)
+  fit85.rq <- rq(Y~X,tau=.85)
+  plot(X,Y,pch=16,col="blue",main="Change in Gini verse Change in MRF",xlim=c(min(X),max(X)), ylim=c(min(Y),max(Y)), xlab = "Change in mean reading fluency", ylab="Change in Gini Coefficient")
+  mrfginilm <- lm(Y~X)
+  abline(mrfginilm,col="black",lty=2)
+  abline(fit15.rq$coefficients[1],fit15.rq$coefficients[2],col="red")
+  abline(fit85.rq$coefficients[1],fit85.rq$coefficients[2],col="red")
+```
+Additionally the correlation is even stronger than in Primr/Tusome studies, despite the greater diversity of datasets. Again fluency improvements of around 10 yield improvements of Gini coefficient of approximately `r mean(fit15.rq$coefficients[1]+fit15.rq$coefficients[2]*10,fit85.rq$coefficients[1]+fit85.rq$coefficients[2]*10) ` as estimated by the mean slope of 15th and 85th percentile regressions. Since the overall change in mean reading fluency is limited it would simply be extrapolation to estimate change for larger values.
+
+```{r deltasCorr, warning=FALSE}
+cor(X,Y)
+mean(fit15.rq$coefficients[1]+fit15.rq$coefficients[2]*10,fit85.rq$coefficients[1]+fit85.rq$coefficients[2]*10)
+```
+
+Again these results indicate that the bigger the improvement in the means, the greater the reduction in inequality in oral reading fluency. 
+
+## Lorenz Plots
+
+```{r lorenz, echo=FALSE,results="asis", warning=FALSE}
+folderListings <- list.dirs(path,full.names=FALSE)
+for (i in 1:length(folderListings)){
+  filesinfolder = list.files(paste0(path,"/",folderListings[i]),recursive=TRUE,pattern= "*.png",full.names=TRUE)
+  if (length(filesinfolder)>0){
+    cat(paste0("\n Dataset ",folderListings[i])," \n")
+    for (j in 1:length(filesinfolder)){
+      cat("![](",filesinfolder[j],")")
+      cat('\n')
+  }
+  }
+}
+```
+

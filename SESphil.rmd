@@ -1,0 +1,70 @@
+---
+title: "SES Philippines Correlation"
+author: "Cole Campton"
+date: "7/16/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(haven)
+library(DescTools)
+library(tidyverse)
+library("quantreg")
+library(RColorBrewer)
+
+datapath <- "D:/Users/ccampton/Documents/unesco_equity/data/f.PUF_3.Philippines2014-2015-4-Regions_grade1-2_EGRA-SSME_Cebuano-Hiligaynon-Ilokano-Maguindanaoan/4_Final_2014-2015_Student-Level-Data_Philippines_Grade1-2_MotherTongue_EGRA.dta"
+data <- read_dta(datapath)
+
+data$treat_phase <- data$year
+orf <- "ph_orf"
+data$orf <- data[,orf]
+features <- c("grade","treat_phase","orf","language")
+SESfeat = c()
+for(i in 1:9){SESfeat <- c(SESfeat,paste0("exit_interview6",letters[i]))}
+SESlabs = c("Electricity","Radio","TV","Car/Motor Cycl","Bike","Kitchen","Computer","Fridge","Phone")
+
+SESmask = rowSums(is.na(data[,SESfeat]))
+# data <- na.omit(data[,c("id",features, SESfeat)])
+
+
+# pie(rep(1,n),col=unlist(colormap))
+```
+
+# Missing Data Issue
+
+We note that while the complete dataset contains entries from both 2014 and 2015 in essentially equal parts, entries with non-missing SES data come exclusively from 2014. Furthermore there are no corresponding students measured both in 2014 and 2015 meaning that we may not infer SES information for students in 2015. Going forward this analysis will exclude data missing SES information.
+
+```{r missingdata, echo=TRUE}
+table(data$year)
+table(data[SESmask,"year"])
+length(unique(data$id[data$treat_phase==2014]))+length(unique(data$id[data$treat_phase==2015])) - length(unique(c(data$id[data$treat_phase==2014],data$id[data$treat_phase==2015])))
+data <- data[SESmask,]
+```
+```{r colorsetup, echo=FALSE}
+n <- length(unique(data$treat_phase))
+qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
+col_vector = unlist(mapply(brewer.pal,qual_col_pals$maxcolors,rownames(qual_col_pals)))
+colormap <- data.frame(matrix(nrow=1,ncol=n))
+rownames(colormap) <- "color"
+colnames(colormap) <- as.character(unique(data$treat_phase))
+colors <- c("#800000","#000075","#3cb44b")
+if(n <= length(colors)){
+  colormap[as.character(unique(data$treat_phase))] <- colors[1:n]
+}else{
+  colormap[as.character(unique(data$treat_phase))] <- sample(col_vector,n)
+}
+```
+
+# Secondary Data Issues
+
+The secondary issue, such that no meaningful analysis may be completed, is that all students with recorded ownership items own exactly the same items. 
+
+```{r dataissues2, echo=FALSE}
+ownershipPct <- colSums(na.omit(data[,SESfeat]))/nrow(data)
+barplot(ownershipPct,las=2,names.arg=SESlabs,main="Ownership Percent of each Item")
+ownershipCts <- colSums(na.omit(data[,SESfeat]))
+barplot(ownershipCts,las=2,names.arg=SESlabs,main="Ownership Counts of each Item")
+```
+
+
