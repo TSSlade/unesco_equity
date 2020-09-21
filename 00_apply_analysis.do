@@ -127,18 +127,35 @@ program define apply_analysis
             mat mean_results = r(table)
             mat mean_counts = e(_N)
             foreach id of loc core_pops_id {
-                loc mean_sp`id' = mean_results[1, `id']
-                loc se_sp`id' = mean_results[2, `id']
-                loc mean_95cil_sp`id' = mean_results[5, `id']
-                loc mean_95cih_sp`id' = mean_results[6, `id']
+				capture di mean_results["b", "c.`v'@`id'.core_pops"]
+				if !_rc{
+					loc mean_sp`id' = mean_results["b", "c.`v'@`id'.core_pops"]
+					loc se_sp`id' = mean_results["se", "c.`v'@`id'.core_pops"]
+					loc mean_95cil_sp`id' = mean_results["ll", "c.`v'@`id'.core_pops"]
+					loc mean_95cih_sp`id' = mean_results["ul", "c.`v'@`id'.core_pops"]
+				}
+				else{
+					loc mean_sp`id' = .
+					loc se_sp`id' = .
+					loc mean_95cil_sp`id' = .
+					loc mean_95cih_sp`id' = .
+					di as error "Subpopulation `id' has no values for `v' ."
+				}
             }
 
             // Standard deviation
             if `debug' noisily di as error "Calculating SDs for [`v']"
             estat sd
             mat sd_results = r(sd)
+			mat list sd_results
             foreach id of loc core_pops_id {
-                loc sd_sp`id' = sd_results[1, `id']
+				capture di sd_results["y1", "c.`v'@`id'.core_pops"]
+				if !_rc{
+					loc sd_sp`id' = sd_results["y1", "c.`v'@`id'.core_pops"]
+				}
+				else{
+					loc sd_sp`id' = .
+				}
             }
 
             // Coefficient of variation
@@ -148,7 +165,13 @@ program define apply_analysis
                 estat cv
                 mat cv_results = r(cv)
                 foreach id of loc core_pops_id {
-                    loc cv_sp`id' = cv_results[1,`id']
+				capture di cv_results["r1", "c.`v'@`id'.core_pops"]
+				if !_rc{
+                    loc cv_sp`id' = cv_results["r1","c.`v'@`id'.core_pops"]
+					}
+				else{
+					loc cv_sp`id' = .
+				}
                 }
             }
             else {
@@ -178,21 +201,22 @@ program define apply_analysis
             loc spnonmiss = r(N)
             if `spnonmiss' == 0 {
                 `verbosity': di as error "No valid [`v'] for subpop [`id']. Skipping ahead."
+				// Must define as empty all variables which will not be created when skipping
                 continue
             }
             capture `verbosity' {
                 if `debug' noisily di as error "Summarizing to get percentiles"
                 summ `v' if core_pops==`id', detail         // Will throw an error code of zero (none) if subpop all missing
-                mat summ_counts = e(N_sub)
-                // We capture percentiles here - in the absence of weights - because none of the
-                // options below will accept weights PROPERLY (as pweight rather than aweight) while
-                // also retaining the zeros.
-                loc p10_sp`id' = r(p10)
-                loc p90_sp`id' = r(p90)
-                loc p25_sp`id' = r(p25)
-                loc p75_sp`id' = r(p75)
-                loc ratio_p90p10_sp`id' = `p90_sp`id'' / `p10_sp`id''
-                loc ratio_p75p25_sp`id' = `p75_sp`id'' / `p25_sp`id''
+				mat summ_counts = e(N_sub)
+				// We capture percentiles here - in the absence of weights - because none of the
+				// options below will accept weights PROPERLY (as pweight rather than aweight) while
+				// also retaining the zeros.
+				loc p10_sp`id' = r(p10)
+				loc p90_sp`id' = r(p90)
+				loc p25_sp`id' = r(p25)
+				loc p75_sp`id' = r(p75)
+				loc ratio_p90p10_sp`id' = `p90_sp`id'' / `p10_sp`id''
+				loc ratio_p75p25_sp`id' = `p75_sp`id'' / `p25_sp`id''
 
                 // To get our survey-weighted gini coefficients
                 if `svy' {
@@ -312,21 +336,26 @@ program define apply_analysis
             }
 
             capture `verbosity' {
-                if `debug' noisily di as error "Calculating pct_zero for [`v'] for subpop [`id']"
-                // To get our zero-score reporting
-                replace iszero = 1 if `v'==0
-                recode iszero (. = 0)
+					if `debug' noisily di as error "Calculating pct_zero for [`v'] for subpop [`id']"
+					// To get our zero-score reporting
+					replace iszero = 1 if `v'==0
+					recode iszero (. = 0)
 
-                `apply_svy' mean iszero if ingroup
-                mat results_matrix = r(table)
-                loc pct_zero_sp`id' = results_matrix[1,1]
-
-                // Resetting ingroup
-                replace ingroup = 0
+    				`apply_svy' mean iszero if ingroup
+					mat results_matrix = r(table)
+					loc pct_zero_sp`id' = results_matrix["b","iszero"]
+				
+					// Resetting ingroup
+					replace ingroup = 0
             }
             if _rc==2000 {
                 di as error "{p}While calculating pct_zeros [`v'] encountered where the scores cannot support the calculation requested{p_end}"
                 mat list mean_counts
+				if `debug' noisily count if core_pops==`id' & `v' != .
+				loc spnonmiss = r(N)
+				if `spnonmiss' == 0 {
+					loc pct_zero_sp`id' = .
+				}
             }
             else if _rc != 0 {
                 di as error "Another error arose while calculating"
@@ -351,10 +380,23 @@ program define apply_analysis
         // Sending data to our postfile
         * local resultRow "("`dataset'") ("`curr_var'") (`j') ("`sp_label'") (gini[`j',1]) (`p90') (`p10') (`ratio_p90p10') (`p75') (`p25') (`ratio_p75p25') (`ge_0') (`ge_1') (`ge_2') (`pct_zero')"
         foreach id of loc core_pops_id {
+			if `debug' noisily count if core_pops==`id' & `v' != .
+            loc spnonmiss = r(N)
+            if `spnonmiss' == 0 {
+                `verbosity': di as error "No valid [`v'] for subpop [`id']. Skipping ahead."
+				// Must define as empty all variables which will not be created when skipping
+                continue
+            }
+			capture di pct_zero_sp`id'
+			if !_rc{
+				pct_zero_sp`id' = .
+				di as error "Setting pct_zero as empty for `id'"
+			}
             loc subpop_label  = subinstr("`: label core_pops `id''"," ", "_", .)
             if `debug' noisily noisily di as result `"Exporting results for subpopulation `id': `subpop_label'"'
 
             // Store these core results to be concatenated into the final post after adding in any optional ones
+			di `mean_sp`id''
             loc coreResults " ("`dataset'") ("`performance_measure'") ("`measure_label'") (`svy') ("`subpop_label'") (`id') (`mean_sp`id'') (`mean_95cil_sp`id'') (`mean_95cih_sp`id'') (`se_sp`id'') (`sd_sp`id'') (`cv_sp`id'') (`pct_zero_sp`id'') (`p90_sp`id'') (`p10_sp`id'') (`ratio_p90p10_sp`id'') (`p75_sp`id'') (`p25_sp`id'') (`ratio_p75p25_sp`id'') (`gini_sp`id'') "
             if `zerosinentropy' {
                 loc entropyResults "(`ge2_overall') (`ge2_sp`id'_ingroup') (`ge2_sp`id'_outgroup') (`ge2_for_subpop_sp`id'') (`between_ge2_sp`id'') (`within_ge2_sp`id'') "
@@ -379,11 +421,6 @@ program define apply_analysis
                 pause "The program will exit with return code `code': care to investigate first?"
                 exit `code'
             }
-			di as error "Printing results row"
-			di as error `" `resultsOfInterest' "'
-			local row_ct: word count `resultsOfInterest'
-			di as error `row_ct'
-			//pause
             local resultRow `" `resultsOfInterest' "'
 			
             capture noisily post `postRes' `resultRow'
