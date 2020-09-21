@@ -1,5 +1,5 @@
 ---
-title: "School Id Variancee"
+title: "School Id Variance"
 author: "Cole Campton"
 date: "7/27/2020"
 output: pdf_document
@@ -23,6 +23,7 @@ countryNames <- c("Malawi", "DRC","Philippines","Egypt","Kenya")
 orfnames <- c("orf","mt_orf","ph_orf","e_orf_a","k_orf")
 # List of factors to consider
 factorList <- c("school_id","treat_phase","grade","language")
+MULTIFACTOR <- FALSE
 ```
 
 ```{r analysis, echo=FALSE}
@@ -56,12 +57,30 @@ for(i in 1:length(fileListing)){
   orfnamesMask <- orfnames %in% colnames(data)
   for(l in which(orfnamesMask==1)){
     cat(paste0("Oral fluency measure: ",orfnames[l]),"\n")
-    #Find which of the pre-defined factors have more than one level. 
     dataSub <- na.omit(data[,c(orfnames[l], factorList)])
-    factorMask <- unlist(lapply(factorList,function(x) length(unlist(unique(dataSub[,x])))))>1
-    #Anova considering the above factors
-    fit <- aov(as.formula(paste(orfnames[l]," ~", paste(factorList[factorMask], collapse="*"))), data=dataSub)
-    print(summary(fit))
+    if(MULTIFACTOR){
+      #Find which of the pre-defined factors have more than one level. 
+      factorMask <- unlist(lapply(factorList,function(x) length(unlist(unique(dataSub[,x])))))>1
+      #Anova considering the above factors
+      fit <- aov(as.formula(paste(orfnames[l]," ~", paste(factorList[factorMask], collapse="*"))), data=dataSub)
+      print(summary(fit))
+    }
+    grades <- unlist(unique(dataSub[,"grade"]))
+    phases <- unlist(unique(dataSub[,"treat_phase"]))
+    for(g in grades){
+      for(p in phases){
+        gpdata <-  na.omit(data[data$grade == g & data$treat_phase ==p,c(orfnames[l], "school_id")])
+        nSchools <- length(unlist(unique(gpdata$school_id)))
+        if(nSchools>1){
+          gpfit <- aov(as.formula(paste(orfnames[l]," ~ school_id")), data=gpdata)
+          cat(paste0("ANOVA for Grade ",g,", Phase ",p,". \n"))
+          print(summary(gpfit))}
+          
+        else{
+          cat(paste0("Only one school for Grade ",g,", Phase ",p,". \n"))
+        }
+      }
+    }
   }
 }
 ```

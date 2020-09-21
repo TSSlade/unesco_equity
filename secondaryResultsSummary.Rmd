@@ -36,7 +36,7 @@ T <- T[T$treat_phase.base<T$treat_phase.end,]
 
 ```{r, summary, echo=FALSE}
 dsets = unique(D$dataset)
-tabcnames <-  c("Dataset","Language","Grade","Phase","Mean","CV","p90/p10","p75/p25","% zero")
+tabcnames <-  c("Dataset","Language","Grade","Phase","Gini","Mean","CV","p90/p10","p75/p25","% zero")
 summaryTab <- data.frame(matrix(NA, nrow = nrow(D),ncol=length(tabcnames)))
 colnames(summaryTab) <- tabcnames
 loci = 0
@@ -53,19 +53,19 @@ for (i in 1:length(dsets)){
     summaryTab[loci+locj + ceiling(numj/2), "Language"] <- langs[j]
     lock = 0 
     for (k in 1:length(gr)){
-      Dsub <- D[D$dataset == dsets[i] & D$measure_label == langs[j] & D$grade ==gr[k],c("treat_phase","mean", "cv", "ratio_p90p10", "ratio_p75p25","pct_zero")]
+      Dsub <- D[D$dataset == dsets[i] & D$measure_label == langs[j] & D$grade ==gr[k],c("treat_phase","gini","mean", "cv", "ratio_p90p10", "ratio_p75p25","pct_zero")]
       nk = nrow(Dsub)
       summaryTab[loci+locj + lock + nk, "Grade"] <- "______"
       summaryTab[loci+locj + lock + ceiling(nk/2), "Grade"] <- gr[k]
-      summaryTab[(loci+locj+lock+1):(loci+locj+lock+nk),c("Phase","Mean","CV","p90/p10","p75/p25","% zero")] <- Dsub
+      summaryTab[(loci+locj+lock+1):(loci+locj+lock+nk),c("Phase","Gini","Mean","CV","p90/p10","p75/p25","% zero")] <- Dsub
       lock = lock +nk
     }
     locj = locj +numj
   }
   loci = loci +locj
 }
-summaryTab[,c("Mean","CV","p90/p10","p75/p25","% zero")] <- lapply(summaryTab[,c("Mean","CV","p90/p10","p75/p25","% zero")],as.numeric)
-summaryTab[,c("Mean","CV","p90/p10","p75/p25","% zero")] <- lapply(summaryTab[,c("Mean","CV","p90/p10","p75/p25","% zero")],round,3)
+summaryTab[,c("Gini","Mean","CV","p90/p10","p75/p25","% zero")] <- lapply(summaryTab[,c("Gini","Mean","CV","p90/p10","p75/p25","% zero")],as.numeric)
+summaryTab[,c("Gini","Mean","CV","p90/p10","p75/p25","% zero")] <- lapply(summaryTab[,c("Gini","Mean","CV","p90/p10","p75/p25","% zero")],round,3)
 summaryTab[is.na(summaryTab)] <- ""
 summaryTab[summaryTab$Grade=="777","Grade"] <- "Other"
 print(summaryTab, row.names=FALSE)

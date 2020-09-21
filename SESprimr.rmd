@@ -12,6 +12,8 @@ library(DescTools)
 library(tidyverse)
 library("quantreg")
 library(RColorBrewer)
+library(caret)
+library(e1071)
 
 datapath <- "D:/Users/ccampton/Documents/unesco_equity/data/PUF_3.Kenya PRIMR2012-2013-Endline_grade1 2_EGRA EGMA ENG HT T TAC COR COM CIN_Eng Kis.dta"
 data <- read_dta(datapath)
@@ -59,6 +61,29 @@ sum(rowSums(dataTemporal[paste0(SESfeat,".base")]>dataTemporal[paste0(SESfeat,".
 ```
 The above fact is a good indicator of the difficulty inherent in inferring based on this SES data. 
 
+```{r quantileMisclass, echo=FALSE}
+temp <- dataTemporal[,paste0(SESfeat,".base")]
+colnames(temp) <- SESfeat
+BLitemsowned <- rowSums(temp)
+SESBL <-  projPC(temp)
+temp <- dataTemporal[,paste0(SESfeat,".end")]
+ELitemsowned <- rowSums(temp)
+colnames(temp) <- SESfeat
+SESEL <-  projPC(temp)
+quartBL <- rep(NA,length(SESBL))
+quartEL <- rep(NA,length(SESEL))
+ntile = 4 
+for(p in 1:(ntile)){
+  quartBL[(SESBL<quantile(SESBL, (p)/(ntile))) & (SESBL>=quantile(SESBL, (p-1)/ntile))] <- p
+  quartEL[(SESBL<quantile(SESEL, (p)/(ntile))) & (SESEL>=quantile(SESEL, (p-1)/ntile))] <- p
+}
+plot(SESBL,SESEL, main="SES index at Endline vs Baseline")
+confmat <- confusionMatrix(as.factor(quartBL), as.factor(quartEL), dnn=c("Basline","Endline"))$table
+cat("Confusion matrix of quartiles based on Baseline/Endline SES Questions. \n")
+print(confmat)
+plot(SESBL,BLitemsowned,ylab="#items owned",main="Items owned BL vs SES Index")
+plot(SESEL,ELitemsowned,ylab="#items owned",main="Items owned EL vs SES Index")
+```
 # Stratified by Grade
 
 The first model we investigate stratifies the dataset by grade, acknowledging that within each age group Oral Reading Fluency (ORF) may be differently correlated with social economic status. For each grade level we extract the first principle component of the normalize (i.e. 0 mean, variance 1 transformed) asset ownership binary variables. This first principle component is used as a linear weighting scheme to produce a SES index. We plot the ORFof students verse this SSE index, colored by treatment phase. Additionally we attempt to model ORF with a logistic regression of asset ownership variables and measure the correlation of our indices with ORF within each treatment phase and grade pairing. 
@@ -369,26 +394,32 @@ temp <- dataTemporal[,paste0(SESfeat,".base")]
 colnames(temp) <- SESfeat
 SESind <-  projPC(temp)
 subpopVars <- c("language","grade")
-
-subpopVars <- subpopVars[unlist(lapply(subpopVars, function(x) length(unlist(unique(data[,x])))))>1]
-subpops <- ""
-for(i in 1:length(subpopVars)){subpops <- unique(paste0(subpops,unique(unlist(data[,subpopVars[i]]))))}
-nsubpops <- length(subpops)
-subpoplabels <- ""
-for(i in 1:length(subpopVars)){subpoplabels <- unique(paste0(subpoplabels,subpopVars[i]," ",sort(unique(unlist(data[,subpopVars[i]])))," "))}
-subpopmasks <- matrix(ncol=nsubpops,nrow=length(SESind))
-for(sp in 1:nsubpops){
-  masktemp <- rep(TRUE, length(SESind))
-  for(spv in 1:length(subpopVars)){
-    masktemp <- masktemp & (as.character(unlist(dataTemporal[,subpopVars[spv]]))==substr(subpops[sp],spv,spv))
+{
+  subpopVars <- subpopVars[unlist(lapply(subpopVars, function(x) length(unlist(unique(data[,x])))))>1]
+  subpops <- unique(apply(data[,subpopVars],1,function(x) paste0(sort(x),collapse="-")))
+  subpoplabels <- unique(apply(data[,subpopVars],1,function(x) paste0(subpopVars,": ",sort(x),collapse=", ")))
+  nsubpops <- length(subpops)
+  subpopmasks <- matrix(ncol=nsubpops,nrow=length(SESind))
+  for(sp in 1:nsubpops){
+    masktemp <- rep(TRUE, length(SESind))
+    indstart = 1
+    for(spv in 1:length(subpopVars)){
+      if(spv < length(subpopVars)){
+      indend = gregexpr("-",subpops[spv])[[1]][spv]-1
+      }else{
+      indend = nchar(subpops[sp])
+      }
+      masktemp <- masktemp & (as.character(unlist(dataTemporal[,subpopVars[spv]]))==substr(subpops[sp],indstart,indend))
+      indstart = indend+2
+    }
+    subpopmasks[,sp] <- masktemp
   }
-  subpopmasks[,sp] <- masktemp
+  nonemptysubpop <- colSums(subpopmasks)>0
+  subpoplabels <- subpoplabels[nonemptysubpop]
+  subpops <- subpops[nonemptysubpop]
+  subpopmasks <- subpopmasks[,nonemptysubpop]
+  nsubpops <- length(subpops)
 }
-nonemptysubpop <- colSums(subpopmasks)>0
-subpoplabels <- subpoplabels[nonemptysubpop]
-subpops <- subpops[nonemptysubpop]
-subpopmasks <- subpopmasks[,nonemptysubpop]
-nsubpops <- length(subpops)
 for(ns in 1:length(ntiles)){
 ntile = ntiles[ns]
 
@@ -396,8 +427,9 @@ ntilemasks <- matrix(ncol=ntile,nrow=length(SESind))
 for(p in 1:(ntile)){
   ntilemasks[,p] <- (SESind<quantile(SESind, (p)/(ntile))) & (SESind>=quantile(SESind, (p-1)/ntile))
 }
-ntileTab <- data.frame(matrix(ncol=(2*nsubpops+2),nrow=(4*(ntile+1)+2)))
+ntileTab <- data.frame(matrix(ncol=(2*nsubpops+2),nrow=(4*(ntile+1)+3)))
 ntileTab[(0:3)*(ntile+1)+3,1] <- c("Gini","CV","%0","MRF")
+ntileTab[3+4*(ntile+1),1] <- "Count"
 ntileTab[3:(4*(ntile+1)+2),2] <- rep(c(1:ntile,"All"), 4)
 ntileTab[1,(1:nsubpops)*2+1] <- c(subpoplabels)
 ntileTab[2,0:(2*nsubpops)+2] <- c("Q#",rep(c("Baseline","Endline"),2))
@@ -415,6 +447,9 @@ for(sp in 1:nsubpops){
     
   ntileTab[2+4*(ntile+1),2+2*(sp-1)+1] <- mean(bl) #BL MRF Qi
   ntileTab[2+4*(ntile+1),2+2*(sp-1)+2] <- mean(el) #EL MRF Qi
+  
+  ntileTab[3+4*(ntile+1),2+2*(sp-1)+1] <- length(bl) 
+  ntileTab[3+4*(ntile+1),2+2*(sp-1)+2] <- length(el) 
 
 for(i in 1:ntile){
   ntileSubpopMask <- ntilemasks[,i] & subpopmasks[,sp]
@@ -453,25 +488,32 @@ lmmodel <- lm(orf.base~.-orf.base,data=temp)
 SESind <- predict(lmmodel, newdata = temp)
 subpopVars <- c("language","grade")
 
-subpopVars <- subpopVars[unlist(lapply(subpopVars, function(x) length(unlist(unique(data[,x])))))>1]
-subpops <- ""
-for(i in 1:length(subpopVars)){subpops <- unique(paste0(subpops,unique(unlist(data[,subpopVars[i]]))))}
-nsubpops <- length(subpops)
-subpoplabels <- ""
-for(i in 1:length(subpopVars)){subpoplabels <- unique(paste0(subpoplabels,subpopVars[i]," ",sort(unique(unlist(data[,subpopVars[i]])))," "))}
-subpopmasks <- matrix(ncol=nsubpops,nrow=length(SESind))
-for(sp in 1:nsubpops){
-  masktemp <- rep(TRUE, length(SESind))
-  for(spv in 1:length(subpopVars)){
-    masktemp <- masktemp & (as.character(unlist(dataTemporal[,subpopVars[spv]]))==substr(subpops[sp],spv,spv))
+{
+  subpopVars <- subpopVars[unlist(lapply(subpopVars, function(x) length(unlist(unique(data[,x])))))>1]
+  subpops <- unique(apply(data[,subpopVars],1,function(x) paste0(sort(x),collapse="-")))
+  subpoplabels <- unique(apply(data[,subpopVars],1,function(x) paste0(subpopVars,": ",sort(x),collapse=", ")))
+  nsubpops <- length(subpops)
+  subpopmasks <- matrix(ncol=nsubpops,nrow=length(SESind))
+  for(sp in 1:nsubpops){
+    masktemp <- rep(TRUE, length(SESind))
+    indstart = 1
+    for(spv in 1:length(subpopVars)){
+      if(spv < length(subpopVars)){
+      indend = gregexpr("-",subpops[spv])[[1]][spv]-1
+      }else{
+      indend = nchar(subpops[sp])
+      }
+      masktemp <- masktemp & (as.character(unlist(dataTemporal[,subpopVars[spv]]))==substr(subpops[sp],indstart,indend))
+      indstart = indend+2
+    }
+    subpopmasks[,sp] <- masktemp
   }
-  subpopmasks[,sp] <- masktemp
+  nonemptysubpop <- colSums(subpopmasks)>0
+  subpoplabels <- subpoplabels[nonemptysubpop]
+  subpops <- subpops[nonemptysubpop]
+  subpopmasks <- subpopmasks[,nonemptysubpop]
+  nsubpops <- length(subpops)
 }
-nonemptysubpop <- colSums(subpopmasks)>0
-subpoplabels <- subpoplabels[nonemptysubpop]
-subpops <- subpops[nonemptysubpop]
-subpopmasks <- subpopmasks[,nonemptysubpop]
-nsubpops <- length(subpops)
 for(ns in 1:length(ntiles)){
 ntile = ntiles[ns]
 
@@ -479,8 +521,9 @@ ntilemasks <- matrix(ncol=ntile,nrow=length(SESind))
 for(p in 1:(ntile)){
   ntilemasks[,p] <- (SESind<quantile(SESind, (p)/(ntile))) & (SESind>=quantile(SESind, (p-1)/ntile))
 }
-ntileTab <- data.frame(matrix(ncol=(2*nsubpops+2),nrow=(4*(ntile+1)+2)))
+ntileTab <- data.frame(matrix(ncol=(2*nsubpops+2),nrow=(4*(ntile+1)+3)))
 ntileTab[(0:3)*(ntile+1)+3,1] <- c("Gini","CV","%0","MRF")
+ntileTab[3+4*(ntile+1),1] <- "Count"
 ntileTab[3:(4*(ntile+1)+2),2] <- rep(c(1:ntile,"All"), 4)
 ntileTab[1,(1:nsubpops)*2+1] <- c(subpoplabels)
 ntileTab[2,0:(2*nsubpops)+2] <- c("Q#",rep(c("Baseline","Endline"),2))
@@ -498,6 +541,9 @@ for(sp in 1:nsubpops){
     
   ntileTab[2+4*(ntile+1),2+2*(sp-1)+1] <- mean(bl) #BL MRF Qi
   ntileTab[2+4*(ntile+1),2+2*(sp-1)+2] <- mean(el) #EL MRF Qi
+  
+  ntileTab[3+4*(ntile+1),2+2*(sp-1)+1] <- length(bl) 
+  ntileTab[3+4*(ntile+1),2+2*(sp-1)+2] <- length(el) 
 
 for(i in 1:ntile){
   ntileSubpopMask <- ntilemasks[,i] & subpopmasks[,sp]

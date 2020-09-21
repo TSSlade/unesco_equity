@@ -49,6 +49,7 @@ ownershipPct <- colSums(data[,SESfeat])/nrow(data)
 barplot(ownershipPct,las=2,names.arg=SESlabs,main="Ownership Percent of each Item")
 barplot(PCA$rotation[,1],las=2,names.arg=SESlabs,main="Item weights for First Principle Component")
 barplot(PCA$sdev/sum(PCA$sdev),names.arg=1:length(SESfeat),main="Variance explained by each Principle Component")
+plot(projPC(na.omit(data[,SESfeat])),rowSums(na.omit(data[,SESfeat])),ylab="#items owned",xlab="SES index",main="Items owned vs SES Index")
 ```
 There are no students which were observed at two of baseline, midline or endline, meaning there is no opportunity for validating consistency of answers to SES questions. 
 ```{r coherence}
@@ -123,16 +124,21 @@ subpopVars <- c("language","grade")
 #Compute Subpop labels, and masks for non-empty subpops (uses all phases)
 {
   subpopVars <- subpopVars[unlist(lapply(subpopVars, function(x) length(unlist(unique(data[,x])))))>1]
-  subpops <- ""
-  for(i in 1:length(subpopVars)){subpops <- unique(paste0(subpops,unique(unlist(data[,subpopVars[i]]))))}
+  subpops <- unique(apply(data[,subpopVars],1,function(x) paste0(sort(x),collapse="-")))
+  subpoplabels <- unique(apply(data[,subpopVars],1,function(x) paste0(subpopVars,": ",sort(x),collapse=", ")))
   nsubpops <- length(subpops)
-  subpoplabels <- ""
-  for(i in 1:length(subpopVars)){subpoplabels <- unique(paste0(subpoplabels,subpopVars[i]," ",sort(unique(unlist(data[,subpopVars[i]])))," "))}
   subpopmasks <- matrix(ncol=nsubpops,nrow=length(SESind))
   for(sp in 1:nsubpops){
     masktemp <- rep(TRUE, length(SESind))
+    indstart = 1
     for(spv in 1:length(subpopVars)){
-      masktemp <- masktemp & (as.character(unlist(data[,subpopVars[spv]]))==substr(subpops[sp],spv,spv))
+      if(spv < length(subpopVars)){
+      indend = gregexpr("-",subpops[spv])[[1]][spv]-1
+      }else{
+      indend = nchar(subpops[sp])
+      }
+      masktemp <- masktemp & (as.character(unlist(data[,subpopVars[spv]]))==substr(subpops[sp],indstart,indend))
+      indstart = indend+2
     }
     subpopmasks[,sp] <- masktemp
   }
@@ -154,11 +160,12 @@ ntile = ntiles[ns]
 }
 # Intialize table, build labels
 {
-  ntileTab <- data.frame(matrix(ncol=(nphases*nsubpops+2),nrow=(4*(ntile+1)+2)))
+  ntileTab <- data.frame(matrix(ncol=(nphases*nsubpops+2),nrow=(4*(ntile+1)+3)))
   ntileTab[(0:3)*(ntile+1)+3,1] <- c("Gini","CV","%0","MRF")
   ntileTab[3:(4*(ntile+1)+2),2] <- rep(c(1:ntile,"All"), 4)
   ntileTab[1,(1:nsubpops)*nphases+1] <- c(subpoplabels)
   ntileTab[2,0:(nphases*nsubpops)+2] <- c("Q#",rep(phases,nsubpops))
+  ntileTab[(4*(ntile+1)+3),1 ] <- "Counts"
 }
 for(sp in 1:nsubpops){
   SES <- na.omit(data[subpopmasks[,sp],c("orf","treat_phase",SESfeat)])
@@ -211,6 +218,7 @@ for(sp in 1:nsubpops){
     ntileTab[2+3*(ntile+1),2+nphases*(sp-1)+p] <- sum(SESphase==0)/length(SESphase)#%0 Qi
       
     ntileTab[2+4*(ntile+1),2+nphases*(sp-1)+p] <- mean(SESphase) #MRF Qi
+    ntileTab[3+4*(ntile+1),2+nphases*(sp-1)+p] <- length(SESphase)
     }
     }
     # Add n-tile measures for of of the n n-tiles
@@ -290,16 +298,21 @@ subpopVars <- c("language","grade")
 #Compute Subpop labels, and masks for non-empty subpops (uses all phases)
 {
   subpopVars <- subpopVars[unlist(lapply(subpopVars, function(x) length(unlist(unique(data[,x])))))>1]
-  subpops <- ""
-  for(i in 1:length(subpopVars)){subpops <- unique(paste0(subpops,unique(unlist(data[,subpopVars[i]]))))}
+  subpops <- unique(apply(data[,subpopVars],1,function(x) paste0(sort(x),collapse="-")))
+  subpoplabels <- unique(apply(data[,subpopVars],1,function(x) paste0(subpopVars,": ",sort(x),collapse=", ")))
   nsubpops <- length(subpops)
-  subpoplabels <- ""
-  for(i in 1:length(subpopVars)){subpoplabels <- unique(paste0(subpoplabels,subpopVars[i]," ",sort(unique(unlist(data[,subpopVars[i]])))," "))}
   subpopmasks <- matrix(ncol=nsubpops,nrow=length(SESind))
   for(sp in 1:nsubpops){
     masktemp <- rep(TRUE, length(SESind))
+    indstart = 1
     for(spv in 1:length(subpopVars)){
-      masktemp <- masktemp & (as.character(unlist(data[,subpopVars[spv]]))==substr(subpops[sp],spv,spv))
+      if(spv < length(subpopVars)){
+      indend = gregexpr("-",subpops[spv])[[1]][spv]-1
+      }else{
+      indend = nchar(subpops[sp])
+      }
+      masktemp <- masktemp & (as.character(unlist(data[,subpopVars[spv]]))==substr(subpops[sp],indstart,indend))
+      indstart = indend+2
     }
     subpopmasks[,sp] <- masktemp
   }
@@ -321,11 +334,12 @@ ntile = ntiles[ns]
 }
 # Intialize table, build labels
 {
-  ntileTab <- data.frame(matrix(ncol=(nphases*nsubpops+2),nrow=(4*(ntile+1)+2)))
+  ntileTab <- data.frame(matrix(ncol=(nphases*nsubpops+2),nrow=(4*(ntile+1)+3)))
   ntileTab[(0:3)*(ntile+1)+3,1] <- c("Gini","CV","%0","MRF")
   ntileTab[3:(4*(ntile+1)+2),2] <- rep(c(1:ntile,"All"), 4)
   ntileTab[1,(1:nsubpops)*nphases+1] <- c(subpoplabels)
   ntileTab[2,0:(nphases*nsubpops)+2] <- c("Q#",rep(phases,nsubpops))
+  ntileTab[(4*(ntile+1)+3),1 ] <- "Counts"
 }
 for(sp in 1:nsubpops){
   SES <- na.omit(data[subpopmasks[,sp],c("orf","treat_phase",SESfeat)])
@@ -378,6 +392,8 @@ for(sp in 1:nsubpops){
     ntileTab[2+3*(ntile+1),2+nphases*(sp-1)+p] <- sum(SESphase==0)/length(SESphase)#%0 Qi
       
     ntileTab[2+4*(ntile+1),2+nphases*(sp-1)+p] <- mean(SESphase) #MRF Qi
+    
+    ntileTab[3+4*(ntile+1),2+nphases*(sp-1)+p] <- length(SESphase)
     }
     }
     # Add n-tile measures for of of the n n-tiles
