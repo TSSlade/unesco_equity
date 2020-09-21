@@ -29,7 +29,7 @@ log close _all
 global HOME="C:\Users\tslade\projects"
 
 // Define vars
-global p_dir="$HOME/unesco_chapter"
+global p_dir="$HOME/unesco_equity"
 local c_time: di %td_CY-N-D date("$S_DATE", "DMY") "_$S_TIME"
 global c_datetime=trim(subinstr("`c_time'",":","-",.))
 

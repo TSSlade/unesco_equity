@@ -3,7 +3,7 @@ pause on
 log close _all
 
 // Define vars
-global p_dir="C:/Dropbox/BerkeleyMIDS/projects/unesco_chapter"
+global p_dir="C:/Dropbox/BerkeleyMIDS/projects/unesco_equity"
 local c_time: di %td_CY-N-D date("$S_DATE", "DMY") "_$S_TIME"
 global c_datetime=trim(subinstr("`c_time'",":","-",.))
 

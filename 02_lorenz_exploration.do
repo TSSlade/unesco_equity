@@ -8,13 +8,13 @@ loc vars_of_interest = "str20(dataset language) cohort grade round pct_00 pct_05
 
 postfile `postLorenz' `vars_of_interest' using `lorenzes'
 cd "$HOME/unesco_equity"
-local primr = "$HOME/projects\unesco_chapter\primr_unesco.dta"
-local tusome = "$HOME/projects\unesco_chapter\tusome_unesco.dta"
-local malawi = "$HOME/unesco_equity/malawi_unesco.dta"
-local DRC = "$HOME/unesco_equity\DRC_unesco.dta"
-local DRCe = "$HOME/unesco_equity\DRCe_unesco.dta"
-local philippines = "D:\Users\ccampton\Documents\unesco_equity\phil_unesco.dta"
-local egypt = "D:\Users\ccampton\Documents\unesco_equity\egy_unesco.dta"
+local primr = "$p_dir/primr_unesco.dta"
+local tusome = "$p_dir/tusome_unesco.dta"
+local malawi = "$p_dir/malawi_unesco.dta"
+local DRC = "$p_dir/DRC_unesco.dta"
+local DRCe = "$p_dir/DRCe_unesco.dta"
+local philippines = "$p_dir/phil_unesco.dta"
+local egypt = "$p_dir/egy_unesco.dta"
 //local languages = "English Kiswahili"
 // loc languages = "English"
 // loc languages = "French Lingala Tshiluba Kiswahili"
@@ -212,7 +212,7 @@ foreach p of loc percentages {
 
 local c_time: di %td_CY-N-D date("$S_DATE", "DMY") "_$S_TIME"
 global c_datetime=trim(subinstr("`c_time'",":","-",.))
-save "$HOME/unesco_equity\bins\lorenz_data_both.dta", replace
+save "$p_dir/bins\lorenz_data_both.dta", replace
 export excel "lorenz_data_$c_datetime.xlsx", firstrow(var) sheet("raw", modify)
 pause "What do you see?"
 di "Made it here..."

@@ -1,10 +1,10 @@
 set autotabgraphs on
 pause on
 // Stack our tusome and primr datasets
-// use "$HOME/unesco_chapter/primr_core.dta", clear
-// append using "$HOME/unesco_chapter/tusome_core.dta"
-//use "$HOME/unesco_equity\DRC_core.dta"
-use "$HOME/unesco_equity\malawi_core.dta"
+// use "$p_dir/primr_core.dta", clear
+// append using "$p_dir/tusome_core.dta"
+//use "$p_dir/DRC_core.dta"
+use "$p_dir/malawi_core.dta"
 
 local c_time: di %td_CY-N-D date("$S_DATE", "DMY") "_$S_TIME"
 global c_datetime=trim(subinstr("`c_time'",":","-",.))
@@ -119,7 +119,7 @@ foreach v in gini mean cv pct_zero {
 order *, alphabetic
 order dataset match_key subpop_label_ref subpop_label_com grade cohort measure_label
 
-export excel "$HOME/unesco_chapter\quantile_regressions_$c_datetime.xlsx", sh(quantiles) sheetmod first(var)
+export excel "$p_dir/quantile_regressions_$c_datetime.xlsx", sh(quantiles) sheetmod first(var)
 
 program define make_qreg_scatters
     syntax , Yvar(var) Xvar(var) EQuality(var) [High(var) Low(var) XRange(string) YRange(string)]
