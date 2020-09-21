@@ -12,17 +12,22 @@ local primr = "$HOME/projects\unesco_chapter\primr_unesco.dta"
 local tusome = "$HOME/projects\unesco_chapter\tusome_unesco.dta"
 local malawi = "$HOME/unesco_equity/malawi_unesco.dta"
 local DRC = "$HOME/unesco_equity\DRC_unesco.dta"
+local DRCe = "$HOME/unesco_equity\DRCe_unesco.dta"
+
 //local languages = "English Kiswahili"
-loc languages = "English"
+// loc languages = "English"
+loc languages = "French Lingala Tshiluba Kiswahili"
 //loc languages = "French"
 * local langvars = "eng_orf kis_orf"
-local langvars = "eng_orf"
+// local langvars = "eng_orf"
+local langvars = "fre_orf lin_orf tsh_orf kis_orf"
 //local langvars = "fre_orf"
 // local datasets = "primr tusome"
 // local datasets = "DRC"
 // local cohortvars = "1 2 3"
 // local grades = "2 4 6"
-local datasets = "malawi"
+local datasets = "DRCe"
+pause on
 
 // Loop through datasets
 // ...then languages
@@ -47,15 +52,33 @@ foreach dataset of loc datasets {
 	di `grades'
     gen resc_eng_orf = .
     gen resc_kis_orf = .
-
-    levelsof treat_phase, loc(treat_phases)
+	capture confirm variable treat_phase
+	if !_rc {
+//	Collect treatment phases if they exist
+		levelsof treat_phase, loc(treat_phases)
+	}
+	else{
+//	Otherwise treat all samples as baseline for the purpose of lorenz curve
+		gen treat_phase = 1
+		levelsof treat_phase, loc(treat_phases)
+	}
 	levelsof grade, loc(grades)
 
 	di "`treat_phases'"
 	capture confirm variable cohort
 	if !_rc {
-		levelsof cohort, loc(cohortvars)
-		egen subpop = group(cohort treat_phase grade), label
+//	Cohort Exists
+		capture confirm variable treat_phase
+		if !_rc {
+//			treat_phase exists
+			levelsof cohort, loc(cohortvars)
+			egen subpop = group(cohort treat_phase grade), label
+		}
+		else{
+//			Cohort, no treat_phase
+			levelsof cohort, loc(cohortvars)
+			egen subpop = group(cohort grade), label
+		}
 		}
 		else{
 			egen subpop = group(treat_phase grade), label
