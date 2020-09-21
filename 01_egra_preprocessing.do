@@ -6,8 +6,7 @@
     - svygei
     - lorenz
     - groups
-    - ineqdec0
-
+ 	  - ineqdec0
 2) Parameters:
     - Depending on the number of subpopulations you provide, you may need to -set matsize-
         to a larger value than the default (400). I have been able to get away with
@@ -183,6 +182,4 @@ foreach dt of loc dataset_types {
 
 * use "tusome_inequalities.dta", clear
 * append using "primr_inequalities.dta"
-
-
 * export excel "bins/inequality_results.xlsx", sh("$c_datetime") firstrow(var) sheetmod

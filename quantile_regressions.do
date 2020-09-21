@@ -12,7 +12,6 @@ global c_datetime=trim(subinstr("`c_time'",":","-",.))
 // we want to separate our demographic variables from our instrumental variables
 local demo_vars = "project language reference comparison"
 // these are the variables we'll comapre across two time points
-//local vars_to_compare = "mean cv ratio_p90p10 ratio_p75p25 pct_zero gini ge2_overall ge2_ingroup ge2_outgroup between_ge2 within_ge2"
 local vars_to_compare = "mean cv ratio_p90p10 ratio_p75p25 pct_zero gini ge2_overall between_ge2 within_ge2"
 
 // we'll use a tempfile for our merging process
@@ -95,6 +94,8 @@ use "`time_0'", clear
 merge 1:1 dataset match_key measure_label using "`time_1'", keepusing(*_com)
 
 drop is_time*
+
+local vars_to_compare = "mean cv ratio_p90p10 ratio_p75p25 pct_zero gini ge2_overall between_ge2 within_ge2"
 
 foreach v of loc vars_to_compare {
     gen `v'_diff = `v'_com - `v'_ref
@@ -271,4 +272,4 @@ twoway scatter gini_diff mean_diff , msymbol(o) mcolor(cranberry) msize(small) l
 	   graph save "bins/CS20-mt-S03-V01-qreg_diff_lfit.gph", replace
        graph export "bins/CS20-mt-S03-V01-qreg_diff_lfit.svg" ,replace
        graph export "bins/CS20-mt-S03-V01-qreg_diff_lfit.png" , replace
->>>>>>> 338fffc... fresh commit, eliminate early commit of dta files to branch. branch adds dataset specific preprocessing, merges mavzuma changes, generalizes lorenz generation
+

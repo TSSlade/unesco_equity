@@ -49,7 +49,6 @@ In brief, the approach involves
 1. Calling `$ dyndoc the-file-to-be-compiled.txt` either interactively or from within a `.do` file to compile your output (e.g., an `.html` or `.pdf` or `.docx` file). For our purposes, please compile to HTML. You can then simply read it in your browser.
 
 **N.B.** It is also possible to do in-line embedding of variables, graphs, tables, etc. This paradigm is extremely powerful: take some time to read up on it and review examples online. You may find reading up on the use of `R Markdown` documents in the R ecosystem to be useful - it is likely that documentation is more expansive than what you'll find on Stata given the prevalence of literate programming approaches in the data science community relative to the econ community. The principles are the same -- only the syntax is meaningfully different, and that is reasonably simple to pick up once you've caught the broader gist.
->>>>>>> 338fffc... fresh commit, eliminate early commit of dta files to branch. branch adds dataset specific preprocessing, merges mavzuma changes, generalizes lorenz generation
 
 When you have analytical code that you are ready to have reviewed, you can upload it to GitHub. There is a whole command line-based process you can read up on if you'd like, but you can also simply do it via the GUI. Please do your work in a _branch_ of the codebase bearing your name so we don't have multiple versions of the `main` codebase running into each other. Please reach out for assistance if you require it.
 
