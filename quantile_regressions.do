@@ -1,8 +1,13 @@
 set autotabgraphs on
 pause on
 // Stack our tusome and primr datasets
-use "$HOME/unesco_chapter/primr_core.dta", clear
-append using "$HOME/unesco_chapter/tusome_core.dta"
+// use "$HOME/unesco_chapter/primr_core.dta", clear
+// append using "$HOME/unesco_chapter/tusome_core.dta"
+//use "$HOME/unesco_equity\DRC_core.dta"
+use "$HOME/unesco_equity\malawi_core.dta"
+
+local c_time: di %td_CY-N-D date("$S_DATE", "DMY") "_$S_TIME"
+global c_datetime=trim(subinstr("`c_time'",":","-",.))
 
 // we want to separate our demographic variables from our instrumental variables
 local demo_vars = "project language reference comparison"
@@ -114,7 +119,7 @@ foreach v in gini mean cv pct_zero {
 order *, alphabetic
 order dataset match_key subpop_label_ref subpop_label_com grade cohort measure_label
 
-export excel "$HOME/unesco_chapter\quantile_regressions.xlsx", sh(quantiles) sheetmod first(var)
+export excel "$HOME/unesco_chapter\quantile_regressions_$c_datetime.xlsx", sh(quantiles) sheetmod first(var)
 
 program define make_qreg_scatters
     syntax , Yvar(var) Xvar(var) EQuality(var) [High(var) Low(var) XRange(string) YRange(string)]
@@ -129,8 +134,6 @@ program define make_qreg_scatters
                ylabel(`YRange', nogrid) ///
                aspect(1)
 end
-
-
 
 clonevar mean_line_of_equality = mean_ref
 clonevar cv_line_of_equality = cv_ref

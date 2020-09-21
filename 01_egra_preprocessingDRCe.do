@@ -50,12 +50,14 @@ use "$DRC_src", clear
 svyset
 
 // Ensure the variables which define our future subpopulations are well-labeled
-label define lbl_treat_phase 1 "Baseline" 6 "Endline"
-label val treat_phase lbl_treat_phase
+//label define lbl_treat_phase 1 "Baseline" 6 "Endline"
+//label val treat_phase lbl_treat_phase
 label define lbl_female 0 "Male" 1 "Female"
 label val female lbl_female
 label define lbl_grade 3 "Gr3" 5 "Gr5" 777 "Other"
 label val grade lbl_grade
+clonevar wt_final = wt_stage3
+
 
 // Ensure consistent/transparent naming of the performance measures we're using
 gen fre_orf = .
@@ -80,7 +82,7 @@ loc low = 10
 loc high = 30
 
 gen fre_bmark = 0
-gen lig_bmark = 0
+gen lin_bmark = 0
 gen tsh_bmark = 0
 gen kis_bmark = 0
 
@@ -98,8 +100,8 @@ recode kis_bmark (0 = 2) if (grade==1 & kis_orf >= `high')
 
 //label define lbl_ebmark 0 "[eng_orf < `eng1_low']" 1 "[eng_orf >=`eng1_low' <`eng1_high']" 2 "[eng_orf >`eng1_high']"
 //label val eng_bmark lbl_ebmark
-label define lbl_frmark 0 "[fre_orf < `low'] " 1 "[fre_orf >=`low' <`high']" 2 "[fre_orf >`high']"
-label val fre_bmark lbl_frmark
+label define lbl_fremark 0 "[fre_orf < `low'] " 1 "[fre_orf >=`low' <`high']" 2 "[fre_orf >`high']"
+label val fre_bmark lbl_fremark
 label define lbl_linmark 0 "[lin_orf < `low'] " 1 "[lin_orf >=`low' <`high']" 2 "[lin_orf >`high']"
 label val lin_bmark lbl_linmark
 label define lbl_tshmark 0 "[tsh_orf < `low'] " 1 "[tsh_orf >=`low' <`high']" 2 "[tsh_orf >`high']"
@@ -109,7 +111,8 @@ label val kis_bmark lbl_kismark
 
 // Consider destringing any variables you would use for the grouping
 // destring treat_phase grade female eng_bmark fre_bmark school_code, replace
-destring treat_phase grade female eng_bmark school_code, replace
+destring grade female fre_bmark lin_bmark tsh_bmark kis_bmark school_code, replace
+//destring treat_phase grade female fre_bmark lin_bmark tsh_bmark kis_bmark school_code, replace
 
 save "DRCe_unesco.dta", replace
 use "DRCe_unesco.dta", clear
@@ -117,16 +120,17 @@ svyset
 
 // Super-granular analyses by subpopulation with additional parameters
 // Student-level data
+// Treat phase stratification removed. 
+quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRC") core(grade) res("DRC_core") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
+quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRC") core(grade female) res("DRC_bysex") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
+quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRC") core(grade fre_bmark) res("DRC_frebmarks") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
+quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRC") core(grade lin_bmark) res("DRC_linbmarks") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
+quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRC") core(grade tsh_bmark) res("DRC_tshbmarks") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
+quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRC") core(grade kis_bmark) res("DRC_kisbmarks") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
+quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRC") core(grade) res("DRC_frebmarks") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
+quietly: apply_analysis fre_orf lin_orf tsh_orf kis_orf, data("DRC") core(grade school_code) res("DRC_byschool") svy(1) wt(wt_final) zeros(1) varlabel("French Lingala Tshiluba Kiswahili") ver(0) deb(0)
 
-quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade) res("DRC_core") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
-quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade female) res("DRC_bysex") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
-quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade eng_bmark) res("DRC_engbmarks") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
-//// quietly: apply_analysis eng_orf kis_orf, data("DRC") core(treat_phase grade) res("DRC_malbmarks") svy(1) wt(wt_final) zeros(1) varlabel("English French") ver(0) deb(0)
-quietly: apply_analysis eng_orf, data("DRC") core(treat_phase grade school_code) res("DRC_byschool") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
-
-
-//loc dataset_types "core bysex engbmarks byschool"
-loc dataset_types "core bysex engbmarks"
+loc dataset_types "core bysex frebmarks linbmarks tshbmarks kisbmarks byschool"
 
 foreach dt of loc dataset_types {
     use "DRCe_`dt'.dta", clear

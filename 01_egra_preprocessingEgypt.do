@@ -50,17 +50,18 @@ use "$Egy_src", clear
 svyset
 
 // Ensure the variables which define our future subpopulations are well-labeled
-label define lbl_treat_phase 1 "Baseline" 6 "Endline"
+label define lbl_treat_phase 1 "Baseline" 6 "Endline" 
 label val treat_phase lbl_treat_phase
 label define lbl_female 0 "Male" 1 "Female"
 label val female lbl_female
 // label define lbl_grade 1 "Gr1" 2 "Gr2" 3 "Gr3"
-label define lbl_grade 2 "Gr2" 4 "Gr4" 6 "Gr6"
+label define lbl_grade 2 "Gr2"
 label val grade lbl_grade
 
 // Ensure consistent/transparent naming of the performance measures we're using
-clonevar fre_orf = orf
-loc langs "French"
+clonevar ara_orf = orf
+clonevar wt_final = wt_stage2
+loc langs "Arabic"
 
 // Benchmark
 /* Per KNEC in Kenya, for ORF:
@@ -70,49 +71,40 @@ Grade 1  20      35    10      30
 Grade 3  40      80    30      55
 */
 
-loc eng1_low = 20
-loc eng1_high = 35
-loc fre1_low = 10
-loc fre1_high = 30
+loc ara1_low = 20
+loc ara1_high = 35
 
-gen eng_bmark = 0
-gen fre_bmark = 0
+gen ara_bmark = 0
 
 // Applying Low
-//recode eng_bmark (0 = 1) if ((grade==1 & eng_orf >= `eng1_low') & (grade==1 & eng_orf < `eng1_high'))
- recode fre_bmark (0 = 1) if ((grade==1 & fre_orf >= `fre1_low') & (grade==1 & fre_orf < `fre1_high'))
+ recode ara_bmark (0 = 1) if ((grade==1 & ara_orf >= `ara_low') & (grade==1 & ara_orf < `ara_high'))
 
 // Applying High
-//recode eng_bmark (0 = 2) if (grade==1 & eng_orf >= `eng1_high')
-recode fre_bmark (0 = 2) if (grade==1 & fre_orf >= `fre1_high')
-
-//label define lbl_ebmark 0 "[eng_orf < `eng1_low']" 1 "[eng_orf >=`eng1_low' <`eng1_high']" 2 "[eng_orf >`eng1_high']"
-//label val eng_bmark lbl_ebmark
-label define lbl_frmark 0 "[fre_orf < `fre1_low'] " 1 "[fre_orf >=`fre1_low' <`fre1_high']" 2 "[fre_orf >`fre1_high']"
-label val fre_bmark lbl_frmark
+recode ara_bmark (0 = 2) if (grade==1 & ara_orf >= `ara1_high')
+label define lbl_aramark 0 "[ara_orf < `ara1_low'] " 1 "[ara_orf >=`ara1_low' <`ara1_high']" 2 "[ara_orf >`ara1_high']"
+label val ara_bmark lbl_aramark
 
 // Consider destringing any variables you would use for the grouping
 // destring treat_phase grade female eng_bmark fre_bmark school_code, replace
-destring treat_phase grade female eng_bmark school_id, replace
+destring treat_phase grade female ara_bmark school_id, replace
 
-save "DRC_unesco.dta", replace
-use "DRC_unesco.dta", clear
+save "Egy_unesco.dta", replace
+use "Egy_unesco.dta", clear
 svyset
 
 // Super-granular analyses by subpopulation with additional parameters
 // Student-level data
 
-quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade) res("DRC_core") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
-quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade female) res("DRC_bysex") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
-quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade fre_bmark) res("DRC_frebmarks") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
-//quietly: apply_analysis fre_orf, data("DRC") core(treat_phase grade school_id) res("DRC_byschool") svy(1) wt(wt_final) zeros(1) varlabel("French") ver(0) deb(0)
+quietly: apply_analysis ara_orf, data("Egy") core(treat_phase grade) res("Egy_core") svy(1) wt(wt_final) zeros(1) varlabel("Arabic") ver(0) deb(0)
+quietly: apply_analysis ara_orf, data("Egy") core(treat_phase grade female) res("Egy_bysex") svy(1) wt(wt_final) zeros(1) varlabel("Arabic") ver(0) deb(0)
+quietly: apply_analysis ara_orf, data("Egy") core(treat_phase grade ara_bmark) res("Egy_arabmarks") svy(1) wt(wt_final) zeros(1) varlabel("Arabic") ver(0) deb(0)
+quietly: apply_analysis ara_orf, data("Egy") core(treat_phase grade school_code) res("Egy_byschool") svy(1) wt(wt_final) zeros(1) varlabel("Arabic") ver(0) deb(0)
 
 
-//loc dataset_types "core bysex engbmarks byschool"
-loc dataset_types "core bysex engbmarks"
+loc dataset_types "core bysex arabmarks byschool"
 
 foreach dt of loc dataset_types {
-    use "DRC_`dt'.dta", clear
+    use "Egy_`dt'.dta", clear
 	//append using "DRC_`dt'.dta"
 	export excel "bins/inequality_results_$c_datetime.xlsx", sh(`dt') firstrow(var) sheetmod
 }

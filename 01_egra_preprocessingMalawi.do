@@ -60,7 +60,6 @@ label val grade lbl_grade
 
 // Ensure consistent/transparent naming of the performance measures we're using
 clonevar eng_orf = orf
-// clonevar chew_orf = c_orf
 loc langs "English"
 
 // Benchmark
@@ -106,7 +105,6 @@ svyset
 quietly: apply_analysis eng_orf, data("malawi") core(treat_phase grade) res("malawi_core") svy(1) wt(wt_final) zeros(1) varlabel("English") ver(0) deb(0)
 quietly: apply_analysis eng_orf, data("malawi") core(treat_phase grade female) res("malawi_bysex") svy(1) wt(wt_final) zeros(1) varlabel("English") ver(0) deb(0)
 quietly: apply_analysis eng_orf, data("malawi") core(treat_phase grade eng_bmark) res("malawi_engbmarks") svy(1) wt(wt_final) zeros(1) varlabel("English") ver(0) deb(0)
-// quietly: apply_analysis eng_orf kis_orf, data("malawi") core(treat_phase grade kis_bmark) res("malawi_malbmarks") svy(1) wt(wt_final) zeros(1) varlabel("English") ver(0) deb(0)
 quietly: apply_analysis eng_orf, data("malawi") core(treat_phase grade school_code) res("malawi_byschool") svy(1) wt(wt_final) zeros(1) varlabel("English") ver(0) deb(0)
 
 

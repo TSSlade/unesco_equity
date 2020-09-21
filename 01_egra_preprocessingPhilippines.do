@@ -130,7 +130,7 @@ quietly: apply_analysis ceb_orf ilo_orf hil_orf mag_orf, data("phil")  core(trea
 quietly: apply_analysis ceb_orf ilo_orf hil_orf mag_orf, data("phil")  core(treat_phase grade school_code) res("phil_byschool") svy(1) wt(wt_final) zeros(1) varlabel("Cebuano Ilokano Hiligaynon Maguindanaoan") ver(0) deb(0)
 
 
-loc dataset_types "core bysex engbmarks byschool"
+loc dataset_types "core bysex cebbmarks ilobmarks hilbmarks magbmarks byschool"
 
 foreach dt of loc dataset_types {
     use "phil_`dt'.dta", clear
